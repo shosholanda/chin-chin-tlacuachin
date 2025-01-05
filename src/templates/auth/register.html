@@ -1,0 +1,29 @@
+{% extends 'auth/base_auth.html' %}
+
+{%+ block title %}Crear cuenta{% endblock %}
+
+{%+ block campos %}
+<h1>Crear una cuenta</h1>
+<div class="campo">
+  {{ mc.correo() }}
+</div>
+<div class="campo">
+  {{ mc.contraseña() }}
+</div>
+<div class="campo">
+  {{ mc.label_input("Nombre") }}
+</div>
+<div class="campo">
+  {{ mc.label_input("Apellido Paterno") }}
+</div>
+<div class="campo">
+  {{ mc.label_input("Apellido Materno") }}
+</div>
+<div class="campo">
+  {{ mc.label_input("Fecha de nacimiento", type="date") }}
+</div>
+
+<input class="lightbutton" type="submit" value="Registrar">
+<p>¿Ya tienes
+  cuenta? <a href="{{url_for('auth.iniciar_sesion')}}">¡Inicia sesión!</a></p>
+{%- endblock %}

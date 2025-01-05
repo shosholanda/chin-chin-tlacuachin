@@ -1,0 +1,18 @@
+{% extends 'auth/base_auth.html' %}
+
+{%+ block title %}Iniciar sesión{% endblock %}
+
+{% block campos -%}
+<h1>Iniciar sesión</h1>
+
+<div class="campo">
+  {{ mc.correo() }}
+</div>
+<div class="campo">
+  {{ mc.contraseña() }}
+</div>
+
+<input class="lightbutton" type="submit" value="iniciar">
+
+<p>¿No tienes cuenta? <a href="{{url_for('auth.registrar_usuario')}}">¡Regístrate!</a></p>
+{%- endblock %}

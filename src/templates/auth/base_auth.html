@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% import 'macro.html' as mc %}
+
+{% block header %}
+<div class="encabezado">
+  <div class="icon">
+    <a href="{{ url_for('home' ) }}">
+      {{ mc.img('../../static/img/Cafe.jpg',
+      alt="Tlacuachin_Logo.png") }}
+    </a>
+  </div>
+</div>
+{% endblock %}
+
+{%+ block content %}
+<form class="center" method="POST" autocomplete="off">
+  {%+ block campos %}
+  {%- endblock %}
+</form>
+{%- endblock %}

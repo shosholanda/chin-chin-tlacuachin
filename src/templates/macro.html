@@ -1,0 +1,76 @@
+{% macro label(text) -%}
+<label{% for k in kwargs.keys() %} {{ k }}="{{ kwargs[k] }}" {%- endfor %}>
+  {{- text -}}
+</label>
+{%- endmacro %}
+
+{% macro input() -%}
+<input{% for k in kwargs.keys() %} {{ k }}="{{ kwargs[k] }}" {%- endfor %}>
+{%- endmacro %}
+
+{% macro img(src) -%}
+<img src="{{ src }}"
+     {% for k in kwargs.keys() -%}
+     {{ k }}="{{ kwargs[k] }}" 
+     {%- endfor %}>
+{%- endmacro %}
+
+{% macro label_input(label, input='text') -%}
+<div class="field">
+  <label for='{{ input }}'>{{ label }}</label>
+  {% if kwargs['type'] == 'textarea' %}
+  <textarea  name="{{ input }}">
+    {% if kwargs['value'] -%}
+    {{ kwargs['value'] }}
+    {%- endif %}
+  </textarea>
+  {% else %}
+  <input name="{{ input }}" 
+	 {% for k in kwargs.keys() -%}
+	 {{ k }}="{{ kwargs[k] }}" 
+	 {%- endfor %}>
+  {% endif %}
+</div>
+{%- endmacro %}
+
+
+{% macro link(name, href) -%}
+<a href="{{ href }}"
+   {% for k in kwargs.keys() -%}
+   {{ k }}="{{ kwargs[k] }}" 
+   {%- endfor %}>
+  {{ name }}
+</a>
+{%- endmacro %}
+
+{% macro img_link(url_link, src, alt='') -%}
+<div class="img-link">
+  <a href="{{ url_link }}">
+    <img src="{{ src }}" alt="{{ alt }}"
+	 {% for k in kwargs.keys() -%}
+	 {{ k }}="{{ kwargs[k] }}" 
+	 {%- endfor %}>
+  </a>
+</div>
+{%- endmacro %}
+
+{# Macros para parejas de html #}
+{% macro correo() -%}
+  {{ label("Correo electrónico", for="correo") }} 
+  {{ input(type="email", id="correo", name="correo",
+  placeholder="usuario@correo.com", required="true") }}
+{%- endmacro %}
+
+{% macro contraseña() -%}
+  {{ label("Contraseña", for="contraseña") }}
+  {{ input(type="password", id="contraseña", name="contraseña",
+  placeholder="patito001", required="true") }}
+{%- endmacro %}
+
+{% macro label_input(texto, type="text") -%}
+  {{ label(texto, for=texto.strip().lower().replace(' ', '_')) }}
+  {{ input(type=type,
+           id=texto.strip().lower().replace(' ', '_'),
+           name=texto.strip().lower().replace(' ', '_'),
+           required="true") }}
+{%- endmacro %}

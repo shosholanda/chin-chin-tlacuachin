@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% import 'macro.html' as mc %}
+
+{% block header %}
+<div class="encabezado">
+  <div class="icon">
+    <a href="{{ url_for('home' ) }}">
+      {{ mc.img('../../static/img/ChinChinTlacuachin.jpg',
+      alt="Tlacuachin_Logo.png") }}
+    </a>
+  </div>
+  
+  <div>
+    <a href="{{ url_for('auth.iniciar_sesion') }}">
+      <h2>Iniciar sesión</h2>
+    </a>
+  </div>
+  
+  <div>
+    <a href="{{ url_for('auth.registrar_usuario') }}">
+      <h2>Registrarse</h2>
+    </a>
+  </div>
+</div>
+{% endblock %}
+
+{%+ block content %}
+<form class="center" method="POST" autocomplete="off">
+  {%+ block campos %}
+  {%- endblock %}
+</form>
+{%- endblock %}
+
+
+{%+ block footer -%}
+<div class="clearfix"></div>
+&lAarr; &copy; Todos los derechos reservados &rAarr;
+<br>
+<small>chinchin.tlacuachin.@hotmail.com</small>
+{%- endblock %}

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8">
+    <link rel="shortcut icon" href="{{url_for('static', filename='img/icons/cup_coffe.svg')}}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
+    <!-- Titulo de la página -->
+    <title>{%+ block title %}Chin Chin Tlacuachín{%- endblock %}</title>
+    <!-- Scripts cargados -->
+    {%+ block script %} {% endblock %}
+  </head>
+  <body>
+    <header>
+      <!-- Titulos de la pagina -->
+      {%+ block header %}
+      {% endblock %}
+    </header>
+    <nav>
+      <!-- Barra de navegación -->
+      {%+ block nav %}
+      {%- endblock %}
+    </nav>
+    <section>
+      <!-- Mensajes de error -->
+      {%+ for message in get_flashed_messages() %}
+      <div>
+        {{ message }}
+      </div>
+      {%- endfor %}
+    </section>
+    <main>
+      <!-- Contenido principal de la página -->
+      {%+ block content %}
+      {%- endblock %}
+    </main>
+    <footer>
+      <!-- Pie de página -->
+      {%+ block footer -%}
+      {%- endblock %}
+    </footer>
+  </body>
+</html>
