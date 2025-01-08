@@ -5,7 +5,7 @@
 <div class="encabezado">
   <div class="icon">
     <a href="{{ url_for('home' ) }}">
-      {{ mc.img('../../static/img/Cafe.jpg',
+      {{ mc.img('../../static/img/alpha/Cafe.png',
       alt="Tlacuachin_Logo.png") }}
     </a>
   </div>
@@ -13,7 +13,7 @@
 {% endblock %}
 
 {%+ block content %}
-<form class="center" method="POST" autocomplete="off">
+<form class="center card" method="POST" autocomplete="off">
   {%+ block campos %}
   {%- endblock %}
 </form>

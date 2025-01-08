@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
     <!-- Titulo de la página -->
-    <title>{%+ block title %}Chin Chin Tlacuachín{%- endblock %}</title>
+    <title>{%+ block title %}Chín Chín Tlacuachín{%- endblock %}</title>
     <!-- Scripts cargados -->
     {%+ block script %} {% endblock %}
   </head>
@@ -21,18 +21,26 @@
       {%+ block nav %}
       {%- endblock %}
     </nav>
-    <section>
-      <!-- Mensajes de error -->
-      {%+ for message in get_flashed_messages() %}
-      <div>
-        {{ message }}
-      </div>
-      {%- endfor %}
-    </section>
     <main>
       <!-- Contenido principal de la página -->
+      <aside>
+	{%+ block aside %}
+	{%- endblock %}
+      </aside>
+      <section>
+	<!-- Mensajes de error -->
+	{%+ for message in get_flashed_messages() %}
+	<div>
+          {{ message }}
+	</div>
+	{%- endfor %}
+      </section>
       {%+ block content %}
       {%- endblock %}
+      <article>
+	{%+ block article %}
+	{% endblock %}
+      </article>
     </main>
     <footer>
       <!-- Pie de página -->

@@ -8,8 +8,6 @@
 }
 
 body {
-    background-image: url(../img/alpha/background.png);
-    background-size: 30vh;
     margin: 0;
 
     /* body será de todo el tamaño */
@@ -78,11 +76,20 @@ p.tag {
     padding-bottom: .5em;
 }
 
-.clearfix::after {
-    content: "";
-    clear: both;
-    display: block;
+.toolbar {
+    display: flex;
+    justify-content: space-evenly;
+    background-color: #EEEEEE;
 }
+
+.searchbox {
+    display: flex;
+}
+
+.create {
+    display: flex;
+}
+
 
 /**
 * ############################################################################
@@ -146,61 +153,46 @@ p.tag {
 
 .navbar{
     font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
-    font-size: medium;
+    background-color: #EEEEEE;
 }
 
-/* the elements in the navbar */
-.navbar > ul{
-    list-style-type: none;
-    margin: 0px;
-    padding: 0px;
-    overflow-x: auto;
-    background-color: #8F7460;
+/**
+* ############################################################################
+* DROPDOWN
+* ############################################################################
+*/
+
+.dropdown-holder {
+    border: 1px solid red;
+    /* cursor: pointer; */
 }
 
-/* alinear de izquierda a derecha los elementos del nav */
-.navbar li{
-    float: left;
-}
-
-.navbar li > a {
-    color: white;
-    text-decoration: none;
-    padding: 0.5em;
+.dropdown-holder.campo {
     display: block;
-    text-align: center;
-    cursor: pointer;
 }
 
-/* Content */
-.navbar li > div {
-    background-color: #29261F;
-    color: white;
-    text-decoration: none;
-    text-align: center;
+.dropdown-content {
+    padding: 20px;
+    display: none;
     position: absolute;
-    box-shadow: 2px 2px 5px hsla(0, 0%, 0%, 0.525);
+    background-color: #DDDDDD;
+    box-shadow: 2px 2px 5px;
+}
+
+.dropdown:hover .dropdown-content{
+    display: block;
+}
+
+.mini-form {
+    display: flex;
+}
+
+#category-form {
     display: none;
 }
 
-/* Style of the submenu items */
-.navbar li > div > a{
-    color: white;
-    text-align: left;
-    text-decoration: none;
-    padding: 15px;
-    font-size: 0.8em;
-    font-family: sans-serif;
-    display: block;
-}
-
-/* Cambio de color on hover */
-.navbar a:hover {
-    background-color: #58473a;  
-}
-
-.navbar li:hover > div{
-    display: block;
+#type-product-form {
+    display: none;
 }
 
 
@@ -356,7 +348,7 @@ tr:nth-child(even) {
 * ############################################################################
 */
 
-form {
+form.card {
     width: 60%;
     display: flex;
     flex-direction: column;
@@ -381,8 +373,6 @@ form label{
 form > input{
     position: static;
     text-align: center;
-    min-width: 7em;
-    max-width: 15em;
     margin: 5px;
     margin-left: auto;
 }

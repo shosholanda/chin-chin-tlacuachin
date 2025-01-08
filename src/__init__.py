@@ -19,9 +19,11 @@ db = SQLAlchemy(app)
 
 # Cargar controladores entre bdd y vista
 from src.controller.auth import auth
-from src.controller.cafeteria.dashboard import dashboard
 app.register_blueprint(auth)
+from src.controller.cafeteria.dashboard import dashboard
 app.register_blueprint(dashboard)
+from src.controller.cafeteria.productos import productos
+app.register_blueprint(productos)
 
 # Crear las tablas de la aplicacion que siguen los modelos de esta
 # aplicacion flask

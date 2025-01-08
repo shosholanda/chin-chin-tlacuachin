@@ -19,3 +19,12 @@ def elimina(objeto):
     """
     db.session.delete(objeto)
     db.session.commit()
+
+
+def soft_delete(objeto):
+    """Efectua un soft-delete para este objeto, si tiene status."""
+    if objeto.status:
+        if objeto.status == 1:
+            objeto.status = 0
+            db.session.add(objeto)
+            db.session.commit()

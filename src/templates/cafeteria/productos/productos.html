@@ -1,0 +1,115 @@
+{% extends 'cafeteria/productos/base_productos.html' %}
+{% import 'macro.html' as mc %}
+
+{% block script -%}
+<script type="text/javascript"	src="{{ url_for('static', filename='js/productos.js') }}"></script>
+{%- endblock %}
+
+{% block title %}Productos{% endblock %}
+
+
+{% block nav %}
+<div class="toolbar">
+  
+  
+ 
+  
+  <div class="dropdown">
+    <button class="dropdown-holder">
+      <img src="../../static/img/icons/add.svg" alt="Nuevo producto">
+      <p class="tag">Nuevo producto</p>
+    </button>
+    <div class="dropdown-content">
+      <h1>Crear producto</h1>
+      <div class="campo">
+	{{ mc.label_input("Nombre") }}
+      </div>
+      
+      <div class="mini-form">
+	<div class="campo">
+	  {{ mc.label_select("Categoria", categorias) }}	  
+	</div>
+	<button onclick="document.getElementById('category-form').style.display='block'"> Crear nueva categoria </button>
+	<div id="category-form">
+	  <div class="campo">
+	    {{ mc.label_input("Nueva categoria") }}
+	  </div>
+	  {{ mc.button("Crear categoria", id="create-category-button") }}
+	</div>
+      </div>
+      
+      <div class="mini-form">
+	<div class="campo">
+	  {{ mc.label_select("Tipo de producto", tipo_productos) }}
+	</div>
+      	<button onclick="document.getElementById('type-product-form').style.display='block'">
+      	Crear nuevo tipo </button>
+	<div id="type-product-form">
+	  <div class="campo">
+	    {{ mc.label_input("Nuevo tipo de producto") }}
+	  </div>
+	  {{ mc.button("Crear tipo", id="create-type-button") }}
+	</div>
+      </div>
+      
+      <div class="campo">
+	{{ mc.label_input("Precio") }}
+      </div>
+      <div class="campo">
+	{{ mc.label_input("GTIN") }}
+      </div>
+      {{ mc.button("Añadir nuevo producto", id="create-product-button") }}
+    </div>
+  </div>
+
+   <div class="searchbox">    
+    <div class="">
+      {{ mc.input(placeholder="Buscar") }}
+    </div>    
+    <button class="icon">
+      <img src="../../static/img/icons/search.svg" alt="Buscar">
+      <p class="tag">Buscar</p>
+    </button>
+  </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<h2> Todos los productos </h2>
+<div class="container">
+
+  <table>
+    <tr>
+      <th> Código </th>
+      <th> Nombre </th>
+      <th> Categoria </th>
+      <th> Tipo Producto</th>
+      <th> Precio </th>
+      <th> Status </th>
+    </tr>
+    {% for producto in productos %}
+    <tr id={{ producto.gtin }}>
+      <td> {{ producto.gtin }}</td>
+      <td> {{ producto.nombre }} </td>
+      <td> {{ producto.categoria.nombre }} </td>
+      <td> {{ producto.tipo_producto.nombre }} </td>
+      <td>$ {{ producto.precio }} </td>
+      <td>
+	<input type="checkbox" name="status" autocomplete="off"
+	       {% if producto.status -%}checked{%- endif -%}
+	       ></input>
+      </td>
+      <td>
+	<button name="borrar">Borrar</button>
+      </td>
+    </tr>
+    
+    {% endfor %}
+  </table>
+  
+
+</div>
+
+{% endblock %}
+
+
