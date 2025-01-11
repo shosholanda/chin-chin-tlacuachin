@@ -13,6 +13,11 @@ def get_all_ventas():
     return Venta.query.all()
 
 
+def get_venta_by_ref(ref):
+    """Obtiene la venta por referencia."""
+    return Venta.query.get(ref)
+
+
 def get_all_transacciones():
     """Obtiene usuarios con status = 1."""
     return Transaccion.query.all()

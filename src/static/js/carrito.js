@@ -191,9 +191,9 @@ window.onload = function (){
     comprar.addEventListener('click', sendCart);
 }
 
-// window.addEventListener('beforeunload', function (e) {
-//     var confirmationMessage = 'Are you sure you want to leave this page?';
-//     e.returnValue = confirmationMessage;  // Gecko, WebKit, Chrome <34
-//     return confirmationMessage;           // Gecko, WebKit, Chrome >=34
-// });
+window.addEventListener('beforeunload', function (e) {
+    var confirmationMessage = 'Are you sure you want to leave this page?';
+    e.returnValue = confirmationMessage;  // Gecko, WebKit, Chrome <34
+    return confirmationMessage;           // Gecko, WebKit, Chrome >=34
+});
 

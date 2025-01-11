@@ -2,11 +2,7 @@
 {% import 'macro.html' as mc %}
 
 {% block script %}
-<script>
-  function nuevaVenta(){
-      window.open("{{ url_for('ventas.create_venta') }}", '_blank').focus();
-  }
-</script>
+<script type="text/javascript"	src="{{ url_for('static', filename='js/ventas.js') }}"></script>
 {% endblock %}
 
 {% block title %}Ventas{% endblock %}
@@ -65,7 +61,7 @@
       <td>$ {{ venta.propina }} </td>
       <td>{{ venta.fecha }} </td>
       <td>
-	<button onclick="generateTicket">Imprimir</button>
+	<button class="print" id="print-{{ venta.referencia }}" onclick="generateTicket">Imprimir</button>
       </td>
     </tr>
     

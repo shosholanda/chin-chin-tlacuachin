@@ -19,6 +19,6 @@ def get_object_server():
 
 
 if __name__ == '__main__':
-    # app.run()
-    server = Server(app.wsgi_app)
-    server.serve(port=5000)
+    app.run()
+    # server = Server(app.wsgi_app)
+    # server.serve(port=5000)

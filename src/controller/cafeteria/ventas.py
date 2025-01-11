@@ -14,6 +14,10 @@ from src.model.repository.repo import agrega, elimina
 from src.model.repository.repo_producto import *
 from src.model.repository.repo_venta import *
 
+# LMAO
+from src.static.php.tickets.tools import create_php
+import os
+
 from src.controller.auth import requiere_inicio_sesion
 
 ventas = Blueprint('ventas', __name__, url_prefix='/ventas')
@@ -80,9 +84,28 @@ def get_gtin(gtin):
 def get_transactions_by_ref(id_referencia):
     transacciones = get_transacciones_by_ref(id_referencia)
     return [{'id_referencia': x.id_referencia,
-            'producto': x.producto.nombre,
+             'producto': x.producto.nombre,
              'cantidad': x.cantidad} for x in gtins]
 
+
+@ventas.route('/print-venta/<referencia>', methods=['GET'])
+@requiere_inicio_sesion
+def print_ticket(referencia):
+    referencia = int(referencia)
+    venta = get_venta_by_ref(referencia)
+    trans = get_transaccion_by_ref(referencia)
+    prods = [{'nombre': p.producto.nombre,
+              'cantidad': p.cantidad,
+              'precio': p.producto.precio} for p in trans]
+    php = create_php(venta.cliente, prods, venta.total,
+                     referencia, venta.fecha)
+    file_path = os.path.expanduser('~/Downloads/tickets/ticket{:03d}.php'.format(referencia))
+    f = open(file_path, 'w')
+    f.write(php)
+    f.close()
+    return {'status': 'ok'}
+    
+    
 
 @ventas.route('/eliminar-venta/<gtin>')
 @requiere_inicio_sesion
