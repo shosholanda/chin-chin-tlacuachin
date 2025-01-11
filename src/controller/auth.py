@@ -85,6 +85,7 @@ def iniciar_sesion():
             # if usuario_bdd.sucursal:
             # session['sucursal'] = user.sucursal.nombre
             return redirect(url_for('dashboard.main'))
+        flash(msg_flash)
     return render_template('auth/login.html')
 
 

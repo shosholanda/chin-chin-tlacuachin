@@ -30,6 +30,7 @@ class Producto(db.Model):
     # Nos dice si sigue estando activo o no el producto.
     status = db.Column('status', db.Boolean, nullable=False, default=1)
 
+    transacciones = db.relationship('Transaccion', back_populates='producto')
     categoria = db.relationship('Categoria', back_populates='producto')
     tipo_producto = db.relationship('TipoProducto', back_populates='producto')
 
@@ -50,4 +51,4 @@ class Producto(db.Model):
     # Representación en cadena
     def __repr__(self) -> str:
         """Representación en cadena de este objeto."""
-        return f"{self.gtin}\t{self.descripcion}\t${self.precio}"
+        return f"{self.gtin}\t{self.nombre}\t${self.precio}"

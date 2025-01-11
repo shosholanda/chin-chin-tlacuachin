@@ -22,6 +22,8 @@ from src.controller.auth import auth
 app.register_blueprint(auth)
 from src.controller.cafeteria.dashboard import dashboard
 app.register_blueprint(dashboard)
+from src.controller.cafeteria.ventas import ventas
+app.register_blueprint(ventas)
 from src.controller.cafeteria.productos import productos
 app.register_blueprint(productos)
 

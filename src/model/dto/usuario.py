@@ -19,6 +19,8 @@ class Usuario(db.Model):
     fecha_nacimiento = db.Column('fecha_nacimiento', db.Date, nullable=False)
     status = db.Column('status', db.Boolean, default=1, nullable=False)
 
+    ventas = db.relationship('Venta', back_populates='usuario')
+
     def __init__(self, correo, contraseña, nombre, apellido_paterno,
                  apellido_materno, fecha_nacimiento):
         """Create a new row."""

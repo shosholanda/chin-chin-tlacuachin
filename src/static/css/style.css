@@ -198,44 +198,39 @@ p.tag {
 
 /**
 * ############################################################################
-* CART
+* CARRITO
 * ############################################################################
 */
+#suggestions {
+    /* display: none; */
+    position: absolute;
+    background-color: LightCyan;
+    padding: 20px;
+    list-style-type: none;
+}
+
+#suggestions li {
+    margin: 10px;
+    padding: 10px;
+    text-align: left;
+}
+
+#suggestions li:hover {
+    background-color: white;
+}
+
+.cart * {
+    /* border: 1px solid red; */
+}
 
 /* Productos carro */
 .item {
-    width: 250px;
+    /* width: 250px; */
     max-height: 250px;
     background-color: #c5f0d1;
     margin: 10px;
-    text-align: center;
-    line-height: 27px;
-    color: black;
-    border-style: solid;
-    border-radius: 10px;
-    overflow: scroll;
-}
-
-.item > *{
-    margin: 2px;
-}
-
-.container {
-    margin: 15px
-}
-
-.bold {
-    font-weight: bold
-}
-
-.item div > div{
-    display: inline-block;
-}
-
-.cart {
-    display: flex; /* q mierda */
-    flex-wrap: wrap;
-    justify-content: left;
+    display: flex;
+    justify-content: space-evenly;
 }
 
 /**
@@ -422,6 +417,7 @@ form textarea {
 }
 
 .campo {
+    /* display: flex; */
     margin: 5px;
 }
 

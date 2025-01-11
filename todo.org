@@ -1,0 +1,36 @@
+* Cosas a mejorar de la aplicación:
+
+** General:
++ Eliminar comentarios
++ Eliminar cosas no usadas
+
+** Controlador
+
++ Productos
+  - Generar GTIN sin acentos.
+  - Buscador dinámico. Filtrar la tabla por la coincidencia de busqueda.
++ Ventas
+  - Validar los datos capturados del body en create-producto:POST
+  - Agregar simultaneamente Venta y Transaccion referencia a Venta
+    
+** Modelo
++ Cliente:
+  - Relacionar cliente por id, pero también clientes anónimos
++ Sucursal:
+  - Asociar ventas a sucursales
+  - 
+  
+
+** Vista
++ Productos
+  - Menú "agregar producto" se queda fijo en click
+
++ Ventas:
+  - Menú de sugerencias se queda oculto si esta la cadena vacía. Darle
+    maś estilo.
+  - Botón de agregar producto al carro se deshabilita automáticamente
+    si gtin o cantidad son vacios.
+  - Modificar subtotal al momento de incrementar/decrementar  cantidad
+    del item de carro
+  - Eliminar la compra, actualizar el total.
+  - Agrupar productos similares actualizando cantidad solamente.

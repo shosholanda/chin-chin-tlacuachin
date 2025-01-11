@@ -1,0 +1,79 @@
+{% extends 'cafeteria/base_dashboard.html' %}
+{% import 'macro.html' as mc %}
+
+{% block script %}
+<script>
+  function nuevaVenta(){
+      window.open("{{ url_for('ventas.create_venta') }}", '_blank').focus();
+  }
+</script>
+{% endblock %}
+
+{% block title %}Ventas{% endblock %}
+
+
+{% block content %}
+<h1> Ventas </h1>
+
+
+<div class="dropdown">
+    <button id="nueva-venta" onclick="nuevaVenta()">
+      <img src="../../static/img/icons/add.svg" alt="Nuevo producto">
+      <p class="tag">Nueva venta</p>
+    </button>
+    
+   <div class="searchbox">    
+    <div class="">
+      {{ mc.input(placeholder="Buscar ventas") }}
+    </div>    
+    <button class="icon">
+      <img src="../../static/img/icons/search.svg" alt="Buscar">
+      <p class="tag">Buscar ventas</p>
+    </button>
+  </div>
+</div>
+
+<h2> Todas las ventas </h2>
+<div class="container">
+
+  <table>
+    <tr>
+      <th> Referencia </th>
+      <th> Cliente </th>
+      <th> Productos </th>
+      <th> Notas</th>
+      <th> Total </th>
+      <th> Propina </th>
+      <th> Fecha </th>
+    </tr>
+    {% for venta in ventas %}
+    <tr id={{ venta.referencia }}>
+      <td> {{ venta.referencia }}</td>
+      <td> {{ venta.cliente }} </td>
+      <td>
+	<ul>
+	  {% for transaccion in venta.transacciones %}
+	  <li>
+	    {{transaccion.cantidad}}x {{ transaccion.producto.nombre
+	    }} (${{transaccion.producto.precio}})
+	  </li>
+	  {% endfor %}
+	</ul>
+      </td>
+      <td> {{ venta.notas }} </td>
+      <td>$ {{ venta.total }} </td>
+      <td>$ {{ venta.propina }} </td>
+      <td>{{ venta.fecha }} </td>
+      <td>
+	<button onclick="generateTicket">Imprimir</button>
+      </td>
+    </tr>
+    
+    {% endfor %}
+  </table>
+  
+
+</div>
+
+{% endblock %}
+

@@ -61,7 +61,7 @@
            id=as_id(texto),
            name=as_id(texto),
            required="true", 
-           autocomplete="off")}}
+           autocomplete="off", *args, **kwargs)}}
 {%- endmacro %}
 
 {% macro label_select(texto, opciones=[]) -%}

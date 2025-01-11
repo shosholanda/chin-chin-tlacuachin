@@ -1,5 +1,6 @@
 """Punto de partida del punto de venta."""
 from src import app
+from livereload import Server
 
 from flask import (render_template, redirect, g, url_for)
 
@@ -18,4 +19,6 @@ def get_object_server():
 
 
 if __name__ == '__main__':
-    app.run()
+    # app.run()
+    server = Server(app.wsgi_app)
+    server.serve(port=5000)
