@@ -26,6 +26,8 @@ from src.controller.cafeteria.ventas import ventas
 app.register_blueprint(ventas)
 from src.controller.cafeteria.productos import productos
 app.register_blueprint(productos)
+from src.controller.cafeteria.gastos import gastos
+app.register_blueprint(gastos)
 
 # Crear las tablas de la aplicacion que siguen los modelos de esta
 # aplicacion flask

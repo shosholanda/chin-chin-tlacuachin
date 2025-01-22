@@ -8,10 +8,11 @@
 
 + Productos
   - Generar GTIN sin acentos.
-  - Buscador dinámico. Filtrar la tabla por la coincidencia de busqueda.
+
 + Ventas
   - Validar los datos capturados del body en create-producto:POST
-  - Agregar simultaneamente Venta y Transaccion referencia a Venta
+  - No abrir varias ventanas (?)
+  - Para llevar (?)
     
 ** Modelo
 + Cliente:
@@ -22,15 +23,14 @@
   
 
 ** Vista
++ Dar más estilo
 + Productos
   - Menú "agregar producto" se queda fijo en click
 
 + Ventas:
+  - Imagen de producto
   - Menú de sugerencias se queda oculto si esta la cadena vacía. Darle
     maś estilo.
   - Botón de agregar producto al carro se deshabilita automáticamente
     si gtin o cantidad son vacios.
-  - Modificar subtotal al momento de incrementar/decrementar  cantidad
-    del item de carro
-  - Eliminar la compra, actualizar el total.
   - Agrupar productos similares actualizando cantidad solamente.

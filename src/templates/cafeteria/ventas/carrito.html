@@ -8,9 +8,13 @@
 
 {% block content %}
 <!-- Carrito de compras -->
+<div>
+  <button id="nueva-venta"> Nueva venta </button>
+</div>
 <div class="center">
   {{ mc.label_input("Cliente") }}
 </div>
+
 <div class="params">
   <div class="campo">
     <label for="codigo_gtin">Codigo GTIN</label>
@@ -25,7 +29,7 @@
   
   
   <div class="campo">
-    {{ mc.label_input("Cantidad", type="number", min="1") }}
+    {{ mc.label_input("Cantidad", type="number", min="1", value="1") }}
   </div>
   <div class="option">
     {{ mc.button("Agregar", id="agregar") }}
@@ -51,4 +55,8 @@
     </div>
 </div>
 
+<div class="center">
+<p><i>Nota</i>: Revisa que los productos a comprar sean correctos en
+  cantidad y descripcion.</p>
+</div>
 {% endblock %}

@@ -12,13 +12,24 @@ function nuevoItem(gtin, cantidad) {
 	    response => {
 		response.gtin = gtin;
 		response.cantidad = cantidad;
+		for (let item of carro){
+		    if (item.gtin === gtin){
+			item.cantidad += cantidad;
+			document.getElementById('cantidad-' + item.id).value = item.cantidad;
+			document.getElementById('sub-'+ item.id).innerText = "$ " + item.cantidad*item.precio;
+			updateTotal();
+			resetInput();
+			return;
+		    }
+		}
+		
 		carro.push(response);
 		let id = response['id'];
 		let nombre = response['nombre'];
 		let precio = response['precio'];
 		let subtotal = precio*cantidad;
-		let itemString =  `<div class="item">
-    <div class="item" id="${id}">
+		let itemString =  `<div class="item" id="${id}">
+    <div class="item" >
       <div>
 	<div>
 	 ${gtin}
@@ -31,7 +42,7 @@ function nuevoItem(gtin, cantidad) {
     <div>
       <div class="campo">
         <label for="cantidad">Cantidad</label>
-        <input type="number" id="cantidad" name="cantidad" required="true" autocomplete="off" min="1" value="${cantidad}">
+        <input type="number" id="cantidad-${id}" name="cantidad" required="true" autocomplete="off" min="1" max="99" value="${cantidad}">
       </div>
         <div>
           Precio:$ ${precio}
@@ -39,23 +50,44 @@ function nuevoItem(gtin, cantidad) {
     </div>
     <div>
       <h5>Subtotal</h5>
-      <p>$ ${subtotal}</p>
+      <p id=sub-${id}>$ ${subtotal}</p>
+    </div>
+    <div>
+      <button id="borrar-${id}">Borrar</button>
     </div>
   </div>`
 		cart.insertAdjacentHTML('beforeend', itemString);
+		
+		document.getElementById('borrar-'+id).addEventListener('click', function(){
+		    document.getElementById(id).remove()
+		    for (let i = 0; i < carro.length; i++)
+			if (carro[i].id === id){
+			    carro.splice(i, 1);
+			    break;
+			}
+		    updateTotal();
+		});
+		
+		document.getElementById('cantidad-'+id).addEventListener('change', function(){
+		    cant = parseInt(this.value)
+		    for (let item of carro)
+			if (item.id === id)
+			    item.cantidad = cant
+		    document.getElementById('sub-'+id).innerText = "$ " + cant*precio;
+		    updateTotal();
+		});
 		updateTotal();
 		resetInput();
 	    }
 	)
     ).catch( error => console.log("Error:", error));
-    
-    
-    
 }
 
+function borrarItem(){}
+
 function resetInput(){
-    document.getElementById('codigo_gtin').value = ""
-    document.getElementById('cantidad').value = "";
+    document.getElementById('codigo_gtin').value = "";
+    document.getElementById('cantidad').value = "1";
 }
 
 function updateTotal(){
@@ -157,22 +189,16 @@ function sendCart(){
         body: JSON.stringify(shop)
     })
 	.then(response => {
-            return response.text().then(text => {
-		// return JSON.parse(text); // Todos coludos o todos rabones
-		return text;
-            });
-	})
-	.then(html => {
-            // Por JSON
-            // if (data.redirect) {
-            //     // window.location.href = data.redirect;
-            // } else {
-            //     console.log('Success:', data);
-            // }
-            document.open();
-            document.write(html);
-            document.close();
-
+	    // Por JSON
+            if (response.redirect) {
+                window.location.href = response.redirect;
+            } else {
+                response.text().then(html => {
+		    document.open();
+		    document.write(html);
+		    document.close();
+		})
+	    }
 	})
 	.catch((error) => {
             console.log('Error:', error);
@@ -181,14 +207,22 @@ function sendCart(){
 
 // Main
 window.onload = function (){
+    let nueva_venta_button = document.getElementById('nueva-venta');
     let agregar_button = document.getElementById('agregar');
     let codigo_input = document.getElementById('codigo_gtin');
     let cant = document.getElementById('cantidad');
     let comprar = document.getElementById('comprar');
 
+    nueva_venta_button.addEventListener('click', nuevaVenta)
     agregar_button.addEventListener('click', agregarProducto);
     codigo_input.addEventListener('input', buscaGtin);
     comprar.addEventListener('click', sendCart);
+}
+
+
+function nuevaVenta(){
+    console.log('ASDFSDF')
+    window.open("create-venta", '_blank').focus();
 }
 
 window.addEventListener('beforeunload', function (e) {

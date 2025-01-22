@@ -1,5 +1,4 @@
 """Consultas en general para poder reutilizar."""
-
 from src import db
 
 

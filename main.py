@@ -1,6 +1,6 @@
 """Punto de partida del punto de venta."""
 from src import app
-from livereload import Server
+# from livereload import Server
 
 from flask import (render_template, redirect, g, url_for)
 

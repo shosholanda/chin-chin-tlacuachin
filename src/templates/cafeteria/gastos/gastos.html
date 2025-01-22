@@ -1,0 +1,101 @@
+{% extends 'cafeteria/gastos/base_gastos.html' %}
+{% import 'macro.html' as mc %}
+
+{% block script -%}
+<script type="text/javascript"	src="{{ url_for('static', filename='js/gastos.js') }}"></script>
+{%- endblock %}
+
+
+{% block nav %}
+<div class="toolbar">
+  
+  <div class="dropdown">
+    <button id="dropdown-holder" class="dropdown-holder">
+      <img src="../../static/img/icons/add.svg" alt="Nuevo gasto">
+      <p class="tag">Nuevo gasto</p>
+    </button>
+
+    
+    <div id="dropdown-content" class="dropdown-content">
+      <h1>Crear gasto</h1>
+      <div class="mini-form">
+	<div class="campo">
+	  {{ mc.label_select("Tipo de gasto", tipo_gastos) }}
+	</div>
+      	<button onclick="document.getElementById('type-product-form').style.display='block'">
+      	Crear nuevo tipo </button>
+	<div id="type-product-form">
+	  <div class="campo">
+	    {{ mc.label_input("Nuevo tipo de gasto") }}
+	  </div>
+	  {{ mc.button("Crear tipo", id="create-type-button") }}
+	</div>
+      </div>
+
+      <div class="campo">
+	{{ mc.label_input("Cantidad") }}
+      </div>
+      
+      <div class="campo">
+	<label for="descripcion">Descripcion</label>
+	<textarea id="descripcion" autocomplete="off"></textarea>
+      </div>
+      <div class="campo">
+	{{ mc.label_input("Fecha", type="date") }}
+      </div>
+      
+      {{ mc.button("Añadir nuevo gasto", id="create-gasto-button") }}
+    </div>
+  </div>
+
+   <div class="searchbox">    
+    <div class="">
+      {{ mc.input(placeholder="Buscar") }}
+    </div>    
+    <button class="icon">
+      <img src="../../static/img/icons/search.svg" alt="Buscar">
+      <p class="tag">Buscar</p>
+    </button>
+  </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<h2> Historial de gastos </h2>
+<div class="container">
+
+  <table>
+    <tr>
+      <th> ID </th>
+      <th> Tipo Gasto </th>
+      <th> Cantidad </th>
+      <th> Descripción </th>
+      <th> Fecha </th>
+      <th> Status </th>
+    </tr>
+    {% for gasto in gastos %}
+    <tr id={{ gasto.id }}>
+      <td> {{ gasto.id }}</td>
+      <td> {{ gasto.tipo_gasto.nombre }} </td>
+      <td> {{ gasto.cantidad }} </td>
+      <td> {{ gasto.descripcion }} </td>
+      <td> {{ gasto.fecha }} </td>
+      <td>
+	<input type="checkbox" name="status" autocomplete="off"
+	       {% if gasto.status -%}checked{%- endif -%}
+	       ></input>
+      </td>
+      <td>
+	<button name="borrar">Borrar</button>
+      </td>
+    </tr>
+    
+    {% endfor %}
+  </table>
+  
+
+</div>
+
+{% endblock %}
+
+

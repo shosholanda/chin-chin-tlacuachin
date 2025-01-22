@@ -11,12 +11,22 @@
 {% block content %}
 <h1> Ventas </h1>
 
+<div class="overlay" id="overlay">
+  <div class="popup">
+    <p>¿Quieres imprimir para facturar?</p>
+    <button id="yes">Sí</button>
+    <button id="no">No</button>
+    <button id="cancelar">Cancelar</button>
+  </div>
+</div>
 
-<div class="dropdown">
-    <button id="nueva-venta" onclick="nuevaVenta()">
+
+
+<div class="icon">
+    <a id="nueva-venta" href="{{ url_for('ventas.create_venta')}}">
       <img src="../../static/img/icons/add.svg" alt="Nuevo producto">
       <p class="tag">Nueva venta</p>
-    </button>
+    </a>
     
    <div class="searchbox">    
     <div class="">
@@ -44,16 +54,15 @@
     </tr>
     {% for venta in ventas %}
     <tr id={{ venta.referencia }}>
-      <td> {{ venta.referencia }}</td>
+      <td> <a href=" {{ url_for('ventas.referencia', referencia=venta.referencia) }}">{{venta.referencia}}</a> </td>
       <td> {{ venta.cliente }} </td>
       <td>
 	<ul>
-	  {% for transaccion in venta.transacciones %}
+	  {% for transaccion in venta.transacciones -%}
 	  <li>
-	    {{transaccion.cantidad}}x {{ transaccion.producto.nombre
-	    }} (${{transaccion.producto.precio}})
+	    {{transaccion.cantidad}}x {{ transaccion.producto.nombre }} (${{transaccion.producto.precio}})
 	  </li>
-	  {% endfor %}
+	  {%- endfor %}
 	</ul>
       </td>
       <td> {{ venta.notas }} </td>
@@ -61,7 +70,9 @@
       <td>$ {{ venta.propina }} </td>
       <td>{{ venta.fecha }} </td>
       <td>
-	<button class="print" id="print-{{ venta.referencia }}" onclick="generateTicket">Imprimir</button>
+	<button class="print" id="print-{{ venta.referencia }}">
+	  Imprimir
+	</button>
       </td>
     </tr>
     

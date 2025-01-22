@@ -1,0 +1,109 @@
+{% extends 'cafeteria/base_dashboard.html' %}
+{% import 'macro.html' as mc %}
+
+{% block script %}
+<script>
+  window.onload = function(){
+      document.getElementById('eliminar').addEventListener('click', function(){
+	  showPopUp();
+      })
+
+      document.getElementById('actualizar').addEventListener('click', function(){
+	  let propina = document.getElementById('propina');
+	  let notas = document.getElementById('notas');
+	  let cliente = document.getElementById('cliente');
+	  let ref = "{{venta.referencia}}"
+	  let json = {'propina': parseInt(propina.value),
+		      'notas': notas.value,
+		      'cliente': cliente.value
+		     }
+	  
+	  fetch('update-venta/' + ref, {
+              method: 'POST',
+              headers: {
+		  'Content-Type': 'application/json'
+              },
+              body: JSON.stringify(json)
+	  }).then(response => {
+	      console.log(response)
+	      if (response.redirected){
+		  window.location.href = response.url;
+	      } else {
+		  response.text().then(html => {
+		      document.open();
+		      document.write(html);
+		      document.close();
+		})
+	      }
+	      
+	  }).catch(error => console.error("Error: " + error))
+      })
+      
+      document.getElementById('yes').addEventListener('click', function(){
+	  closePopUp(true)
+      });
+						   
+      document.getElementById('no').addEventListener('click', function(){
+	  closePopUp(false)
+      });
+  }
+
+
+  function showPopUp(){
+      document.getElementById('overlay').style.display = 'flex';
+  }
+
+  function closePopUp(answer){
+      if (answer)
+	  fetch('eliminar-venta/' + {{venta.referencia}}).then(response => {
+	      if (response.redirected)
+		  window.location.href = response.url;
+	      
+	  }).catch(error => console.error("Error: " + error))
+      document.getElementById('overlay').style.display = 'none';
+      
+  }
+</script>
+{% endblock %}
+
+{% block title %}Venta #{{venta.referencia}}{% endblock %}
+
+
+{% block content %}
+<h1> Venta {{venta.referencia}} </h1>
+{{ mc.label_input('Cliente', value=venta.cliente) }}
+<h2>Productos:</h2>
+<ul>
+  {% for transaccion in venta.transacciones -%}
+  <li>
+    {{transaccion.cantidad}}x {{ transaccion.producto.nombre }} (${{transaccion.producto.precio}})
+  </li>
+  {%- endfor %}
+</ul>
+
+<hr>
+<h2>Total: {{venta.total}}</h2>
+<h3>Fecha: {{venta.fecha}}</h3>
+<br>
+{{mc.label_input('Propina', value=venta.propina) }}
+<h3>Notas:</h3>
+<textarea id="notas">{{venta.notas}}</textarea>
+<button id="actualizar">Actualizar</button>
+<br>
+
+
+<button id="eliminar">Eliminar</button>
+
+
+
+<div class="overlay" id="overlay">
+  <div class="popup">
+    <p>¿Seguro que quiere eliminar esta venta? No hay vuelta atrás.</p>
+    <button id="yes">Sí</button>
+    <button id="no">No</button>
+  </div>
+</div>
+
+
+{% endblock %}
+
