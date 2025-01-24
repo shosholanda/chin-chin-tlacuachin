@@ -1,0 +1,124 @@
+{% extends 'cafeteria/inventario/base_inventario.html' %}
+{% import 'macro.html' as mc %}
+
+{% block script %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/14.0.1/math.min.js"></script>
+
+<script>
+
+  window.onload = function(){
+      document.getElementById('eliminar').addEventListener('click', function(){
+	  showPopUp();
+      })
+
+      document.getElementById('actualizar').addEventListener('click', function(){
+	  let cantidad_actual = document.getElementById('cantidad_actual');
+	  cantidad_actual = math.evaluate(cantidad_actual.value);
+	  let unidad = document.getElementById('unidad');
+	  let costo = document.getElementById('costo');
+	  let min = document.getElementById('minimo');
+	  let max = document.getElementById('maximo');
+	  let id = "{{articulo.id}}"
+	  let json = {'cantidad_actual': parseFloat(cantidad_actual),
+		      'unidad': unidad.value,
+		      'costo': parseFloat(costo.value),
+		      'minimo': parseInt(min.value),
+		      'maximo': parseInt(max.value)
+		     }
+	  console.log(json)
+	  fetch('update-articulo/' + id, {
+              method: 'POST',
+              headers: {
+		  'Content-Type': 'application/json'
+              },
+              body: JSON.stringify(json)
+	  }).then(response => {
+	      console.log(response)
+	      if (response.redirected){
+		  window.location.href = response.url;
+	      } else {
+		  response.text().then(html => {
+		      document.open();
+		      document.write(html);
+		      document.close();
+		})
+	      }
+	      
+	  }).catch(error => console.error("Error: " + error))
+      })
+      
+      document.getElementById('yes').addEventListener('click', function(){
+	  closePopUp(true)
+      });
+						   
+      document.getElementById('no').addEventListener('click', function(){
+	  closePopUp(false)
+      });
+  }
+
+
+  function showPopUp(){
+      document.getElementById('overlay').style.display = 'flex';
+  }
+
+  function closePopUp(answer){
+      if (answer)
+	  fetch('eliminar-articulo/' + {{articulo.id}}).then(response => {
+	      if (response.redirected)
+		  window.location.href = response.url;
+	      
+	  }).catch(error => console.error("Error: " + error))
+      document.getElementById('overlay').style.display = 'none';
+      
+  }
+</script>
+{% endblock %}
+
+{% block title %}Articulo #{{articulo.id}}{% endblock %}
+
+
+{% block content %}
+<h1> {{articulo.nombre}} </h1>
+<div class="campo">
+  {{ mc.label_input('Cantidad Actual', value=mc.format_number(articulo.cantidad_actual)) }}
+</div>
+<div class="campo">
+  {{ mc.label_input('Unidad', value=articulo.unidad, maxlength="2", size="4") }}
+</div>
+<br>
+<div class="campo">
+  {{ mc.label_input('Costo', value=mc.format_number(articulo.costo_unitario)) }}
+</div>
+
+<div class="campo">
+  {{ mc.label_input('Minimo', value=mc.format_number(articulo.minimo)) }}
+</div>
+<div class="campo">
+  {{ mc.label_input('Maximo', value=mc.format_number(articulo.maximo)) }}
+</div>
+<h2>Aparece en:</h2>
+<ul>
+  {% for producto in articulo.productos -%}
+  <li>
+    
+  </li>
+  {%- endfor %}
+</ul>
+
+<button id="actualizar">Actualizar</button>
+<br>
+
+
+<button id="eliminar">Eliminar</button>
+
+
+<div class="overlay" id="overlay">
+  <div class="popup">
+    <p>¿Seguro que quiere eliminar este articulo? No hay vuelta atrás.</p>
+    <button id="yes">Sí</button>
+    <button id="no">No</button>
+  </div>
+</div>
+
+
+{% endblock %}

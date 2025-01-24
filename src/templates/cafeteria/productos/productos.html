@@ -9,15 +9,12 @@
 {% block nav %}
 <div class="toolbar">
   
-  
- 
-  
   <div class="dropdown">
-    <button class="dropdown-holder">
+    <button id="dropdown-holder">
       <img src="../../static/img/icons/add.svg" alt="Nuevo producto">
       <p class="tag">Nuevo producto</p>
     </button>
-    <div class="dropdown-content">
+    <div id="dropdown-content" class="dropdown-content">
       <h1>Crear producto</h1>
       <div class="campo">
 	{{ mc.label_input("Nombre") }}
@@ -91,7 +88,7 @@
       <td> {{ producto.nombre }} </td>
       <td> {{ producto.categoria.nombre }} </td>
       <td> {{ producto.tipo_producto.nombre }} </td>
-      <td>$ {{ producto.precio }} </td>
+      <td>$ {{ mc.format_number(producto.precio) }} </td>
       <td>
 	<input type="checkbox" name="status" autocomplete="off"
 	       {% if producto.status -%}checked{%- endif -%}
@@ -104,8 +101,6 @@
     
     {% endfor %}
   </table>
-  
-
 </div>
 
 {% endblock %}

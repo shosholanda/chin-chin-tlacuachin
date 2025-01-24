@@ -79,6 +79,14 @@
 {{- text.strip().lower().replace(' ', '_') -}}
 {% endmacro %}
 
-
+{% macro format_number(number) %}
+{% if not number %}
+No
+{% elif number % 1 == 0 %}
+{{- "{0:g}".format(number) -}}
+{% else %}
+{{- "{:.3f}".format(number) -}}
+{% endif %}
+{% endmacro %}
 
 

@@ -3,6 +3,8 @@
 ** General:
 + Eliminar comentarios
 + Eliminar cosas no usadas
++ ESTUPIDAS DEPENDECIAS NPM POR QUE DEBE SER TAN DIFICIL QUERER USAR
+  UNA PINCHE FUNCION TODA ESTÚPIDA
 
 ** Controlador
 
@@ -11,8 +13,7 @@
 
 + Ventas
   - Validar los datos capturados del body en create-producto:POST
-  - No abrir varias ventanas (?)
-  - Para llevar (?)
+  - Para llevar (precio extra?)
     
 ** Modelo
 + Cliente:
@@ -21,11 +22,10 @@
   - Asociar ventas a sucursales
   - 
   
-
 ** Vista
 + Dar más estilo
 + Productos
-  - Menú "agregar producto" se queda fijo en click
+  - Tabla completa de insumos por productos utilizados.
 
 + Ventas:
   - Imagen de producto

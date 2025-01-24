@@ -57,7 +57,7 @@ function nuevoItem(gtin, cantidad) {
     </div>
   </div>`
 		cart.insertAdjacentHTML('beforeend', itemString);
-		
+		document.getElementById('comprar').disabled = false;
 		document.getElementById('borrar-'+id).addEventListener('click', function(){
 		    document.getElementById(id).remove()
 		    for (let i = 0; i < carro.length; i++)
@@ -65,6 +65,8 @@ function nuevoItem(gtin, cantidad) {
 			    carro.splice(i, 1);
 			    break;
 			}
+		    if (carro.length === 0)
+			document.getElementById('comprar').disabled = true;
 		    updateTotal();
 		});
 		
@@ -154,7 +156,6 @@ function sendCart(){
     //Convertir a JSON
     let cartData = [];
 
-
     for (let item of carro){
 	let p = item.id;
 	let c = item.cantidad;
@@ -212,6 +213,7 @@ window.onload = function (){
     let codigo_input = document.getElementById('codigo_gtin');
     let cant = document.getElementById('cantidad');
     let comprar = document.getElementById('comprar');
+    comprar.disabled = true;
 
     nueva_venta_button.addEventListener('click', nuevaVenta)
     agregar_button.addEventListener('click', agregarProducto);

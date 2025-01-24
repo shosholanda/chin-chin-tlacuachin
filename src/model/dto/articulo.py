@@ -2,20 +2,19 @@
 from src import db
 
 
-class Inventario(db.Model):
+class Articulo(db.Model):
     """Clase que modela una entidad con sus respectivos atributos.
 
-    Entidad: Inventario
+    Entidad: Articulo
 
-    El inventario nos da la cantidad que se tiene en el momento, para
-    calcular aproximadamente la relacion compra-venta.
+    La información necesaria de un artículo del inventario.
     """
 
     # Nombre de la tabla
-    __tablename__ = 'inventario'
+    __tablename__ = 'articulo'
     id = db.Column('id', db.Integer, primary_key=True)
     nombre = db.Column('nombre', db.String(100), nullable=False, unique=True)
-    # Cantidad que esta actualmente en el inventario. 3.450
+    # Cantidad que esta actualmente en el articulo. 3.450
     cantidad_actual = db.Column('cantidad_actual', db.Float(3), nullable=False, default=0)
     # Cómo se mide este producto. kg, gr, lt, ml, oz, pg, etc
     unidad = db.Column('unidad', db.String(2), nullable=False, default="un")

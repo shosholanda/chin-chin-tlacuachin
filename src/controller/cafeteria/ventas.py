@@ -44,6 +44,10 @@ def create_venta():
         body = request.json
         # {'cart': [{'id_producto': 8, 'cantidad': 3}], 'total': '900', 'propina': '0', 'notas': '3', 'cliente': ''}
 
+        cart = body['cart']
+        if cart == []:
+            flash("No hay productos para comprar.")
+            return redirect(url_for('ventas.main'))
         nueva_venta = Venta(id_usuario=session['usuario'],
                             total=float(body['total']),
                             propina=float(body['propina']),
@@ -52,7 +56,7 @@ def create_venta():
                             )
         agrega(nueva_venta)
 
-        for c in body['cart']:
+        for c in cart:
             transaccion = Transaccion(id_referencia=nueva_venta.referencia,
                                       id_producto=c['id_producto'],
                                       cantidad=c['cantidad']

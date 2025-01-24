@@ -133,7 +133,7 @@ function create_product(){
 function deleteProducto(){
     let gtin = this.closest("tr").id;
     fetch(`eliminar-producto/${gtin}`)
-    location.reload()
+    location.reload();
 }
 
 function statusChange(){
@@ -141,9 +141,15 @@ function statusChange(){
     fetch(`change-status/${gtin}`)
 }
 
-
+let hide = true;
 
 window.onload = function(){
+
+    document.getElementById('dropdown-holder').addEventListener('click', function(){
+	let dpc = document.getElementById('dropdown-content').style;
+	dpc.display = hide ? 'block' : 'none'
+	hide = !hide;
+    });
 
     let create_category_button = document.getElementById('create-category-button');
     let create_type_button = document.getElementById('create-type-button');

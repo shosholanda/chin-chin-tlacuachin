@@ -1,6 +1,14 @@
 # Byte-compiled / optimized / DLL files
 
+# Virtual enviroment
 foo/*
+
+# NPM modules
+node_modules/*
+
+# NPM packages
+package*.json
+
 __pycache__/
 *.py[cod]
 *$py.class
