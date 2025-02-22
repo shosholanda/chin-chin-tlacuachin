@@ -194,6 +194,7 @@ p.tag {
 }
 
 .dropdown-content {
+    left: 20%;
     padding: 20px;
     display: none;
     position: absolute;
@@ -213,7 +214,7 @@ p.tag {
     display: none;
 }
 
-#type-product-form {
+#product-type-form {
     display: none;
 }
 

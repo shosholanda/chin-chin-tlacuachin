@@ -1,0 +1,77 @@
+{% extends 'cafeteria/productos/base_productos.html' %}
+{% import 'macro.html' as mc %}
+
+{% block script %}
+{{ super() }}
+<script type="text/javascript" src="{{ url_for('static', filename='js/producto/producto.js') }}"></script>
+{% endblock %}
+
+{% block title %} {{producto.gtin}} {% endblock %}
+
+
+{% block content %}
+<div class="product" id="product" gtin="{{ producto.gtin }}" url="{{ url_for('productos.main')}}" productID="{{ producto.id }}">
+
+  <h1> {{producto.nombre}} ${{ producto.precio }}</h1>
+  
+  <div class="campo">
+    <!-- No se puede actualizar porque no se respetaría un precio anterior. -->
+    <!-- Tal vez se pueda actualizar el nombre/gtin sin afectar el id, pero entonces todo tendría q ser por id -->
+    <!-- {{ mc.label_select('Categoria', categorias, selected=producto.categoria.id ) }} -->
+    {{ mc.label_input("category", "Categoria", disabled="", value=producto.categoria) }}
+  </div>
+  <div class="campo">
+    <!-- {{ mc.label_select('Tipo de producto', tipos_de_producto, selected=producto.tipo_producto.id ) }} -->
+    {{ mc.label_input("product-type", "Tipo de producto", disabled="", value=producto.tipo_producto) }}
+  </div>
+  <div class="campo">
+    {{ mc.label_input("price", "Precio", value=mc.format_number(producto.precio)) }}
+  </div>
+  <div class="campo">
+    {{ mc.label("Inversión: ") }}
+    <!-- precio.insumos.suma -->
+  </div>
+  
+  <div class="campo">
+    <!-- Casi lo logro, hacer en label_input() todo esto, pasando como parametro checked y checbox -->
+    {{ mc.label("Activo?", for="status") }}
+    {{ mc.input(mc.checked(producto.status), id="status", type="checkbox", name="status", autocomplete="off")}}
+  </div>
+  <br>
+  {{ mc.button("Eliminar", mc.disabled(producto.transacciones != []) ,id="delete") }}
+  {{ mc.button("Guardar", id="update")}}
+  <br>
+  <p><b>Nota:</b> No se puede eliminar si ya existe una venta asociada a este producto. Solo se puede modificar el precio.</p>
+  
+  <!-- <h2>Insumos utilizados:</h2>
+  <ul id="lista-insumos">
+    {% for insumo in producto.insumos -%}
+    <li id="insumo-{{insumo.id}}">
+      <a href="{{ url_for('inventario.articulo', id_articulo=insumo.id)}}">{{insumo.nombre}} </a>
+      <button onclick="">Eliminar</button>
+    </li>
+    <li>
+      <a href="{{ url_for('inventario.articulo', insumo.id)}}">{{ insumo }}</a>
+    </li>
+    {%- endfor %}
+  </ul>
+  <div>
+    <div class="campo">
+      {{ mc.label_input('Nombre insumo') }}
+      <ul id="suggestions">
+        !-- Aquí se muestran las sugerencias de las búsquedas --
+      </ul>
+      <button id="add-receta">Añadir insumo</button>
+    </div>
+    
+  </div> -->
+</div>
+  {% endblock %}
+  
+  {%+ block overlay %}
+  <div class="popup">
+    <p>¿Seguro que quiere eliminar este producto? No hay vuelta atrás.</p>
+    <button id="yes">Sí</button>
+    <button id="no">No</button>
+  </div>
+  {%- endblock %}

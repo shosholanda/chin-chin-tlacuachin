@@ -109,8 +109,8 @@ def requiere_inicio_sesion(vista):
     Aplica para los usuarios registrados en la página, no personas públicas.
     """
     @functools.wraps(vista)
-    def wrapper(**kwargs):
+    def wrapper(*args, **kwargs):
         if not g.user:
             return redirect(url_for('home'))
-        return vista(**kwargs)
+        return vista(*args, **kwargs)
     return wrapper

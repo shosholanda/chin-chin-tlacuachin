@@ -19,10 +19,23 @@
       <div class="campo">
 	{{ mc.label_input("Nombre") }}
       </div>
+      <div class="mini-form">
+	<div class="campo">
+	  {{ mc.label_select("Tipo articulo", tipo_articulos) }}	  
+	</div>
+	<button onclick="document.getElementById('category-form').style.display='block'"> Crear nuevo Tipo </button>
+	<div id="category-form">
+	  <div class="campo">
+	    {{ mc.label_input("Nuevo tipo articulo") }}
+	  </div>
+	  {{ mc.button("Crear tipo articulo", id="create-tipo-button") }}
+	</div>
+      </div>
       <div class="campo">
 	{{ mc.label_input("Cantidad Actual") }}
       </div>
       <div class="campo">
+	(kg, lt, gr, pz, un, ml, tn etc)
 	{{ mc.label_input("Unidad", maxlength="2", size="4") }}
       </div>
       <div class="campo">
@@ -49,6 +62,7 @@
     <tr>
       <th> ID </th>
       <th> Nombre </th>
+      <th> Tipo articulo </th>
       <th> Costo unitario</th>
       <th> Cantidad actual </th>
       <th> Unidad </th>
@@ -64,6 +78,7 @@
 	</a>
       </td>
       <td> {{ articulo.nombre}} </td>
+      <td> {{ articulo.tipo_articulo.nombre }} </td>
       <td>$ {{ mc.format_number(articulo.costo_unitario) }} </td>
       <td> {{ mc.format_number(articulo.cantidad_actual) }} </td>
       <td> {{ articulo.unidad }} </td>

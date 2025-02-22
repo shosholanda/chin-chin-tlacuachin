@@ -94,8 +94,14 @@ También, ya debe de existir la base de datos antes de ejecutar el programa
 mysql> CREATE DATABASE <database_name> 
 ```
 
- PIP libraries:
-
-NPM dependecies
+NPM dependecies (instalar cuando se pueda)
 
 - mathjs
+
+
+
+Instalar repositorio para imprimir en POS 
+
+```bash
+$ less src/static/php/ticket_template.php
+```

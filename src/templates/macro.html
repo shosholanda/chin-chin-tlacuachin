@@ -1,92 +1,112 @@
+{####################################### BASIC HTML ELEMENTS #######################################}
+
 {% macro label(text) -%}
-<label{% for k in kwargs.keys() %} {{ k }}="{{ kwargs[k] }}" {%- endfor %}>
-  {{- text -}}
-</label>
+  <label {% for k in varargs -%} {{ k }} {% endfor -%}
+  {% for k in kwargs.keys() %} {{ k }}="{{ kwargs[k] }}" {%- endfor %}>
+    {{- text -}}
+  </label>
 {%- endmacro %}
 
 {% macro input() -%}
-<input{% for k in kwargs.keys() %} {{ k }}="{{ kwargs[k] }}" {%- endfor %}>
+  <input {% for k in varargs -%} {{ k }} {%- endfor -%}
+  {% for k in kwargs.keys() %} {{ k }}="{{ kwargs[k] }}" {%- endfor %}>
 {%- endmacro %}
 
 {% macro button(text) -%}
-<button{% for k in kwargs.keys() %} {{ k }}="{{ kwargs[k] }}" {%-
-	  endfor -%}>
-  {{- text -}}</button>
+  <button {% for k in varargs -%} {{ k }} {%- endfor -%}
+  {% for k in kwargs.keys() %} {{ k }}="{{ kwargs[k] }}" {%- endfor -%}>
+    {{- text -}}
+  </button>
 {%- endmacro %}
 
-{% macro img(src) -%}
-<img src="{{ src }}"
-     {% for k in kwargs.keys() -%}
-     {{ k }}="{{ kwargs[k] }}" 
-     {%- endfor %}>
+{% macro img(url_img) -%}
+  <img src="{{ url_img }}" {% for k in varargs -%} {{ k }} {%- endfor -%}
+  {% for k in kwargs.keys() -%} {{ k }}="{{ kwargs[k] }}" {%- endfor %}>
 {%- endmacro %}
-
 
 {% macro link(name, href) -%}
-<a href="{{ href }}"
-   {% for k in kwargs.keys() -%}
-   {{ k }}="{{ kwargs[k] }}" 
-   {%- endfor %}>
-  {{ name }}
-</a>
-{%- endmacro %}
-
-{% macro img_link(url_link, src, alt='') -%}
-<div class="img-link">
-  <a href="{{ url_link }}">
-    <img src="{{ src }}" alt="{{ alt }}"
-	 {% for k in kwargs.keys() -%}
-	 {{ k }}="{{ kwargs[k] }}" 
-	 {%- endfor %}>
+  <a href="{{ href }}" {% for k in varargs -%} {{ k }} {%- endfor -%}
+  {% for k in kwargs.keys() -%} {{ k }}="{{ kwargs[k] }}" {%- endfor %}>
+    {{- name -}}
   </a>
-</div>
 {%- endmacro %}
 
-{# Macros para parejas de html #}
+
+{####################################### MACROS FUNCIONALES #######################################}
+
+{% macro img_link(url_link, url_img) -%}
+  <div class="img-link">
+    <a href="{{ url_link }}">
+      {{ img(url_img) }}
+    </a>
+  </div>
+{%- endmacro %}
+
+
 {% macro correo() -%}
   {{ label("Correo electrónico", for="correo") }} 
-  {{ input(type="email", id="correo", name="correo",
-  placeholder="usuario@correo.com", required="true") }}
+  {{ input(type="email", id="correo", name="correo", placeholder="usuario@correo.com", required="true") }}
 {%- endmacro %}
 
 {% macro contraseña() -%}
   {{ label("Contraseña", for="contraseña") }}
-  {{ input(type="password", id="contraseña", name="contraseña",
-  placeholder="patito001", required="true") }}
+  {{ input(type="password", id="contraseña", name="contraseña", placeholder="patito001", required="true") }}
 {%- endmacro %}
 
-{% macro label_input(texto, type="text") -%}
-  {{ label(texto, for=as_id(texto)) }}
-  {{ input(type=type,
-           id=as_id(texto),
-           name=as_id(texto),
-           required="true", 
-           autocomplete="off", *args, **kwargs)}}
+{% macro label_input(id, value, type="text") -%}
+  {{ label(value, for=id) }}
+  {{ input(type=type, id=id, name=id, required="true", autocomplete="off", *args, **kwargs)}}
 {%- endmacro %}
 
-{% macro label_select(texto, opciones=[]) -%}
-{{ label(texto, for=as_id(texto))}}
-<select id="{{ as_id(texto) }}" name="{{ as_id(texto) }}">
-  {% for opcion in opciones %}
-  <option value="{{ opcion.id }}">{{ opcion }}</option>
+{% macro label_select(id, value, options=[], selected=None) -%}
+  {{ label(value, for=id)}}
+  <select id="{{ id }}" name="{{ id }}" autocomplete="off">
+    {%- for option in options +%}
+    <option value="{{ option.id }}"{% if selected == option.id %} selected {% endif -%}>
+      {{- option -}}
+    </option>
+    {%- endfor %}
+  </select>
+{%- endmacro %}
+
+
+{% macro table(columns=[], data=[]) -%}
+<table>
+  <tr>
+    {% for column in columns -%}
+    <th> {{ column }}</th>
+    {%- endfor %}
+  </tr>
+  {% for count, row in enumerate(data) %}
+  <tr>
+    <td>{{ row[count] }}</td>
+  </tr>
   {% endfor %}
-</select>
+</table>
 {%- endmacro %}
 
 
-{# Macros auxiliares #}
+{####################################### MACROS AUXILIARES #######################################}
 {% macro as_id(text) %}
-{{- text.strip().lower().replace(' ', '_') -}}
+  {{- text.strip().lower().replace(' ', '_') -}}
 {% endmacro %}
 
+{% macro disabled(condition) %}
+  {%- if condition %}disabled
+  {%- endif -%}
+{%- endmacro %}
+
+{% macro checked(condition) %}
+  {%- if condition %}checked
+  {%- endif -%}
+{%- endmacro %}
+
 {% macro format_number(number) %}
-{% if not number %}
-No
-{% elif number % 1 == 0 %}
-{{- "{0:g}".format(number) -}}
-{% else %}
-{{- "{:.3f}".format(number) -}}
-{% endif %}
+  {%- if not number -%}No
+  {%- elif number % 1 == 0 -%}
+  {{- "{0:g}".format(number) -}} {% else %}
+  {{- "{:.3f}".format(number) -}}
+  {%- endif -%}
 {% endmacro %}
 
 

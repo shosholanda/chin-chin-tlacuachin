@@ -2,14 +2,17 @@
 {% import 'macro.html' as mc %}
 
 {% block script -%}
-<script type="text/javascript"	src="{{ url_for('static', filename='js/carrito.js') }}"></script>
+<script type="text/javascript"	src="{{ url_for('static',
+				     filename='js/carrito.js')
+				     }}"></script>
+<script type="text/javascript"	src="{{ url_for('static', filename='js/modules/Request.js') }}"></script>
 {%- endblock %}
 
 
 {% block content %}
 <!-- Carrito de compras -->
 <div>
-  <button id="nueva-venta"> Nueva venta </button>
+  <button id="nueva-venta" href="{{ url_for('ventas.create_venta') }}"> Nueva venta </button>
 </div>
 <div class="center">
   {{ mc.label_input("Cliente") }}
@@ -21,7 +24,7 @@
     <div>
       {{ mc.input(id="codigo_gtin", name="codigo_gtin",
       required="true", autocomplete="off") }}
-      <ul id="suggestions">
+      <ul id="suggestions" url="{{ url_for('ventas.get_gtins', pseudogtin='')}}">
 	<!-- Aquí se muestran las sugerencias de las búsquedas -->
       </ul>
     </div>
@@ -35,7 +38,7 @@
     {{ mc.button("Agregar", id="agregar") }}
   </div>
 </div>
-<div id="cart" class="cart">
+<div id="cart" class="cart" url="{{ url_for('ventas.get_gtin', gtin='')}}">
   <!-- Aqui irán los productos agregados SIN agregar a la bdd -->
 </div>
 

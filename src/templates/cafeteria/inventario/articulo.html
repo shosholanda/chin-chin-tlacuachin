@@ -12,6 +12,7 @@
       })
 
       document.getElementById('actualizar').addEventListener('click', function(){
+	  let tipo_articulo = document.getElementById('tipo_articulo');
 	  let cantidad_actual = document.getElementById('cantidad_actual');
 	  cantidad_actual = math.evaluate(cantidad_actual.value);
 	  let unidad = document.getElementById('unidad');
@@ -20,6 +21,7 @@
 	  let max = document.getElementById('maximo');
 	  let id = "{{articulo.id}}"
 	  let json = {'cantidad_actual': parseFloat(cantidad_actual),
+		      'tipo_articulo': parseInt(tipo_articulo.value),
 		      'unidad': unidad.value,
 		      'costo': parseFloat(costo.value),
 		      'minimo': parseInt(min.value),
@@ -79,6 +81,9 @@
 
 {% block content %}
 <h1> {{articulo.nombre}} </h1>
+<div class="campo">
+  {{ mc.label_select('Tipo articulo', tipo_articulos, selected=articulo.tipo_articulo.id) }}
+</div>
 <div class="campo">
   {{ mc.label_input('Cantidad Actual', value=mc.format_number(articulo.cantidad_actual)) }}
 </div>

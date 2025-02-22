@@ -21,7 +21,7 @@ from src.static.php.tickets.ticket import Ticket
 
 from src.controller.auth import requiere_inicio_sesion
 
-ventas = Blueprint('ventas', __name__, url_prefix='/ventas')
+ventas = Blueprint('ventas', __name__, url_prefix='/ventas/')
 
 
 @ventas.route('/')
@@ -33,13 +33,10 @@ def main():
                            ventas=ventas)
 
 
-@ventas.route('/create-venta', methods=('GET', 'POST'))
+@ventas.route('create-venta/', methods=('GET', 'POST'))
 @requiere_inicio_sesion
 def create_venta():
     """Registra un venta con todos los datos en la base de datos."""
-    if request.method == 'GET':
-        return render_template('cafeteria/ventas/carrito.html')
-
     if request.method == 'POST':
         body = request.json
         # {'cart': [{'id_producto': 8, 'cantidad': 3}], 'total': '900', 'propina': '0', 'notas': '3', 'cliente': ''}
@@ -63,8 +60,8 @@ def create_venta():
                                       )
             agrega(transaccion)
         flash("¡Compra realizada! Anita mi amor <3")
-
-    return redirect(url_for('ventas.main'))
+        return redirect(url_for('ventas.main'))
+    return render_template('cafeteria/ventas/carrito.html')
 
 
 @ventas.route('/update-venta/<referencia>', methods=['POST'])
@@ -99,7 +96,7 @@ def get_gtin(gtin):
     return {'id': producto.id,
             'gtin': producto.gtin,
             'nombre': producto.nombre,
-            'precio': producto.precio}
+            'precio': producto.precio} if producto else None
 
 
 @ventas.route('get-transacciones-by-ref/<id_referencia>', methods=['GET'])

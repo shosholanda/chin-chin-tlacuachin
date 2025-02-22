@@ -13,19 +13,20 @@ class Receta(db.Model):
     # Nombre de la tabla
     __tablename__ = 'receta'
     id = db.Column('id', db.Integer, primary_key=True)
-    # Id de los ingredientes de este producto
+    # Id de los ingredientes de este pnroducto
     id_producto = db.Column(db.Integer,
                             db.ForeignKey('producto.id'),
                             nullable=False)
     id_insumo = db.Column(db.Integer,
-                          db.ForeignKey('insumo.id'),
-                          nullablle=False)
+                          db.ForeignKey('articulo.id'),
+                          nullable=False)
     # Cantidad requerida del insumo para hacer este producto.
+    # La unidad es la misma que la del insumo
     cantidad = db.Column('cantidad', db.Float(3), nullable=False, default=0)
     status = db.Column('status', db.Boolean, nullable=False, default=True)
 
-    producto = db.relationship('Producto', back_populates='receta')
-    insumo = db.relationship('Insumo', back_populates='receta')
+    # producto = db.relationship('Producto', back_populates='receta')
+    # insumos = db.relationship('Articulo', back_populates='receta')
 
     def __init__(self,
                  id_producto,

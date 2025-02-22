@@ -14,6 +14,9 @@ class Articulo(db.Model):
     __tablename__ = 'articulo'
     id = db.Column('id', db.Integer, primary_key=True)
     nombre = db.Column('nombre', db.String(100), nullable=False, unique=True)
+    id_tipo_articulo = db.Column(db.Integer,
+                                 db.ForeignKey('tipo_articulo.id'),
+                                 nullable=False)
     # Cantidad que esta actualmente en el articulo. 3.450
     cantidad_actual = db.Column('cantidad_actual', db.Float(3), nullable=False, default=0)
     # Cómo se mide este producto. kg, gr, lt, ml, oz, pg, etc
@@ -25,8 +28,14 @@ class Articulo(db.Model):
     costo_unitario = db.Column('costo_unitario', db.Float(2), nullable=False, default=0)
     status = db.Column('status', db.Boolean, nullable=False, default=True)
 
+    # Todos los productos que contiene este articulo
+    tipo_articulo = db.relationship('TipoArticulo', back_populates='articulos')
+    productos = db.relationship('Producto', back_populates='articulos', secondary='receta')
+    # receta = db.relationship('Receta', back_populates='insumos', overlaps="articulos,productos")
+
     def __init__(self,
                  nombre,
+                 id_tipo_articulo,
                  cantidad_actual,
                  unidad,
                  minimo,
@@ -34,6 +43,7 @@ class Articulo(db.Model):
                  costo_unitario):
         """Crea un objeto."""
         self.nombre = nombre
+        self.id_tipo_articulo = id_tipo_articulo
         self.cantidad_actual = cantidad_actual
         self.unidad = unidad
         self.minimo = minimo

@@ -9,6 +9,7 @@ function toTitleCase(str) {
 
 function create_articulo(){
     let nombre = document.getElementById('nombre')
+    let tipo_articulo = document.getElementById('tipo_articulo')
     let cantidad_actual = document.getElementById('cantidad_actual')
     let unidad = document.getElementById('unidad')
     let costo_por_unidad = document.getElementById('costo_por_unidad')
@@ -17,6 +18,7 @@ function create_articulo(){
     
     if (validarCampos()){
 	let json = {'nombre': nombre.value,
+		    'tipo_articulo': tipo_articulo.value,
 		    'cantidad_actual': cantidad_actual.value,
 		    'unidad': unidad.value,
 		    'costo_por_unidad': costo_por_unidad.value,
@@ -37,15 +39,36 @@ function create_articulo(){
     }
 }
 
+function create_tipo(){
+
+    let nuevo_tipo_articulo = document.getElementById('nuevo_tipo_articulo');
+
+    if (nuevo_tipo_articulo.value){
+	json = {'tipo_articulo': nuevo_tipo_articulo.value}
+	
+	fetch('create-tipo-articulo', {
+	    method: 'POST',
+            headers: {
+		'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(json)
+	}).then(response => {
+	    if (response.redirected)
+		window.location.href = response.url
+	}).catch( e => console.log(e));
+    }
+}
+
 function validarCampos(){
     let nom = document.getElementById('nombre')
+    let tip = document.getElementById('tipo_articulo')
     let can = document.getElementById('cantidad_actual')
     let uni = document.getElementById('unidad')
     let cos = document.getElementById('costo_por_unidad')
     let min = document.getElementById('minimo');
     let max = document.getElementById('maximo');
-    return nom.value && parseInt(can.value) && parseInt(cos.value) &&
-	uni.value && parseInt(min.value);
+    return nom.value && parseFloat(can.value) && parseInt(cos.value) &&
+	uni.value && parseInt(min.value) && tip.value;
 }
 
 function deleteArticulo(){
@@ -70,6 +93,10 @@ window.onload = function(){
 	hide = !hide;
     });
 
+    document.getElementById('create-tipo-button').addEventListener('click', function(){
+	create_tipo();
+    })
+
     let cab = document.getElementById('create-article-button');
     cab.addEventListener('click', function(){
 	create_articulo();
@@ -81,14 +108,6 @@ window.onload = function(){
     });
     document.getElementById('nombre').addEventListener('input', function(){
 	this.value = toTitleCase(this.value);
-	fetch(`get-articulo/${this.value}`).then( response =>
-	    response.json().then( response => {
-		if (response.id){
-		    cab.disabled = true;
-		    alert("Este producto ya existe, intenta otro nombre");
-		}
-	    })
-	).catch(e => console.log(e))
 	cab.disabled = validarCampos() ? false : true;
     });
     document.getElementById('unidad').addEventListener('input', function(){

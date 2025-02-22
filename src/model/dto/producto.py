@@ -34,6 +34,11 @@ class Producto(db.Model):
     categoria = db.relationship('Categoria', back_populates='producto')
     tipo_producto = db.relationship('TipoProducto', back_populates='producto')
 
+    # Todos los articulos que contiene este producto
+    articulos = db.relationship('Articulo', back_populates='productos', secondary='receta')
+    # Cómo puedo acceder a receta.cantidad o receta.status?
+    # receta = db.relationship('Receta', back_populates='producto')
+
     # Constructor
     def __init__(self,
                  gtin,
