@@ -1,0 +1,76 @@
+{% extends 'cafeteria/base_dashboard.html' %}
+{% import 'macro.html' as mc %}
+
+{% block script %}
+<script type="text/javascript" src="{{ url_for('static', filename='js/modules/HTML.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/modules/Text.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/modules/Event.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/modules/Request.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/perfil/perfil.js') }}"></script>
+{% endblock %}
+
+{% block title %}{{ usuario.nombre}} {{ usuario.apellido_paterno }}{% endblock %}
+
+
+{% block content %}
+<h1>{{ usuario.full_name() }}</h1>
+<p>
+    Email: <i>{{ usuario.correo }}</i>
+</p>
+<h3>Informacion</h3>
+<div class="columns">
+    <div>
+        <div class="campo">
+            {{ mc.label_input('name', 'Nombre(s)', value=usuario.nombre)}}
+        </div>
+        <div class="campo">
+            {{ mc.label_input('first-name', 'Apellido P', value=usuario.apellido_paterno)}}
+        </div>
+        <div class="campo">
+            {{ mc.label_input('last-name', 'Apellido M', value=usuario.apellido_materno)}}
+        </div>
+        <div class="campo">
+            {{ mc.label_input('birthday', 'Cumpleaños', value=usuario.fecha_nacimiento, type='date')}}
+        </div>
+    </div>
+    <div >
+        {{ mc.img(url_for('static', filename='img/icons/croissant.svg', class="bound-box")) }}
+        <p>Foto de perfil</p>
+    </div>
+</div>
+
+
+<div class="params">
+    <div class="campo">
+        {{ mc.button('Actualizar informacion', id='update-data', url=url_for('perfil.update'))}}
+    </div>
+    <div class="campo">
+        {{ mc.button('Desactivar cuenta', id='deactivate-account', url=url_for('perfil.deactivate'))}}
+    </div>
+    <div class="campo">
+        {{ mc.button('Cambiar contraseña', id='password-change-button', url=url_for('perfil.change_pass'))}}
+    </div>
+    <div class="campo">
+        {{ mc.link('Cerrar sesión', url_for('auth.logout'))}}
+    </div>
+</div>
+{% endblock %}
+
+{% block overlay %}
+<div class="popup">
+    <form method="POST" action="{{ url_for('perfil.change_pass')}}" >
+        <div class="campo">
+            {{ mc.label_input('old-pwd', 'Contraseña anterior', type='password')}}
+        </div>
+        <div class="campo">
+            {{ mc.label_input('old-pwd2', 'Confirmar antigua contraseña', type='password') }}
+        </div>
+        <div class="campo">
+            {{ mc.label_input('new-pwd', 'Nueva contraseña')}}
+        </div>
+        {{ mc.button('Cancelar', id='cancel', type='button')}}
+        {{ mc.button('Cambiar contraseña', type='submit')}}
+    </form>
+</div>
+
+{% endblock %}

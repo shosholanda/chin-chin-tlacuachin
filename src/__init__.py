@@ -7,6 +7,8 @@ de la base de datos como login, debug, controladores, base de datos etc
 from flask import Flask
 # SQL conexiones
 from flask_sqlalchemy import SQLAlchemy
+# Migraciones
+from flask_migrate import Migrate
 
 # Se crea una aplicación flask con el main de este programa
 app = Flask(__name__)
@@ -16,6 +18,8 @@ app.config.from_object("config.DeveloperConfig")
 
 # Cargar base de datos especificada en app
 db = SQLAlchemy(app)
+# inicializar flask migrate
+migrate = Migrate(app, db)
 
 # Cargar controladores entre bdd y vista
 from src.controller.auth import auth
@@ -30,6 +34,8 @@ from src.controller.cafeteria.gastos import gastos
 app.register_blueprint(gastos)
 from src.controller.cafeteria.inventario import inventario
 app.register_blueprint(inventario)
+from src.controller.cafeteria.perfil import perfil
+app.register_blueprint(perfil)
 
 # Crear las tablas de la aplicacion que siguen los modelos de esta
 # aplicacion flask

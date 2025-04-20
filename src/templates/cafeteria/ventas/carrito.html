@@ -1,65 +1,73 @@
 {% extends 'cafeteria/ventas/base_venta.html' %}
 {% import 'macro.html' as mc %}
 
+{% block header -%}
+<!-- Otra cosa -->
+{% endblock %}
+
 {% block script -%}
-<script type="text/javascript"	src="{{ url_for('static',
-				     filename='js/carrito.js')
-				     }}"></script>
-<script type="text/javascript"	src="{{ url_for('static', filename='js/modules/Request.js') }}"></script>
+{{ super() }}
+<script type="text/javascript" src="{{ url_for('static', filename='js/ventas/carrito.js') }}"></script>
 {%- endblock %}
 
 
 {% block content %}
 <!-- Carrito de compras -->
-<div>
-  <button id="nueva-venta" href="{{ url_for('ventas.create_venta') }}"> Nueva venta </button>
-</div>
-<div class="center">
-  {{ mc.label_input("Cliente") }}
+<div class="params">
+  <div>
+    {{ mc.label_input("client", "Cliente") }}
+  </div>
+  <div class="campo">
+    {{ mc.label_textarea("notes", "Notas", default="Sin notas", rows="1", cols="40") }}
+  </div>
+  
+  {{ mc.button("Nueva venta...", id="new-venta", href=url_for('ventas.shopcar')) }}
 </div>
 
 <div class="params">
   <div class="campo">
-    <label for="codigo_gtin">Codigo GTIN</label>
-    <div>
-      {{ mc.input(id="codigo_gtin", name="codigo_gtin",
-      required="true", autocomplete="off") }}
-      <ul id="suggestions" url="{{ url_for('ventas.get_gtins', pseudogtin='')}}">
-	<!-- Aquí se muestran las sugerencias de las búsquedas -->
+    {{ mc.label_input("gtin-code", "Código GTIN") }}
+    <div id="suggestions" url="{{ url_for('ventas.get_gtins', pseudogtin='')}}" style="display: none;">
+      <ul id="suggestions-list">
+        <!-- Aquí se muestran las sugerencias de las búsquedas -->
       </ul>
     </div>
-   </div>
-  
-  
-  <div class="campo">
-    {{ mc.label_input("Cantidad", type="number", min="1", value="1") }}
   </div>
-  <div class="option">
-    {{ mc.button("Agregar", id="agregar") }}
+
+  <div class="campo">
+    {{ mc.label_input("quantity", "Cantidad", type="number", min="1", value="1") }}
+  </div>
+  <div class="campo">
+    {{ mc.button("Agregar", id="add-cart") }}
   </div>
 </div>
-<div id="cart" class="cart" url="{{ url_for('ventas.get_gtin', gtin='')}}">
+
+
+<div id="cart" class="cart" url="{{ url_for('ventas.get_item_layout', gtin='', cantidad='1')}}">
   <!-- Aqui irán los productos agregados SIN agregar a la bdd -->
 </div>
 
 <div class="params">
   <div class="campo">
-    {{ mc.label_input("Total", value="0", disabled="") }}
+    {{ mc.label_input("tip", "Propina", value="0", size="4px") }}
   </div>
   <div class="campo">
-    {{ mc.label_input("Propina", value="0") }}
+    {{ mc.label_input("total", "Total", value="0", disabled="", size="6px") }}
+  </div>
+  <div id="payments" class="campo">
+    {{ mc.radio_button("payments", tipo_pagos , autocomplete="off", requested="true") }}
   </div>
   <div class="campo">
-    <label for="notas">Notas</label>
-    <textarea id="notas" autocomplete="off"></textarea>
+    {{ mc.button("Realizar compra", id="buy-cart", url= url_for('ventas.create_venta')) }}
   </div>
-  <div>
-    <input type="submit" value="Comprar" id="comprar">
-    </div>
 </div>
 
-<div class="center">
-<p><i>Nota</i>: Revisa que los productos a comprar sean correctos en
-  cantidad y descripcion.</p>
+<div style="text-align: center;">
+  <h4><i>Nota</i>: Revisa que los productos a comprar sean correctos en
+    cantidad y descripcion.
+  </h4>
+  <p>
+    {{ mc.link("Salir", url_for('ventas.main')) }}
+  </p>
 </div>
 {% endblock %}

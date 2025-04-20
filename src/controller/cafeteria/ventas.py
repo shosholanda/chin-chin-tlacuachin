@@ -3,19 +3,16 @@
 Todas las ventas requieren de productos para validarse.
 """
 from flask import (
-    render_template, Blueprint, flash, redirect, request, url_for, session, abort
+    jsonify, render_template, Blueprint, flash, redirect, render_template_string, request, url_for, session, abort
 )
 
 from src.model.dto.venta import Venta
 from src.model.dto.transaccion import Transaccion
+from src.model.dto.tipo_pago import TipoPago
 
-from src.model.repository.repo import agrega, elimina
-from src.model.repository.repo_producto import (
-    get_subgtin_and_status, get_producto_by_gtin
-)
-from src.model.repository.repo_venta import (
-    get_all_ventas, get_venta_by_ref, get_transaccion_by_ref
-)
+from src.model.repository.repo import *
+from src.model.repository.repo_producto import get_subgtin_and_status, get_producto_by_gtin
+from src.model.repository.repo_venta import get_transaccion_by_ref
 
 from src.static.php.tickets.ticket import Ticket
 
@@ -28,55 +25,68 @@ ventas = Blueprint('ventas', __name__, url_prefix='/ventas/')
 @requiere_inicio_sesion
 def main():
     """Página principal de ventas."""
-    ventas = get_all_ventas()[::-1]
-    return render_template('cafeteria/ventas/base_venta.html',
+    ventas = get_all(Venta, limit=100)[::-1]
+    return render_template('cafeteria/ventas/ventas.html',
                            ventas=ventas)
 
 
-@ventas.route('create-venta/', methods=('GET', 'POST'))
+@ventas.route('create-venta/', methods=['POST'])
 @requiere_inicio_sesion
 def create_venta():
     """Registra un venta con todos los datos en la base de datos."""
-    if request.method == 'POST':
-        body = request.json
-        # {'cart': [{'id_producto': 8, 'cantidad': 3}], 'total': '900', 'propina': '0', 'notas': '3', 'cliente': ''}
+    body = request.json
+    # {'cart': [{'id_producto': 8, 'cantidad': 3}], 
+    #  'total': '900', 
+    #  'propina': '0', 
+    #  'notas': 'algo', 
+    #  'cliente': '',
+    #  'tipo_pago': 1}
 
-        cart = body['cart']
-        if cart == []:
-            flash("No hay productos para comprar.")
-            return redirect(url_for('ventas.main'))
-        nueva_venta = Venta(id_usuario=session['usuario'],
-                            total=float(body['total']),
-                            propina=float(body['propina']),
-                            notas=body['notas'],
-                            cliente=body['cliente']
-                            )
-        agrega(nueva_venta)
+    cart = body['cart']
+    print(body)
+    if cart == []:
+        flash("No hay productos para comprar.")
+        return redirect(url_for('ventas.main')) 
+    nueva_venta = Venta(id_usuario=session['usuario'],
+                        id_tipo_pago=int(body['payment']),
+                        total=float(body['total']),
+                        propina=float(body['tip']),
+                        notas=body['notes'],
+                        cliente=body['client']
+                        )
+    agrega(nueva_venta)
 
-        for c in cart:
-            transaccion = Transaccion(id_referencia=nueva_venta.referencia,
-                                      id_producto=c['id_producto'],
-                                      cantidad=c['cantidad']
-                                      )
-            agrega(transaccion)
-        flash("¡Compra realizada! Anita mi amor <3")
-        return redirect(url_for('ventas.main'))
-    return render_template('cafeteria/ventas/carrito.html')
+    for c in cart:
+        transaccion = Transaccion(id_referencia=nueva_venta.referencia,
+                                    id_producto=c['product_id'],
+                                    cantidad=c['quantity'])
+        agrega(transaccion)
+    flash("¡Compra realizada!")
+    return redirect(url_for('ventas.main'))
+
+@ventas.route('carrito/')
+@requiere_inicio_sesion
+def shopcar():
+    """El carro donde se compran cosas"""
+    tipo_pagos = [x for x in get_all_by_status(TipoPago)]
+    return render_template('cafeteria/ventas/carrito.html', tipo_pagos=tipo_pagos)
 
 
-@ventas.route('/update-venta/<referencia>', methods=['POST'])
+@ventas.route('/update-venta/<referencia>', methods=['POST', 'GET'])
 @requiere_inicio_sesion
 def update_venta(referencia):
     """Actualiza los valores que no estan relacionados con otras tablas."""
-    json = request.json
-    venta = get_venta_by_ref(referencia)
-    if not venta:
-        flash("No se puede recuperar la venta " + referencia)
-    else:
-        venta.propina = json['propina']
-        venta.notas = json['notas']
-        venta.cliente = json['cliente']
-        agrega(venta)
+    if request.method == 'POST':
+        json = request.json
+        venta = get_by_id(Venta, referencia)
+        if not venta:
+            flash("No se puede recuperar la venta " + referencia)
+        else:
+            venta.propina = json['propina']
+            venta.notas = json['notas']
+            venta.cliente = json['cliente']
+            agrega(venta)
+            flash("Se actualizó correctamente el producto!")
     return redirect(url_for('ventas.referencia', referencia=referencia))
 
 
@@ -96,7 +106,7 @@ def get_gtin(gtin):
     return {'id': producto.id,
             'gtin': producto.gtin,
             'nombre': producto.nombre,
-            'precio': producto.precio} if producto else None
+            'precio': producto.precio} if producto else {}
 
 
 @ventas.route('get-transacciones-by-ref/<id_referencia>', methods=['GET'])
@@ -111,7 +121,7 @@ def get_transactions_by_ref(id_referencia):
              'cantidad': x.cantidad} for x in transacciones]
 
 
-@ventas.route('/print-venta/', methods=['POST'])
+@ventas.route('print-venta/', methods=['POST'])
 @requiere_inicio_sesion
 def print_ticket():
     """Imprime el ticket de compra, con o sin RFC."""
@@ -119,7 +129,7 @@ def print_ticket():
 
     referencia = body['referencia']
     rfc = body['rfc']
-    venta = get_venta_by_ref(referencia)
+    venta = get_by_id(Venta, referencia)
     trans = get_transaccion_by_ref(referencia)
     prods = [{'nombre': p.producto.nombre,
               'cantidad': p.cantidad,
@@ -130,24 +140,42 @@ def print_ticket():
 
     return response
 
+@ventas.route('get-item/<gtin>&<int:cantidad>')
+@requiere_inicio_sesion
+def get_item_layout(gtin, cantidad):
+    producto = get_gtin(gtin)
+    if not producto:
+        flash("El producto no existe!")
+        return {}
 
-@ventas.route('/<referencia>')
+    producto['cantidad'] = cantidad
+    producto['subtotal'] = cantidad * float(producto['precio'])
+    html = """
+        {% import 'macro.html' as mc %}
+        {{- mc.create_item(producto) }}
+    """
+    html = render_template_string(html, producto = producto)
+    producto['html'] = html
+    return producto
+
+
+@ventas.route('<referencia>/')
 @requiere_inicio_sesion
 def referencia(referencia):
     """Muestra la información de una sola referencia."""
-    venta = get_venta_by_ref(referencia)
+    venta = get_by_id(Venta, referencia)
     if not venta:
-        abort(404)
+        return redirect(url_for('ventas.main'))
     return render_template('cafeteria/ventas/referencia.html', venta=venta)
 
 
-@ventas.route('/eliminar-venta/<referencia>')
+@ventas.route('delete-venta/<referencia>')
 @requiere_inicio_sesion
 def delete_venta(referencia):
     """Elimina el venta para siempre."""
     transacciones = get_transaccion_by_ref(referencia)
     for t in transacciones:
         elimina(t)
-    elimina(get_venta_by_ref(referencia))
+    elimina(get_by_id(Venta, referencia))
     flash("Venta eliminada con éxito")
     return redirect(url_for('ventas.main'))

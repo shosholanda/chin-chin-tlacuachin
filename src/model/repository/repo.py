@@ -25,5 +25,49 @@ def soft_delete(objeto):
     if objeto.status:
         if objeto.status == 1:
             objeto.status = 0
-            db.session.add(objeto)
-            db.session.commit()
+            agrega(objeto)
+
+
+def get_by_id(model, id):
+    """Regresa el registro que coincida con el modelo y con el id."""
+    return model.query.get(id)
+
+
+def get_by_name(model, name, all=False):
+    """Regresa el registro que coincida con el modelo y con el nombre."""
+    if has_column(model, 'nombre'):
+        if all:
+            return model.query.filter(model.nombre == name).all()
+        return model.query.filter(model.nombre == name).first()
+    return []
+
+
+def get_by(column, model, identifier, all=False):
+    """Funcion para regresar los registros de cierta columna de cierta tabla."""
+    pass
+
+
+def get_all(model, limit=None):
+    """Regresa todos los registros de este modelo."""
+    if limit:
+        return model.query.limit(limit).all()
+    return model.query.all()
+
+
+def get_all_by_status(model):
+    """Regresa todos los registros de este modelo que tengan status = 1.
+    
+    Si no se tiene la columna status, se toman todas las filas como status = 1."""
+    if has_column(model, 'status'):
+        return model.query.filter(model.status == 1).all()
+    else:
+        return get_all(model)
+
+
+def has_column(model, name):
+    """Funcion auxiliar que para saber si existe la columna en el modelo."""
+    for c in model.__table__.columns:
+        if name in str(c):
+            return True
+    return False
+

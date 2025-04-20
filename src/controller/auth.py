@@ -9,8 +9,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 # Crear automáticamente las tablas en mysql
 from src.model.dto.usuario import Usuario
 # Importar las querys requeridas
-from src.model.repository.repo_usuario import get_usuario
-from src.model.repository.repo import agrega
+from src.model.repository.repo import *
 
 # Crear el endpoint y lo registra
 auth = Blueprint('auth', __name__, url_prefix='/auth')
@@ -20,15 +19,16 @@ auth = Blueprint('auth', __name__, url_prefix='/auth')
 def registrar_usuario():
     """Registra a un usuario en la aplicación WEB."""
     if request.method == 'POST':
-        correo = request.form.get('correo')
-        contraseña = request.form.get('contraseña')
-        nombre = request.form.get('nombre')
-        apellido_paterno = request.form.get('apellido_paterno')
-        apellido_materno = request.form.get('apellido_materno')
-        fecha_nacimiento = request.form.get('fecha_de_nacimiento')
+        correo = request.form.get('email')
+        contraseña = request.form.get('password')
+        nombre = request.form.get('name')
+        apellido_paterno = request.form.get('first-name')
+        apellido_materno = request.form.get('last-name')
+        fecha_nacimiento = request.form.get('birthday')
+        fields = [correo, contraseña, nombre, apellido_paterno,
+                    apellido_materno, fecha_nacimiento]
 
-        if None in [correo, contraseña, nombre, apellido_paterno,
-                    apellido_materno, fecha_nacimiento]:
+        if None in fields:
             flash("Rellena todos los campos por favor")
             return render_template('auth/register.html')
 
@@ -37,7 +37,7 @@ def registrar_usuario():
         apellido_materno = apellido_materno.strip().title()
         msg_flash = None
 
-        usuario_bdd = get_usuario(correo)
+        usuario_bdd = get_by_id(Usuario, correo)
         if not usuario_bdd:
             user = Usuario(correo=correo,
                            contraseña=generate_password_hash(contraseña),
@@ -63,14 +63,14 @@ def registrar_usuario():
 def iniciar_sesion():
     """Inicia sesión verificando que exista el correo y la contraseña."""
     if request.method == 'POST':
-        correo = request.form.get('correo')
-        contraseña = request.form.get('contraseña')
+        correo = request.form.get('email')
+        contraseña = request.form.get('password')
 
         msg_flash = None
         if not correo or not contraseña:
             msg_flash = "Escriba un usuario y contraseña"
 
-        usuario_bdd = get_usuario(correo)
+        usuario_bdd = get_by_id(Usuario, correo)
         if not usuario_bdd:
             msg_flash = "Usuario no existe"
         elif not check_password_hash(usuario_bdd.contraseña, contraseña):
@@ -93,11 +93,13 @@ def iniciar_sesion():
 def cargar_usuarios_logeados():
     """Antes de cada petición se obtiene la información de inicio se sesión."""
     usuario = session.get('usuario')
-    g.user = get_usuario(usuario)
-
+    if usuario:
+        g.user = get_by_id(Usuario, usuario)
+    else:
+        g.user = None
 
 @auth.route('/cerrar-sesion')
-def cerrar_sesion():
+def logout():
     """Termina la sesión y limpia el registro de usuario."""
     session.clear()
     return redirect(url_for('home'))

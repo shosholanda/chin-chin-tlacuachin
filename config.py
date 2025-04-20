@@ -4,6 +4,8 @@
 class Config:
     """Configuración de la aplicación Flask."""
 
+    # DEBO ARREGLAR ESTO PORQUE PARECE QUE NO FUNCIONA CON EL IPADDRESS O LE VALE
+
     DEBUG = True
     TESTING = True
 

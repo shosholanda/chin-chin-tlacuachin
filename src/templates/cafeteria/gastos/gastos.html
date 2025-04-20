@@ -2,60 +2,49 @@
 {% import 'macro.html' as mc %}
 
 {% block script -%}
-<script type="text/javascript"	src="{{ url_for('static', filename='js/gastos.js') }}"></script>
+{{ super() }}
+<script type="text/javascript" src="{{ url_for('static', filename='js/inventario/gastos.js') }}"></script>
 {%- endblock %}
 
 
 {% block nav %}
 <div class="toolbar">
-  
+
   <div class="dropdown">
     <button id="dropdown-holder" class="dropdown-holder">
       <img src="../../static/img/icons/add.svg" alt="Nuevo gasto">
       <p class="tag">Nuevo gasto</p>
     </button>
 
-    
+
     <div id="dropdown-content" class="dropdown-content">
-      <h1>Crear gasto</h1>
+      <h2>Crear gasto</h2>
       <div class="mini-form">
-	<div class="campo">
-	  {{ mc.label_select("Tipo de gasto", tipo_gastos) }}
-	</div>
-      	<button onclick="document.getElementById('type-product-form').style.display='block'">
-      	Crear nuevo tipo </button>
-	<div id="type-product-form">
-	  <div class="campo">
-	    {{ mc.label_input("Nuevo tipo de gasto") }}
-	  </div>
-	  {{ mc.button("Crear tipo", id="create-type-button") }}
-	</div>
+        <div class="campo">
+          {{ mc.label_select("expense-type", "Tipo de gasto", tipo_gastos) }}
+        </div>
+        <button id="create-new-type">Crear nuevo tipo </button>
+        <div id="type-product-form" class="hidden-form">
+          <div class="campo">
+            {{ mc.label_input("new-expense-type", "Nuevo tipo de gasto") }}
+          </div>
+          {{ mc.button("Crear tipo", id="create-type-button", url=url_for('gastos.create_tipo_gasto') ) }}
+        </div>
       </div>
 
       <div class="campo">
-	{{ mc.label_input("Cantidad") }}
+        {{ mc.label_input("quantity", "Cantidad") }}
       </div>
-      
+
       <div class="campo">
-	<label for="descripcion">Descripcion</label>
-	<textarea id="descripcion" autocomplete="off"></textarea>
+        {{ mc.label_textarea("description", "Descripcion", placeholder="Sin notas", rows="3", cols="30", autocomplete="off") }}
       </div>
       <div class="campo">
-	{{ mc.label_input("Fecha", type="date") }}
+        {{ mc.label_input("register-date", "Fecha", type="date") }}
       </div>
-      
-      {{ mc.button("Añadir nuevo gasto", id="create-gasto-button") }}
+
+      {{ mc.button("Añadir nuevo gasto", id="create-gasto-button", url=url_for('gastos.create_gasto')) }}
     </div>
-  </div>
-
-   <div class="searchbox">    
-    <div class="">
-      {{ mc.input(placeholder="Buscar") }}
-    </div>    
-    <button class="icon">
-      <img src="../../static/img/icons/search.svg" alt="Buscar">
-      <p class="tag">Buscar</p>
-    </button>
   </div>
 </div>
 {% endblock %}
@@ -71,31 +60,23 @@
       <th> Cantidad </th>
       <th> Descripción </th>
       <th> Fecha </th>
-      <th> Status </th>
     </tr>
     {% for gasto in gastos %}
-    <tr id={{ gasto.id }}>
-      <td> {{ gasto.id }}</td>
+    <tr id="{{ gasto.id }}">
+      <td> {{ mc.link(gasto.id, url_for('gastos.gasto', id_gasto=gasto.id)) }}</td>
       <td> {{ gasto.tipo_gasto.nombre }} </td>
-      <td> {{ gasto.cantidad }} </td>
+      <td>$ {{ gasto.cantidad }} </td>
       <td> {{ gasto.descripcion }} </td>
-      <td> {{ gasto.fecha }} </td>
+      <td> {{ mc.format_day(gasto.fecha) }} </td>
       <td>
-	<input type="checkbox" name="status" autocomplete="off"
-	       {% if gasto.status -%}checked{%- endif -%}
-	       ></input>
-      </td>
-      <td>
-	<button name="borrar">Borrar</button>
+        <button name="borrar" url="{{ url_for('gastos.delete_gasto', id_gasto=gasto.id ) }}">Borrar</button>
       </td>
     </tr>
-    
+
     {% endfor %}
   </table>
-  
+
 
 </div>
 
 {% endblock %}
-
-

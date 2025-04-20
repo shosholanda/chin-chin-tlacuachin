@@ -36,7 +36,7 @@ var CCT = (function (CCT) {
 			nombre = this.getFirstLetters(nombre, 4)
 			categoria = this.getFirstLetters(categoria)
 			tipo_producto = this.getFirstLetters(tipo_producto)
-			precio = precio
+			precio = Math.trunc(precio)
 			return nombre + categoria + tipo_producto + precio;
 		}
 
@@ -52,16 +52,20 @@ var CCT = (function (CCT) {
 		}
 
 		static validateDouble(...double){
-			if (!this.validateDefined(int)) return false;
+			if (!this.validateDefined(double)) return false;
 			if (double.constructor === Number) return true;
 			if (double.constructor === String) return !isNaN(parseFloat(double)) 
 			return double.every(t => t.constructor === Number || !isNaN(parseFloat(t)));
 		}
 
 		static validateString(...s){
-			if (!this.validateDefined(int)) return false;
-			if (s.constructor === Array)  return s.every(t =>  t.length >= 0);
-			return s.every(t => t.constructor === String)
+			if (!this.validateDefined(s)) return false;
+			if (s.constructor === Array)  return s.every(t =>  t.length > 0);
+			return s.every(t => t.constructor === String && t.length > 0)
+		}
+
+		static validateObject(...obj){
+			return obj.every(o => Object.keys(o).length !== 0);
 		}
 	}
 

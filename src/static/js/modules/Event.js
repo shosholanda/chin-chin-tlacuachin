@@ -11,11 +11,16 @@ var CCT = (function (CCT) {
 	class Event {
 
         static changeVisibility(elementId, type='block'){
-            let element = document.getElementById(elementId);
-            let display = element.style.display;
-            // console.log(display)
+            let element;
+            if (elementId.constructor === String)
+                element = document.getElementById(elementId);
+            else 
+                element = elementId;
+            
             if (element){
-                if (display === 'none' || display === '')
+                let display = element.style.display;
+                // console.log(display)
+                if (display === 'none' || display === '' || type === 'none')
                     element.style.display = type;
                 else
                     element.style.display = 'none';
@@ -29,7 +34,11 @@ var CCT = (function (CCT) {
         }
 
         static changeDisabled(elementId, changeFor=null){
-            let element = document.getElementById(elementId);
+            let element;
+            if (elementId.constructor === String)
+                element = document.getElementById(elementId);
+            else
+            element = elementId;
             if (element){
                 if (changeFor)
                     element.disabled = changeFor;

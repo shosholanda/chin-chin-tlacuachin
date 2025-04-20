@@ -1,0 +1,44 @@
+{% extends 'cafeteria/gastos/base_gastos.html' %}
+{% import 'macro.html' as mc %}
+
+{% block script -%}
+{{ super() }}
+<script type="text/javascript" src="{{ url_for('static', filename='js/inventario/gasto.js') }}"></script>
+{%- endblock %}
+
+
+{% block content %}
+<h1> Gasto #{{ gasto.id }}</h1>
+
+<h3>Detalles</h3>
+<div>
+    <div class="campo">
+        {{ mc.label_select('type', 'Tipo de gasto', options=tipo_gastos, selected=gasto.id_tipo_gasto)}}
+    </div>
+    <div class="campo">
+        {{ mc.label_input('quantity', 'Cantidad $', value=gasto.cantidad)}}
+    </div>
+    <div class="campo">
+        {{ mc.label_textarea('description', 'Descripcion', default=gasto.descripcion, rows='4', cols='80')}}
+    </div>
+    <div class="campo">
+        {{ mc.label_input('date', 'Fecha', value=mc.format_day(gasto.fecha), type='date')}}
+    </div>
+    <div class="campo">
+        {{ mc.label('Status', for='status')}}
+        {{ mc.input(mc.checked(gasto.status), id='status', name='status', type='checkbox',)}}
+    </div>
+</div>
+
+
+<div class="params">
+    <div class="campo">
+        {{ mc.button('Actualizar informacion', id='update-data', url=url_for('gastos.update_gasto', id_gasto=gasto.id))}}
+    </div>
+    
+    <div class="campo">
+        {{ mc.button("Eliminar", id="delete", url=url_for('gastos.delete_gasto', id_gasto=gasto.id))}}
+    </div>
+</div>
+
+{% endblock %}

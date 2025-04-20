@@ -34,3 +34,7 @@ class Usuario(db.Model):
     def __repr__(self):
         """Representación en cadena de este objeto."""
         return f'{self.correo}\t{self.nombre}\t{self.fecha_nacimiento}'
+    
+    def full_name(self):
+        """Nombre completo."""
+        return f'{self.nombre} {self.apellido_paterno} {self.apellido_materno}'

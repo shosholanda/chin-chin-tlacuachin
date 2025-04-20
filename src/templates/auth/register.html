@@ -11,16 +11,16 @@
   {{ mc.contraseña() }}
 </div>
 <div class="campo">
-  {{ mc.label_input("Nombre") }}
+  {{ mc.label_input("name", "Nombre") }}
 </div>
 <div class="campo">
-  {{ mc.label_input("Apellido Paterno") }}
+  {{ mc.label_input("first-name", "Apellido Paterno") }}
 </div>
 <div class="campo">
-  {{ mc.label_input("Apellido Materno") }}
+  {{ mc.label_input("last-name", "Apellido Materno") }}
 </div>
 <div class="campo">
-  {{ mc.label_input("Fecha de nacimiento", type="date") }}
+  {{ mc.label_input("birthday", "Fecha de nacimiento", type="date") }}
 </div>
 
 <input class="lightbutton" type="submit" value="Registrar">

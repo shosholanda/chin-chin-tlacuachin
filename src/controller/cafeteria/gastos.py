@@ -10,14 +10,8 @@ from flask import (
 from src.model.dto.tipo_gasto import TipoGasto
 from src.model.dto.gasto import Gasto
 
-from src.model.repository.repo import agrega, elimina
-from src.model.repository.repo_tipo_gasto import (
-    get_tipo_gasto_by_nombre, get_all_tipo_gasto
-)
-from src.model.repository.repo_gasto import (
-    get_all_gastos_ordered_by_date, get_gasto_by_id
-)
-
+from src.model.repository.repo import *
+from src.model.repository.repo_gasto import get_all_gastos_ordered_by_date
 
 from src.controller.auth import requiere_inicio_sesion
 
@@ -29,7 +23,7 @@ gastos = Blueprint('gastos', __name__, url_prefix='/gastos')
 def main():
     """Página principal de gastos."""
     gastos = get_all_gastos_ordered_by_date()[::-1]
-    tipo_gastos = get_all_tipo_gasto()
+    tipo_gastos = get_all(TipoGasto)
     return render_template('cafeteria/gastos/gastos.html',
                            gastos=gastos,
                            tipo_gastos=tipo_gastos)
@@ -39,7 +33,11 @@ def main():
 @requiere_inicio_sesion
 def gasto(id_gasto):
     """Página para visualizar solo un gasto."""
-    pass
+    gasto = get_by_id(Gasto, id_gasto)
+    tipo_gastos = get_all(TipoGasto)
+    if not gasto:
+        return redirect(url_for('gastos.main'))
+    return render_template('cafeteria/gastos/gasto.html', gasto=gasto, tipo_gastos=tipo_gastos)
 
 
 @gastos.route('/create-gasto', methods=('GET', 'POST'))
@@ -64,17 +62,42 @@ def create_gasto():
 @requiere_inicio_sesion
 def delete_gasto(id_gasto):
     """Elimina el gasto para siempre."""
-    gasto = get_gasto_by_id(id_gasto)
+    gasto = get_by_id(Gasto, id_gasto)
     elimina(gasto)
     flash("Gasto eliminado con éxito")
     return redirect(url_for('gastos.main'))
 
+@gastos.route('/actualizar-gasto/<id_gasto>', methods=['GET', 'POST'])
+@requiere_inicio_sesion
+def update_gasto(id_gasto):
+    """Modifica el gasto para siempre."""
+    if request.method == 'POST':
+        gasto = get_by_id(Gasto, id_gasto)
+        body = request.json
+        tipo_gasto = body['tipo_gasto']
+        cantidad = body['cantidad']
+        descripcion = body['descripcion']
+        fecha = body['fecha']
+        status = body['status']
+        print(body)
+
+        gasto.id_tipo_gasto = tipo_gasto
+        gasto.cantidad = cantidad
+        gasto.descripcion = descripcion
+        gasto.fecha = fecha
+        gasto.status = status
+        agrega(gasto)
+
+        flash("Gasto modificado con éxito")
+    return redirect(url_for('gastos.main'))
+
+
 
 @gastos.route('/change-status/<id_gasto>')
 @requiere_inicio_sesion
-def cambiar_status(id_gasto):
+def change_status(id_gasto):
     """Elimina al gasto. Soft Delete."""
-    gasto = get_gasto_by_id(id_gasto)
+    gasto = get_by_id(Gasto, id_gasto)
     gasto.status = not gasto.status
     agrega(gasto)
     flash("Gasto cambiado con éxito")
@@ -88,7 +111,7 @@ def create_tipo_gasto():
     if request.method == 'POST':
         body = request.json
         tipo_gasto_nuevo = body['nombre']
-        if not get_tipo_gasto_by_nombre(tipo_gasto_nuevo):
+        if not get_by_name(TipoGasto, tipo_gasto_nuevo):
             nuevo_tipo = TipoGasto(tipo_gasto_nuevo)
             agrega(nuevo_tipo)
             flash("Tipo creado correctamente")

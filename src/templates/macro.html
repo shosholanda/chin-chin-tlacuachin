@@ -31,6 +31,12 @@
   </a>
 {%- endmacro %}
 
+{% macro textarea(name) -%}
+  <textarea {% for k in kwargs.keys() -%} {{ k }}="{{ kwargs[k] }}" {%- endfor %}>
+    {{- name -}}
+  </textarea>
+{%- endmacro %}
+
 
 {####################################### MACROS FUNCIONALES #######################################}
 
@@ -45,17 +51,22 @@
 
 {% macro correo() -%}
   {{ label("Correo electrónico", for="correo") }} 
-  {{ input(type="email", id="correo", name="correo", placeholder="usuario@correo.com", required="true") }}
+  {{ input(type="email", id="email", name="email", placeholder="usuario@correo.com", required="true") }}
 {%- endmacro %}
 
 {% macro contraseña() -%}
   {{ label("Contraseña", for="contraseña") }}
-  {{ input(type="password", id="contraseña", name="contraseña", placeholder="patito001", required="true") }}
+  {{ input(type="password", id="password", name="password", placeholder="patito001", required="true") }}
 {%- endmacro %}
 
 {% macro label_input(id, value, type="text") -%}
   {{ label(value, for=id) }}
   {{ input(type=type, id=id, name=id, required="true", autocomplete="off", *args, **kwargs)}}
+{%- endmacro %}
+
+{% macro label_textarea(id, value, default="") -%}
+  {{ label(value, for=id) }}
+  {{ textarea(default, id=id, *args, **kwargs) }}
 {%- endmacro %}
 
 {% macro label_select(id, value, options=[], selected=None) -%}
@@ -67,6 +78,28 @@
     </option>
     {%- endfor %}
   </select>
+{%- endmacro %}
+
+
+{% macro radio_button(group, options=[]) -%}
+<div class="radiobutton">
+  {% for option in options -%}
+  <div class="option">
+    {{ input(type="radio", id=option, name=group, value=option.id, *args, **kwargs)}}
+    {{ label(option, for=option, class='unselectable')}}
+  </div>
+  {% endfor %}
+</div>
+{%- endmacro %}
+
+
+{% macro popup(message, actions) -%}
+<div class="popup">
+  <p>{{ message }}</p>
+  {% for b in actions -%}
+    {{ button(b.name, id=b.id)}}
+  {% endfor %}
+</div>
 {%- endmacro %}
 
 
@@ -88,7 +121,7 @@
 
 {####################################### MACROS AUXILIARES #######################################}
 {% macro as_id(text) %}
-  {{- text.strip().lower().replace(' ', '_') -}}
+  {{- text.strip().lower().replace(' ', '-') -}}
 {% endmacro %}
 
 {% macro disabled(condition) %}
@@ -105,8 +138,46 @@
   {%- if not number -%}No
   {%- elif number % 1 == 0 -%}
   {{- "{0:g}".format(number) -}} {% else %}
-  {{- "{:.3f}".format(number) -}}
+  {{- "{:.2f}".format(number) -}}
   {%- endif -%}
 {% endmacro %}
 
+{% macro format_date(date) %}
+  <span>{{ date.strftime('%a %d %b %Y') }}</span>
+  <br>
+  <span>{{ date.strftime('%I:%M %p') }}</span>
+{% endmacro %}
 
+
+{% macro format_day(date) %}
+{{- date.strftime('%Y-%m-%d') -}}
+{% endmacro %}
+
+{####################################### OTRAS MACROS #######################################}
+
+{% macro create_item(producto={}) -%}
+<div class="item" id="{{ producto.id }}">
+  <div>
+    <div>
+      <div>{{ producto.gtin }}</div>
+      <div>{{ producto.nombre }}</div>
+    </div>
+  </div>
+  <div>
+    <div class="campo">
+      {{ label("Cantidad: ", for=producto.id) }}
+      {{ input(type="number", id="c" ~ producto.id, required="true", autocomplete="off", min="1", max="99", value=producto.cantidad)}}
+    </div>
+    <div>
+      <p id="p{{producto.id}}">Precio: ${{ format_number(producto.precio) }}</p>
+    </div>
+  </div>
+  <div>
+    <b>Subtotal:</b>
+    <p id="s{{producto.id}}">$ {{ format_number(producto.subtotal) }}</p>
+  </div>
+  <div>
+    {{ button("Borrar", id="e" ~ producto.id)}}
+  </div>
+</div>
+{%- endmacro %}

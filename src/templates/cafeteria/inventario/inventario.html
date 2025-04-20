@@ -2,100 +2,97 @@
 {% import 'macro.html' as mc %}
 
 {% block script -%}
-<script type="text/javascript"	src="{{ url_for('static', filename='js/inventario.js') }}"></script>
+{{ super() }}
+<script type="text/javascript" src="{{ url_for('static', filename='js/inventario/inventario.js') }}"></script>
 {%- endblock %}
 
 
 {% block nav %}
 <div class="toolbar">
-  
+
   <div class="dropdown">
     <button id="dropdown-holder">
       <img src="../../static/img/icons/add.svg" alt="Nuevo producto">
       <p class="tag">Nuevo artículo</p>
     </button>
     <div id="dropdown-content" class="dropdown-content">
-      <h1>Nuevo Artículo</h1>
+      <h2>Nuevo Artículo</h2>
       <div class="campo">
-	{{ mc.label_input("Nombre") }}
+        {{ mc.label_input("name", "Nombre") }}
       </div>
       <div class="mini-form">
-	<div class="campo">
-	  {{ mc.label_select("Tipo articulo", tipo_articulos) }}	  
-	</div>
-	<button onclick="document.getElementById('category-form').style.display='block'"> Crear nuevo Tipo </button>
-	<div id="category-form">
-	  <div class="campo">
-	    {{ mc.label_input("Nuevo tipo articulo") }}
-	  </div>
-	  {{ mc.button("Crear tipo articulo", id="create-tipo-button") }}
-	</div>
+        <div class="campo">
+          {{ mc.label_select("article-type", "Tipo articulo", tipo_articulos) }}
+        </div>
+        {{ mc.button('Crear nuevo tipo', id='create-new-type') }}
+        <div id="category-form">
+          <div class="campo">
+            {{ mc.label_input("new-article-type", "Nuevo tipo articulo" ) }}
+          </div>
+          {{ mc.button("Crear tipo articulo", id="create-type-button", url=url_for('inventario.create_tipo_articulo'))
+          }}
+        </div>
       </div>
       <div class="campo">
-	{{ mc.label_input("Cantidad Actual") }}
+        {{ mc.label_input("present-quantity","Cantidad Actual") }}
       </div>
       <div class="campo">
-	(kg, lt, gr, pz, un, ml, tn etc)
-	{{ mc.label_input("Unidad", maxlength="2", size="4") }}
+        {{ mc.label_input("unit", "Unidad", maxlength="2", size="4") }}
       </div>
       <div class="campo">
-	{{ mc.label_input("Costo por unidad") }}
+        {{ mc.label_input("cost-per-unit", "Costo por unidad") }}
+      </div>
+      <p>(Opcional)</p>
+      <div class="campo">
+        {{ mc.label_input("min", "Minimo", type="number", min="1", value="1") }}
       </div>
       <div class="campo">
-	{{ mc.label_input("Minimo", type="number", min="1", value="1") }}
+        {{ mc.label_input("max", "Maximo", type="number", min="1") }}
       </div>
-      <div class="campo">
-	{{ mc.label_input("Maximo", type="number", min="1") }}
-	<p>(Opcional)</p>
-      </div>
-      {{ mc.button("Añadir nuevo articulo", id="create-article-button") }}
+      {{ mc.button("Añadir nuevo articulo", id="create-article-button", url=url_for('inventario.create_articulo')) }}
     </div>
   </div>
 
-{% endblock %}
+  {% endblock %}
 
-{% block content %}
-<h2> Articulos en inventario </h2>
-<div class="container">
+  {% block content %}
+  <h2> Articulos en inventario </h2>
+  <div class="container">
 
-  <table>
-    <tr>
-      <th> ID </th>
-      <th> Nombre </th>
-      <th> Tipo articulo </th>
-      <th> Costo unitario</th>
-      <th> Cantidad actual </th>
-      <th> Unidad </th>
-      <th> MIN </th>
-      <th> MAX </th>
-      <th> Status </th>
-    </tr>
-    {% for articulo in articulos %}
-    <tr id={{ articulo.id }}>
-      <td>
-	<a href="{{ url_for('inventario.articulo',
+    <table>
+      <tr>
+        <th> ID </th>
+        <th> Nombre </th>
+        <th> Tipo articulo </th>
+        <th> Costo unitario</th>
+        <th> Cantidad actual </th>
+        <th> Unidad </th>
+        <th> MIN </th>
+        <th> MAX </th>
+        <th> Status </th>
+      </tr>
+      {% for articulo in articulos %}
+      <tr id={{ articulo.id }}>
+        <td>
+          <a href="{{ url_for('inventario.articulo',
 		 id_articulo=articulo.id) }}"> {{ articulo.id }}
-	</a>
-      </td>
-      <td> {{ articulo.nombre}} </td>
-      <td> {{ articulo.tipo_articulo.nombre }} </td>
-      <td>$ {{ mc.format_number(articulo.costo_unitario) }} </td>
-      <td> {{ mc.format_number(articulo.cantidad_actual) }} </td>
-      <td> {{ articulo.unidad }} </td>
-      <td> {{ mc.format_number(articulo.minimo) }} </td>
-      <td> {{ mc.format_number(articulo.maximo) }} </td>
-      <td>
-	<input type="checkbox" name="status" autocomplete="off"
-	       {% if articulo.status -%}checked{%- endif -%}
-	       >
-      </td>
-    </tr>
-    
-    {% endfor %}
-  </table>
+          </a>
+        </td>
+        <td> {{ articulo.nombre}} </td>
+        <td> {{ articulo.tipo_articulo.nombre }} </td>
+        <td>$ {{ mc.format_number(articulo.costo_unitario) }} </td>
+        <td> {{ mc.format_number(articulo.cantidad_actual) }} </td>
+        <td> {{ articulo.unidad }} </td>
+        <td> {{ mc.format_number(articulo.minimo) }} </td>
+        <td> {{ mc.format_number(articulo.maximo) }} </td>
+        <td>
+          <input type="checkbox" name="status" autocomplete="off" {% if articulo.status -%}checked{%- endif -%}>
+        </td>
+      </tr>
 
-</div>
+      {% endfor %}
+    </table>
 
-{% endblock %}
+  </div>
 
-
+  {% endblock %}

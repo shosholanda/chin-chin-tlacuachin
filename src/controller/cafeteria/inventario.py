@@ -11,11 +11,7 @@ from flask import (
 from src.model.dto.articulo import Articulo
 from src.model.dto.tipo_articulo import TipoArticulo
 
-from src.model.repository.repo import agrega, elimina
-from src.model.repository.repo_articulo import (
-    get_all_articulos, get_articulo_by_id, get_articulo_by_nombre,
-    get_all_tipo_articulos, get_tipo_articulo_by_name
-)
+from src.model.repository.repo import *
 
 
 from src.controller.auth import requiere_inicio_sesion
@@ -27,8 +23,8 @@ inventario = Blueprint('inventario', __name__, url_prefix='/inventario')
 @requiere_inicio_sesion
 def main():
     """Página principal de inventario."""
-    articulos = get_all_articulos()
-    tipo_articulos = get_all_tipo_articulos()
+    articulos = get_all(Articulo)[::-1]
+    tipo_articulos = get_all(TipoArticulo)
     return render_template('cafeteria/inventario/inventario.html',
                            articulos=articulos,
                            tipo_articulos=tipo_articulos)
@@ -38,8 +34,10 @@ def main():
 @requiere_inicio_sesion
 def articulo(id_articulo):
     """Página para visualizar solo un articulo."""
-    articulo = get_articulo_by_id(id_articulo)
-    tipo_articulos = get_all_tipo_articulos()
+    articulo = get_by_id(Articulo, id_articulo)
+    if not articulo:
+        return redirect(url_for('inventario.main'))
+    tipo_articulos = get_all_by_status(TipoArticulo)
     return render_template('cafeteria/inventario/articulo.html',
                            articulo=articulo,
                            tipo_articulos=tipo_articulos)
@@ -48,8 +46,8 @@ def articulo(id_articulo):
 @inventario.route('get-articulo/<nombre_articulo>', methods=['GET'])
 @requiere_inicio_sesion
 def get_articulo(nombre_articulo):
-    """Página para visualizar solo un articulo."""
-    art = get_articulo_by_nombre(nombre_articulo)
+    """Obtiene el articulo por nombre"""
+    art = get_by_name(Articulo, nombre_articulo)
     if not art:
         return {'err': 'No se encontró el articulo'}
     return {'id': art.id,
@@ -58,7 +56,7 @@ def get_articulo(nombre_articulo):
             'status': art.status}
 
 
-@inventario.route('/create-tipo-articulo', methods=('GET', 'POST'))
+@inventario.route('create-tipo-articulo/', methods=('GET', 'POST'))
 @requiere_inicio_sesion
 def create_tipo_articulo():
     """Registra un tipo articulo en la base de datos."""
@@ -66,7 +64,7 @@ def create_tipo_articulo():
         body = request.json
         tipo_art = body['tipo_articulo'].upper()
 
-        if not get_tipo_articulo_by_name(tipo_art):
+        if not get_by_name(TipoArticulo, tipo_art):
             new_tipo_art = TipoArticulo(tipo_art)
             agrega(new_tipo_art)
             flash("Nuevo tipo articulo agregado")
@@ -90,8 +88,7 @@ def create_articulo():
         min = body['minimo']
         max = body['maximo']
         max = max if max != "" else None
-        if not get_articulo_by_nombre(nom):
-            print(body)
+        if not get_by_name(Articulo, nom):
             new_art = Articulo(nom, tip, can, uni, min, max, cos)
             agrega(new_art)
             flash("Articulo agregado correctamente")
@@ -106,7 +103,7 @@ def update_articulo(id_articulo):
     """Registra un articulo con todos los datos en la base de datos."""
     if request.method == 'POST':
         body = request.json
-        art = get_articulo_by_id(id_articulo)
+        art = get_by_id(Articulo, id_articulo)
         art.id_tipo_articulo = body['tipo_articulo']
         art.cantidad_actual = body['cantidad_actual']
         art.costo_unitario = body['costo']
@@ -125,7 +122,7 @@ def update_articulo(id_articulo):
 @requiere_inicio_sesion
 def delete_articulo(id_articulo):
     """Elimina el articulo para siempre."""
-    articulo = get_articulo_by_id(id_articulo)
+    articulo = get_by_id(Articulo, id_articulo)
     elimina(articulo)
     flash("Articulo eliminado con éxito")
     return redirect(url_for('inventario.main'))
@@ -135,7 +132,7 @@ def delete_articulo(id_articulo):
 @requiere_inicio_sesion
 def cambiar_status(id_articulo):
     """Elimina al articulo. Soft Delete."""
-    articulo = get_articulo_by_id(id_articulo)
+    articulo = get_by_id(Articulo, id_articulo)
     articulo.status = not articulo.status
     agrega(articulo)
     flash("Articulo cambiado con éxito")

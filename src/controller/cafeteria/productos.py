@@ -3,6 +3,7 @@
 Los productos se registran completamente con
 CATEGORIA | PRODUCTO | TIPO_PRODUCTO | PRECIO
 """
+import math
 from flask import (
     render_template, Blueprint, flash, redirect, request, url_for, get_flashed_messages
 )
@@ -12,15 +13,12 @@ from flask import (
 from src.model.dto.producto import Producto
 from src.model.dto.categoria import Categoria
 from src.model.dto.tipo_producto import TipoProducto
-from src.model.dto.tipo_articulo import TipoArticulo
+# from src.model.dto.tipo_articulo import TipoArticulo
 from src.model.dto.receta import Receta
 
-from src.model.repository.repo import agrega, elimina
-from src.model.repository.repo_producto import get_all_productos, get_producto_by_gtin, get_producto_by_id
-from src.model.repository.repo_tipo_producto import get_tipo_by_nombre, get_all_tipo_productos
-from src.model.repository.repo_categoria import get_all_categorias, get_categoria_by_nombre
+from src.model.repository.repo import *
+from src.model.repository.repo_producto import get_producto_by_gtin
 from src.model.repository.repo_articulo import get_insumo_by_nombre
-# from src.model.repository.repo_usuario import get
 
 from src.controller.auth import requiere_inicio_sesion
 
@@ -31,9 +29,9 @@ productos = Blueprint('productos', __name__, url_prefix='/productos')
 @requiere_inicio_sesion
 def main():
     """Página principal de productos."""
-    categorias = get_all_categorias()
-    tipos = get_all_tipo_productos()
-    productos = get_all_productos()[::-1]
+    categorias = get_all_by_status(Categoria)
+    tipos = get_all_by_status(TipoProducto)
+    productos = get_all(Producto)[::-1]
 
     return render_template('cafeteria/productos/productos.html',
                            categorias=categorias,
@@ -78,7 +76,6 @@ def create_producto():
         categoria = body['categoria']
         tipo_producto = body['tipo_producto']
         precio = body['precio']
-        print(body)
         try:
             id_categoria = int(categoria)
             id_tipo_producto = int(tipo_producto)
@@ -106,25 +103,39 @@ def get_gtin(gtin):
 @requiere_inicio_sesion
 def update_producto():
     """Actualiza el producto, a lo más el precio o status."""
-    body = request.json
-    id_producto = body['id_producto']
-    nombre = body['nombre']
-    gtin = body['gtin']
-    producto = get_producto_by_id(id_producto)
-    used_gtin = get_producto_by_gtin(gtin)
+    if request.method == 'POST':
+        body = request.json
+        # id_producto = body['id_producto']
+        # nombre = body['nombre']
+        gtin = body['gtin']
+        precio = body['precio']
 
-    # It may change 
-    if used_gtin.gtin == producto.gtin or used_gtin == None:
-        try:
-            producto.nombre = nombre
-            producto.gtin = gtin
-            producto.precio = float(body['precio'])
+        used_gtin = get_producto_by_gtin(gtin)
+        print(used_gtin.precio)
+        print (precio)
 
-            agrega(producto)
-        except:
-            flash("Ingresa valores válidos.")
-    else:
-        flash("No puedes usar este GTIN porque ya existe un producto con este código.\n" + used_gtin)
+        if used_gtin.precio != precio:
+            #LMAO stupid decimal
+            nuevo_gtin = used_gtin.gtin[:-len(str(math.trunc(precio)))] + str(math.trunc(precio))
+            if used_gtin.transacciones == []:
+                used_gtin.gtin = nuevo_gtin
+                used_gtin.precio = precio
+                flash("Producto actualizado a " + nuevo_gtin+ " sin duplicar")
+                agrega(used_gtin)
+            else:
+                nuevo_producto = Producto(nuevo_gtin, 
+                                        used_gtin.nombre,
+                                        used_gtin.id_categoria,
+                                        used_gtin.id_tipo_producto,
+                                        precio)
+                agrega(nuevo_producto)
+                used_gtin.status = False
+                agrega(used_gtin)
+                print("Copia", nuevo_producto)
+                flash("Precio de producto cambiado a " + nuevo_gtin)
+        else:
+            flash("Ningun cambio realizado", category='info')
+            return redirect(url_for('productos.producto', gtin=gtin))
     return redirect(url_for('productos.main'))
 
 
@@ -164,7 +175,7 @@ def create_tipo_producto():
         body = request.get_json()
         nombre_tipo_producto = body['nombre'].upper()
 
-        if not get_tipo_by_nombre(nombre_tipo_producto):
+        if not get_by_name(TipoProducto, nombre_tipo_producto):
             nuevo_tipo = TipoProducto(nombre_tipo_producto)
             agrega(nuevo_tipo)
             flash("Tipo creado correctamente:" + nombre_tipo_producto, category="success")
@@ -180,7 +191,7 @@ def create_categoria():
     if request.method == 'POST':
         body = request.get_json()#['body']
         nombre_categoria = body['nombre'].title()
-        if not get_categoria_by_nombre(nombre_categoria):
+        if not get_by_name(Categoria, nombre_categoria):
             nueva_categoria = Categoria(nombre_categoria)
             agrega(nueva_categoria)
             flash("Categoria creada: " + nueva_categoria.nombre, category="success")

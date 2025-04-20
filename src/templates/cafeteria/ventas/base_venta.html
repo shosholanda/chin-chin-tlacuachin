@@ -2,75 +2,10 @@
 {% import 'macro.html' as mc %}
 
 {% block script %}
-<script type="text/javascript"	src="{{ url_for('static', filename='js/ventas.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/modules/HTML.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/modules/Text.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/modules/Event.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/modules/Request.js') }}"></script>
 {% endblock %}
 
 {% block title %}Ventas{% endblock %}
-
-
-{% block content %}
-<h1> Ventas </h1>
-
-<div class="overlay" id="overlay">
-  <div class="popup">
-    <p>¿Quieres imprimir para facturar?</p>
-    <button id="yes">Sí</button>
-    <button id="no">No</button>
-    <button id="cancelar">Cancelar</button>
-  </div>
-</div>
-
-
-
-<div class="icon">
-    <a id="nueva-venta" href="{{ url_for('ventas.create_venta')}}">
-      <img src="../../static/img/icons/add.svg" alt="Nuevo producto">
-      <p class="tag">Nueva venta</p>
-    </a>
-</div>
-
-<h2> Todas las ventas </h2>
-<div class="container">
-
-  <table>
-    <tr>
-      <th> Referencia </th>
-      <th> Cliente </th>
-      <th> Productos </th>
-      <th> Notas</th>
-      <th> Total </th>
-      <th> Propina </th>
-      <th> Fecha </th>
-    </tr>
-    {% for venta in ventas %}
-    <tr id={{ venta.referencia }}>
-      <td> <a href=" {{ url_for('ventas.referencia', referencia=venta.referencia) }}">{{venta.referencia}}</a> </td>
-      <td> {{ venta.cliente }} </td>
-      <td>
-	<ul>
-	  {% for transaccion in venta.transacciones -%}
-	  <li>
-	    {{transaccion.cantidad}}x {{ transaccion.producto.nombre }} (${{transaccion.producto.precio}})
-	  </li>
-	  {%- endfor %}
-	</ul>
-      </td>
-      <td> {{ venta.notas }} </td>
-      <td>$ {{ venta.total }} </td>
-      <td>$ {{ venta.propina }} </td>
-      <td>{{ venta.fecha }} </td>
-      <td>
-	<button class="print" id="print-{{ venta.referencia }}">
-	  Imprimir
-	</button>
-      </td>
-    </tr>
-    
-    {% endfor %}
-  </table>
-  
-
-</div>
-
-{% endblock %}
-

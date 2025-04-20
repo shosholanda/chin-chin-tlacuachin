@@ -1,0 +1,71 @@
+{% extends 'cafeteria/ventas/base_venta.html' %}
+{% import 'macro.html' as mc %}
+
+{% block script %}
+{{ super() }}
+<script type="text/javascript" src="{{ url_for('static', filename='js/ventas/ventas.js') }}"></script>
+{% endblock %}
+
+
+{% block nav %}
+<div class="toolbar">
+
+    <div class="icon">
+        <a id="nueva-venta" href="{{ url_for('ventas.shopcar')}}">
+            <img src="{{ url_for('static', filename='img/icons/add.svg') }}" alt="Nuevo producto">
+            <p class="tag">Nueva venta</p>
+        </a>
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<h2> Últimas ventas </h2>
+<div class="container">
+
+    <table>
+        <tr>
+            <th> ID </th>
+            <th> Productos </th>
+            <th> Tipo Pago</th>
+            <th> Total </th>
+            <th> Fecha </th>
+        </tr>
+        {% for venta in ventas %}
+        <tr id={{ venta.referencia }}>
+            <td> <a href=" {{ url_for('ventas.referencia', referencia=venta.referencia) }}">{{venta.referencia}}</a>
+            </td>
+            <td>
+                <ul>
+                    {% for transaccion in venta.transacciones -%}
+                    <li>
+                        {{transaccion.cantidad}}x {{ transaccion.producto.nombre }} (${{transaccion.producto.precio}})
+                    </li>
+                    {%- endfor %}
+                </ul>
+            </td>
+            <td> {{ venta.tipo_pago.nombre }} </td>
+            <td>${{ venta.total }} </td>
+            <td>{{ mc.format_date(venta.fecha) }} </td>
+            <td>
+                <button class="print" id="print-{{ venta.referencia }}">
+                    Imprimir
+                </button>
+            </td>
+        </tr>
+
+        {% endfor %}
+    </table>
+
+
+</div>
+
+{% endblock %}
+
+
+{%+ block overlay %}
+{{ mc.popup("¿Quieres imprimir factura?", 
+    [{'name': "Sí", 'id': "yes"}, 
+    {'name': "No", 'id': "no"}, 
+    {'name': "Cancelar", 'id': "cancel"}]) }}
+{%- endblock %}

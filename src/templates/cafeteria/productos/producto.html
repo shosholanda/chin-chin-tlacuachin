@@ -10,10 +10,11 @@
 
 
 {% block content %}
-<div class="product" id="product" gtin="{{ producto.gtin }}" url="{{ url_for('productos.main')}}" productID="{{ producto.id }}">
+<div class="product" id="product" gtin="{{ producto.gtin }}" url-status="{{ url_for('productos.change_status', gtin='')}}"
+  productID="{{ producto.id }}">
 
-  <h1> {{producto.nombre}} ${{ producto.precio }}</h1>
-  
+  <h2> {{producto.nombre}} ${{ producto.precio }}</h2>
+
   <div class="campo">
     <!-- No se puede actualizar porque no se respetaría un precio anterior. -->
     <!-- Tal vez se pueda actualizar el nombre/gtin sin afectar el id, pero entonces todo tendría q ser por id -->
@@ -30,48 +31,25 @@
   <div class="campo">
     {{ mc.label("Inversión: ") }}
     <!-- precio.insumos.suma -->
+     <p>Insumos utilizados</p>
+     <ul>
+      <!-- {% for insumo in insumos %}
+      <li></li> NEXT MILESTONE
+      {% endfor %}
+     </ul> -->
   </div>
-  
+
   <div class="campo">
     <!-- Casi lo logro, hacer en label_input() todo esto, pasando como parametro checked y checbox -->
     {{ mc.label("Activo?", for="status") }}
     {{ mc.input(mc.checked(producto.status), id="status", type="checkbox", name="status", autocomplete="off")}}
   </div>
   <br>
-  {{ mc.button("Eliminar", mc.disabled(producto.transacciones != []) ,id="delete") }}
-  {{ mc.button("Guardar", id="update")}}
-  <br>
-  <p><b>Nota:</b> No se puede eliminar si ya existe una venta asociada a este producto. Solo se puede modificar el precio.</p>
-  
-  <!-- <h2>Insumos utilizados:</h2>
-  <ul id="lista-insumos">
-    {% for insumo in producto.insumos -%}
-    <li id="insumo-{{insumo.id}}">
-      <a href="{{ url_for('inventario.articulo', id_articulo=insumo.id)}}">{{insumo.nombre}} </a>
-      <button onclick="">Eliminar</button>
-    </li>
-    <li>
-      <a href="{{ url_for('inventario.articulo', insumo.id)}}">{{ insumo }}</a>
-    </li>
-    {%- endfor %}
-  </ul>
-  <div>
-    <div class="campo">
-      {{ mc.label_input('Nombre insumo') }}
-      <ul id="suggestions">
-        !-- Aquí se muestran las sugerencias de las búsquedas --
-      </ul>
-      <button id="add-receta">Añadir insumo</button>
-    </div>
-    
-  </div> -->
-</div>
-  {% endblock %}
-  
-  {%+ block overlay %}
-  <div class="popup">
-    <p>¿Seguro que quiere eliminar este producto? No hay vuelta atrás.</p>
-    <button id="yes">Sí</button>
-    <button id="no">No</button>
+  <div class="params">
+    {{ mc.button("Guardar", id="update", url=url_for('productos.update_producto'))}}
+    {{ mc.button("Eliminar", mc.disabled(producto.transacciones != []) ,id="delete", url=url_for('productos.delete_producto', gtin=''))}}
   </div>
-  {%- endblock %}
+</div>
+<p><b>Nota:</b> No se puede eliminar si ya existe una venta asociada a este producto. Solo se puede modificar el
+  precio el cual creará un nuevo producto igual pero con precio diferente y desactivará este mismo</p>
+{% endblock %}

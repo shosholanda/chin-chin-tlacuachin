@@ -35,9 +35,10 @@ Se recomienda instalar manualmente los paquetes para tener la última version di
 $ pip install Flask
 $ pip install flask-sqlalchemy
 $ pip install pymysql
-$ pip install cryptography
-$ pip install waitress
-$ pip install livereload
+$ pip install cryptography #??
+$ pip install waitress # Servidor pro, no modo debug
+$ pip install livereload #Recargar el frontend automaticamente
+$ pip install Flask-Migration #Relacionado a migraciones
 ```
 
 ### Verificar lista de paquetes
@@ -94,6 +95,17 @@ También, ya debe de existir la base de datos antes de ejecutar el programa
 mysql> CREATE DATABASE <database_name> 
 ```
 
+## PASOS PARA LA MIGRACION de datos (crear nuevas columnas, modificar valores de columnas)
+1. instalar pip install Flask-Migration
+2. Crear las tablas que se asociarán con esta columna, reiniciando la aplicacion.
+3. exportar la variable export FLASK_APP=main
+4. flask db init <- crea la carpeta de migration/
+5. flask db migrate -m "Mensaje de la migracion" <- crea el script de la migracion
+6. flask db upgrade <- ejecuta el script de la migracion.
+7. En caso de haber problemas con constantes, valores por default deben ser creados y /o los valores asociados a las constantes con default=algo, o UPDATE tabla SET c1 = ":)"
+
+
+# Javascript
 NPM dependecies (instalar cuando se pueda)
 
 - mathjs

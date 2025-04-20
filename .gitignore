@@ -2,7 +2,8 @@
 
 # Virtual enviroment
 foo/*
-
+# Las migraciones se manejan por separado.
+migrations/*
 # NPM modules
 node_modules/*
 

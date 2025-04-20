@@ -16,7 +16,7 @@
       <p class="tag">Nuevo producto</p>
     </button>
     <div id="dropdown-content" class="dropdown-content">
-      <h1>Crear producto</h1>
+      <h2>Crear producto</h2>
       <div class="campo">
         {{ mc.label_input(id="name", value="Nombre") }}
       </div>
@@ -27,7 +27,7 @@
         </div>
         {{ mc.button("Crear nueva categoria...", id="create-new-category-button")}}
         <div id="category-form">
-          <div method="POST" class="campo">
+          <div class="campo">
             {{ mc.label_input("new-category", "Nueva categoria") }}
             {{ mc.button("Crear categoria", id="create-category-button") }}
           </div>

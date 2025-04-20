@@ -91,6 +91,15 @@ p.tag {
 }
 
 
+.unselectable {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
 /**
 * ############################################################################
 * IMAGES
@@ -101,6 +110,10 @@ p.tag {
     text-align: center;
     cursor: pointer;
     margin: 0.1em;
+}
+
+.fit {
+    width: 100%;
 }
 
 .gallery {
@@ -185,7 +198,7 @@ p.tag {
 */
 
 .dropdown-holder {
-    border: 1px solid red;
+    border: 1px solid ;
     /* cursor: pointer; */
 }
 
@@ -218,6 +231,10 @@ p.tag {
     display: none;
 }
 
+.hidden-form {
+    display: none;
+}
+
 
 /**
 * ############################################################################
@@ -225,7 +242,7 @@ p.tag {
 * ############################################################################
 */
 #suggestions {
-    /* display: none; */
+    display: none;
     position: absolute;
     background-color: LightCyan;
     padding: 20px;
@@ -240,10 +257,6 @@ p.tag {
 
 #suggestions li:hover {
     background-color: white;
-}
-
-.cart * {
-    /* border: 1px solid red; */
 }
 
 /* Productos carro */
@@ -277,7 +290,8 @@ th {
 td  {
     border: 2px solid hsl(0, 0%, 80%);
     text-align: left;
-    padding: 8px;
+    padding-left: 5px;
+    padding-right: 5px;
 }
 
 tr {
@@ -365,6 +379,33 @@ tr:nth-child(even) {
 * OTHERS
 * ############################################################################
 */
+#splashimg{
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+}
+
+#splashimg img{
+    padding: 100px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.container {
+    display: flex;
+    justify-content: center;
+
+}
+
+.columns {
+    display: flex;
+    flex-direction: row;    
+    justify-content: space-evenly;
+}
+
+.bound-box {
+    border: solid 3px blue;
+}
 
 form.card {
     width: 60%;
@@ -379,6 +420,8 @@ form.card {
 form .campo {
     display: flex;
     flex-direction: column;
+    align-items: center;
+    justify-content: center;
     margin: 5px;
 }
 
@@ -507,7 +550,7 @@ form textarea {
     }
 
     th, tr, td {
-        padding: 3px;
+        padding-right: 2px;
         font-size: smaller;
     }
 

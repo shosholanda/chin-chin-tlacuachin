@@ -1,9 +1,10 @@
 async function generateGtin() {
     let nombre = document.getElementById('name')
-    let categoria = CCT.HTML.getSelectedValue(document.getElementById('category')) // str
-    let tipo_de_producto = CCT.HTML.getSelectedValue(document.getElementById('product-type')) // str
+    let categoria = CCT.HTML.getSelectedValue('category').text // str
+    let tipo_de_producto = CCT.HTML.getSelectedValue('product-type').text // str
     let precio = document.getElementById('price')
     let gtin = document.getElementById('gtin')
+
 
     if (!CCT.Text.validateDefined(nombre, categoria, tipo_de_producto, precio)) {
         alert("Ingrese valores válidos en los campos requeridos.")
@@ -11,12 +12,9 @@ async function generateGtin() {
     }
 
     let code = CCT.Text.generateCode(nombre.value, categoria, tipo_de_producto, precio.value)
-    console.log(code)
     gtin.value = code;
 
     let response = await CCT.Request.fetch({url: 'get-gtin/' + code});
-    console.log(response);
-
     if (response.gtin) {
         alert(`Ya existe un producto con este código: ${code}\n
             Utiliza otros datos, o cambia manualmente el gtin`);
@@ -97,8 +95,12 @@ window.onload = async function () {
 
     let gtin_input = document.getElementById('gtin');
     gtin_input.addEventListener('input', async function () {
-        this.value = await generateGtin();
+        this.value = this.value.toUpperCase();
     });
+
+    document.getElementById('new-product-type').addEventListener('input', function(){
+        this.value = this.value.toUpperCase();
+    })
 
     /** Crear producto */
     document.getElementById('create-product-button').addEventListener('click', function () {

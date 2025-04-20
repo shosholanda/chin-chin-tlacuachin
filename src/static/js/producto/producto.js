@@ -1,50 +1,40 @@
 
-function closePopUp(answer, url_base, gtin) {
-    if (answer){
-
-        CCT.Request.fetch({url: url_base + 'delete-producto/' + gtin , redirect: 'manual'});
-    }
-    CCT.Event.changeVisibility('overlay');
-}
-
-
 window.onload = function () {
     let product = document.getElementById('product');
     let id_product = product.getAttribute('productID');
     let gtin = product.getAttribute('gtin');
-    let url = product.getAttribute('url');
-
-    document.getElementById('delete').addEventListener('click', function () {
-        CCT.Event.changeVisibility('overlay', 'flex');
+    let url = product.getAttribute('url-status');
+    let del = document.getElementById('delete');
+    let upd = document.getElementById('update');
+    
+    del.addEventListener('click', function () {
+        if (confirm('Seguro que quieres borrar este producto? No hay ninguna venta asociada todavía'))
+            CCT.Request.fetch({url: del.getAttribute('url') + gtin});
     });
 
     document.getElementById('status').addEventListener('change', async function(){
-        await CCT.Request.fetch({url: url + 'change-status/' + gtin, redirect: 'manual'});
+        await CCT.Request.fetch({url: url + gtin, redirect: 'manual'});
     });
-    
 
-    document.getElementById('update').addEventListener('click', function () {
+    upd.addEventListener('click', function () {
         let precio = document.getElementById('price');
-        let json = {
-            'id_product': id_product,
-            'gtin': gtin,
-            'nombre': gtin, // May these two change
-            'precio': precio.value
+        if (!CCT.Text.validateDouble(precio.value)){
+            alert('Precio nuevo no aceptado');
+            return;
         }
-        console.log(json)
-        // CCT.Request.fetch({
-        //     url: url + 'update-producto/' + id,
-        //     type: 'POST',
-        //     data: json,
-        //     redirect: 'manual'
-        // });
+        let url_update = this.getAttribute('url');
+        let json = {
+            // 'id_producto': parseInt(id_product),
+            'gtin': gtin,
+            // 'nombre': gtin, // May these two change
+            'precio': parseFloat(precio.value)
+        }
+
+        CCT.Request.fetch({
+            url: url_update,
+            type: 'POST',
+            data: json,
+            redirect: 'manual'
+        });
     })
-
-    document.getElementById('yes').addEventListener('click', function () {
-        closePopUp(true, url, gtin)
-    });
-
-    document.getElementById('no').addEventListener('click', function () {
-        closePopUp(false, url, gtin)
-    });
 }

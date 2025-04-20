@@ -2,13 +2,7 @@
 {% import 'macro.html' as mc %}
 
 {% block header %}
-<div class="encabezado">
-  <div class="icon">
-    <a href="{{ url_for('home' ) }}">
-      {{ mc.img('../../static/img/ChinChinTlacuachin.jpg',
-      alt="Tlacuachin_Logo.png") }}
-    </a>
-  </div>
+<div class="params">
   
   <div>
     <a href="{{ url_for('auth.iniciar_sesion') }}">
@@ -21,6 +15,13 @@
       <h2>Registrarse</h2>
     </a>
   </div>
+</div>
+
+<div >
+  <a href="{{ url_for('home' ) }}">
+    {{ mc.img('../../static/img/ChinChinTlacuachin.jpg',
+    alt="Tlacuachin_Logo.png", class='fit') }}
+  </a>
 </div>
 {% endblock %}
 

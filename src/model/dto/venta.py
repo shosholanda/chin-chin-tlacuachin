@@ -13,7 +13,8 @@ class Venta(db.Model):
 
     __tablename__ = 'venta'
     referencia = db.Column('referencia', db.Integer, primary_key=True)
-    id_usuario = db.Column(db.String(100), db.ForeignKey('usuario.correo'))
+    id_usuario = db.Column(db.String(100), db.ForeignKey('usuario.correo'), nullable=False)
+    id_tipo_pago = db.Column(db.Integer, db.ForeignKey('tipo_pago.id'), nullable=False)
     # id_sucursal = db.Column(db.Integer, db.ForeignKey('sucursal.id'))
     cliente = db.Column('cliente', db.String(100))
     notas = db.Column('notas', db.String(200))
@@ -25,11 +26,13 @@ class Venta(db.Model):
 
     transacciones = db.relationship('Transaccion', back_populates='venta')
     usuario = db.relationship('Usuario', back_populates='ventas')
+    tipo_pago = db.relationship('TipoPago', back_populates='ventas')
     # sucursal = db.relationship('Sucursal', back_populates='ventas')
 
     # Constructor
     def __init__(self,
                  id_usuario,
+                 id_tipo_pago,
                  total,
                  cliente="",
                  notas="",
@@ -37,6 +40,7 @@ class Venta(db.Model):
         """Construye un objeto."""
         self.total = total
         self.id_usuario = id_usuario
+        self.id_tipo_pago = id_tipo_pago
         # self.id_sucursal = id_sucursal
         self.cliente = cliente
         self.notas = notas
