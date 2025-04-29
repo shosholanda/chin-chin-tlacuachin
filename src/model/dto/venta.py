@@ -14,7 +14,7 @@ class Venta(db.Model):
     __tablename__ = 'venta'
     referencia = db.Column('referencia', db.Integer, primary_key=True)
     id_usuario = db.Column(db.String(100), db.ForeignKey('usuario.correo'), nullable=False)
-    id_tipo_pago = db.Column(db.Integer, db.ForeignKey('tipo_pago.id'), nullable=False)
+    id_tipo_pago = db.Column(db.Integer, db.ForeignKey('tipo_pago.id'))
     # id_sucursal = db.Column(db.Integer, db.ForeignKey('sucursal.id'))
     cliente = db.Column('cliente', db.String(100))
     notas = db.Column('notas', db.String(200))

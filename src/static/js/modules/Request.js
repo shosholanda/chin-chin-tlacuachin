@@ -11,33 +11,18 @@ var CCT = (function (CCT) {
 	class Request {
 
 		/** Regresa lo que regresa el fetch con algunos ajustes automáticos */
-		static async fetch({url = "/", data = {}, type = 'GET', redirect=null} = {}) {
+		static async fetch({url = "/", data = {}, type = 'GET'} = {}) {
 			let request = {
 				method: type,
 				headers: {
 					'Content-Type': 'application/json'
 				}
 			}
-			
-			if (redirect)
-				request.redirect = redirect;
 
 			if (type === 'POST' || type === 'PUT' || type === 'PATCH')
 				request.body = JSON.stringify(data);
-			// console.log(request);
+			
 			let response = await fetch(url, request);
-			// console.log(response);
-
-			if (response.type === 'opaqueredirect' || redirect === 'manual'){
-				// No redireccionar automaticamente cuando hay flashes?
-				window.location.href = response.url;
-				if (type === 'GET'){
-					// window.location.assign(response.url) // WTF solo en unos enpoints jala?
-					// Sin esta linea salen dobles los mensajes de flash, pero redirigido correctamente
-					window.location.reload();
-				}
-				return;
-			}
 			
 			if (!response.ok)
 				throw new Error(`HTTP error! status: ${response.status}`);
@@ -46,9 +31,14 @@ var CCT = (function (CCT) {
 
 			if (contentType && contentType.includes('application/json'))
 				return response.json();
-			if (contentType && contentType.includes('text/html'))
-				return response.text();
-			
+			if (contentType && contentType.includes('text/html')){
+				let url = response.url;
+				let html = await response.text();
+				document.open();
+				document.write(html);
+				document.close();
+				history.pushState(null, "", url);
+			}
 			return response;
 		}
 	}

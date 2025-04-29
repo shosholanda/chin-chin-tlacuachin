@@ -7,7 +7,7 @@ function create_type(new_type) {
 
     let url = document.getElementById('create-type-button').getAttribute('url');
     let json = { 'nombre': new_type }
-    CCT.Request.fetch({url: url, type:'POST', data: json, redirect: 'manual'});
+    CCT.Request.fetch({url: url, type:'POST', data: json});
 
 }
 
@@ -34,7 +34,7 @@ function create_gasto() {
     }
 
 
-    CCT.Request.fetch({url: url, type: 'POST', data: json, redirect: 'manual'})
+    CCT.Request.fetch({url: url, type: 'POST', data: json})
 }
 
 function validaCampos(){
@@ -84,12 +84,12 @@ window.onload = function () {
         borrars[i].addEventListener('click', function(){
             if (confirm('¿Seguro que quieres borrar este gasto?\nNo se puede deshacer.')){
                 let url = this.getAttribute('url');
-                CCT.Request.fetch({url: url, redirect: 'manual'})
+                CCT.Request.fetch({url: url})
             }
         });
         statuses[i].addEventListener('change', function(){
             let url = this.getAttribute('url');
-            CCT.Request.fetch({url: url, redirect: 'manual'});
+            CCT.Request.fetch({url: url});
         });
     }
 }

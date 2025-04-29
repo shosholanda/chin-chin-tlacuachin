@@ -19,7 +19,7 @@
 </p>
 <h3>Informacion</h3>
 <div class="columns">
-    <div>
+    <div class="col">
         <div class="campo">
             {{ mc.label_input('name', 'Nombre(s)', value=usuario.nombre)}}
         </div>
@@ -33,7 +33,8 @@
             {{ mc.label_input('birthday', 'Cumpleaños', value=usuario.fecha_nacimiento, type='date')}}
         </div>
     </div>
-    <div >
+    <hr>
+    <div class="col">
         {{ mc.img(url_for('static', filename='img/icons/croissant.svg', class="bound-box")) }}
         <p>Foto de perfil</p>
     </div>

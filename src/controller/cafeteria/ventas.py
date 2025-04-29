@@ -3,7 +3,7 @@
 Todas las ventas requieren de productos para validarse.
 """
 from flask import (
-    jsonify, render_template, Blueprint, flash, redirect, render_template_string, request, url_for, session, abort
+    render_template, Blueprint, flash, redirect, render_template_string, request, url_for, session, abort
 )
 
 from src.model.dto.venta import Venta
@@ -47,12 +47,18 @@ def create_venta():
     if cart == []:
         flash("No hay productos para comprar.")
         return redirect(url_for('ventas.main')) 
+    tipo_pago = int(body['payment']) if body['payment'] != None else None
+    total = float(body['total'])
+    propina = float(body['tip'])
+    notas = body['notes']
+    cliente = body['client']
+
     nueva_venta = Venta(id_usuario=session['usuario'],
-                        id_tipo_pago=int(body['payment']),
-                        total=float(body['total']),
-                        propina=float(body['tip']),
-                        notas=body['notes'],
-                        cliente=body['client']
+                        id_tipo_pago=tipo_pago,
+                        total=total,
+                        propina=propina,
+                        notas=notas,
+                        cliente=cliente
                         )
     agrega(nueva_venta)
 
@@ -61,8 +67,11 @@ def create_venta():
                                     id_producto=c['product_id'],
                                     cantidad=c['quantity'])
         agrega(transaccion)
-    flash("¡Compra realizada!")
-    return redirect(url_for('ventas.main'))
+    flash("¡Compra realizada!" )
+    if tipo_pago:
+        return redirect(url_for('ventas.main'))
+    else:
+        return redirect(url_for('ventas.referencia', referencia=nueva_venta.referencia))
 
 @ventas.route('carrito/')
 @requiere_inicio_sesion
@@ -85,6 +94,7 @@ def update_venta(referencia):
             venta.propina = json['propina']
             venta.notas = json['notas']
             venta.cliente = json['cliente']
+            venta.id_tipo_pago = json['tipo_pago'] if json['tipo_pago'] != "" else None
             agrega(venta)
             flash("Se actualizó correctamente el producto!")
     return redirect(url_for('ventas.referencia', referencia=referencia))
@@ -166,7 +176,7 @@ def referencia(referencia):
     venta = get_by_id(Venta, referencia)
     if not venta:
         return redirect(url_for('ventas.main'))
-    return render_template('cafeteria/ventas/referencia.html', venta=venta)
+    return render_template('cafeteria/ventas/referencia.html', venta=venta, tipo_pagos= get_all(TipoPago))
 
 
 @ventas.route('delete-venta/<referencia>')

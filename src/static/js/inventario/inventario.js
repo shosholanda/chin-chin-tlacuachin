@@ -18,7 +18,7 @@ function create_articulo() {
             'minimo': min.value,
             'maximo': max.value
         }
-        CCT.Request.fetch({url: url, data: json, type: 'POST', redirect: 'manual'});
+        CCT.Request.fetch({url: url, data: json, type: 'POST'});
 
     } else {
         alert("Llena todos los campos para el articulo");
@@ -32,7 +32,7 @@ function create_tipo() {
 
     if (CCT.Text.validateString(nuevo_tipo_articulo)) {
         json = { 'tipo_articulo': nuevo_tipo_articulo };
-        CCT.Request.fetch({url: url, type: 'POST', data: json, redirect: 'manual'});
+        CCT.Request.fetch({url: url, type: 'POST', data: json});
     }
 }
 

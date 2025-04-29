@@ -1,0 +1,16 @@
+{% extends 'cafeteria/base_dashboard.html' %}
+
+{% block title %}Reportes{% endblock %}
+
+{% block script -%}
+<script type="text/javascript" src="{{ url_for('static', filename='js/modules/HTML.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/modules/Text.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/modules/Event.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/modules/Request.js') }}"></script>
+{%- endblock %}
+
+{% block nav %}
+<div>
+    | Resumen | Cortes | Ventas | Productos | Gastos |
+</div>
+{% endblock %}

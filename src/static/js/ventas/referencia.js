@@ -1,9 +1,10 @@
-function popUp(answer){
-    if (answer === true){
-        let data = document.getElementById('sale-data');
-        let ref = data.getAttribute('ref');
-        let url = data.getAttribute('url');
-        CCT.Request.fetch({url: url + "delete-venta/" + ref, redirect: 'manual'});
+async function popUp(answer){
+    if (answer === true || answer === false){
+        let url = document.getElementById('print-ticket').getAttribute('url');
+        let ref = document.getElementById('sale-data').getAttribute('ref');
+        let data = {'referencia': parseInt(ref), 'rfc': answer}
+        let r = await CCT.Request.fetch({url: url, type: 'POST', data: data});
+        console.log(r);
     }
     CCT.Event.changeVisibility('overlay', type='flex');
 }
@@ -11,21 +12,36 @@ function popUp(answer){
 window.onload = function () {
     document.getElementById('update').addEventListener('click', function () {
         let propina = document.getElementById('tip');
+        propina = parseFloat(propina);
         let notas = document.getElementById('notes');
         let cliente = document.getElementById('client');
+        let payment = CCT.HTML.getSelectedValue('payment-type');
 
         let data = document.getElementById('sale-data');
         let ref = data.getAttribute('ref');
         let url = data.getAttribute('url');
         let json = {
-            'propina': parseInt(propina.value),
+            'propina': isNaN(propina) ? 0 : propina,
             'notas': notas.value,
-            'cliente': cliente.value
+            'cliente': cliente.value,
+            'tipo_pago': payment.value
         }
-        CCT.Request.fetch({url: url + 'update-venta/' + ref, type: 'POST', data: json, redirect: 'manual'});
+        CCT.Request.fetch({url: url + 'update-venta/' + ref, type: 'POST', data: json});
     });
 
     document.getElementById('delete').addEventListener('click', function () {
+        if (confirm('¿Estás seguro que quieres eliminar esta venta para siempre?')){
+            let data = document.getElementById('sale-data');
+            let ref = data.getAttribute('ref');
+            let url = data.getAttribute('url');
+            CCT.Request.fetch({url: url + "delete-venta/" + ref});
+        }
+    });
+
+    document.getElementById('print-ticket').addEventListener('click', function(){
+        popUp();
+    });
+    document.getElementById('cancel').addEventListener('click', function(){
         popUp();
     })
 
@@ -34,6 +50,6 @@ window.onload = function () {
     });
 
     document.getElementById('no').addEventListener('click', function () {
-        popUp()
+        popUp(false)
     });
 }

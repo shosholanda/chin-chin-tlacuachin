@@ -1,6 +1,7 @@
 {% extends 'cafeteria/base_dashboard.html' %}
 
 {% block content %}
+<h2>Bienvenid@ {{ user.nombre }}</h2>
 <div id="splashimg">
     <!-- <h2>Inicio</h2> -->
     <img  src="{{ url_for('static', filename='img/Tlacuachin-recortado.jpg')}}" alt="Logo chinchin tlacuachin">

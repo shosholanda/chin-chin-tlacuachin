@@ -13,7 +13,7 @@ window.onload = function () {
     });
 
     document.getElementById('status').addEventListener('change', async function(){
-        await CCT.Request.fetch({url: url + gtin, redirect: 'manual'});
+        await CCT.Request.fetch({url: url + gtin});
     });
 
     upd.addEventListener('click', function () {
@@ -33,8 +33,7 @@ window.onload = function () {
         CCT.Request.fetch({
             url: url_update,
             type: 'POST',
-            data: json,
-            redirect: 'manual'
+            data: json
         });
     })
 }

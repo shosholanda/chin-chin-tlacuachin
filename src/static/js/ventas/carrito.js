@@ -102,8 +102,8 @@ function verifyInputs() {
 function verifyCart() {
     let b = document.getElementById('buy-cart');
     let total = parseInt(document.getElementById('total').value);
-    let payment = document.getElementById('payments');
-    b.disabled = (carro.length === 0) || (total <= 0) || (CCT.HTML.getRadioValue(payment) === null);
+    // let payment = document.getElementById('payments');
+    b.disabled = (carro.length === 0) || (total <= 0)// || (CCT.HTML.getRadioValue(payment) === null);
 }
 
 
@@ -171,6 +171,8 @@ async function sendCart() {
     let propina = document.getElementById('tip');
     let total = document.getElementById('total');
     let tipo_pago = document.getElementById('payments');
+    tipo_pago = CCT.HTML.getRadioValue(tipo_pago);
+    tipo_pago = tipo_pago ? parseInt(tipo_pago.value) : null;
     let url = document.getElementById('buy-cart').getAttribute('url')
 
     let shop = {
@@ -179,11 +181,11 @@ async function sendCart() {
         tip: parseFloat(propina.value),
         notes: notas.value,
         client: cliente.value,
-        payment: parseInt(CCT.HTML.getRadioValue(tipo_pago).value)
+        payment: tipo_pago
 
     }
 
-    await CCT.Request.fetch({ url: url, data: shop, type: 'POST', redirect: 'manual' });
+    CCT.Request.fetch({ url: url, data: shop, type: 'POST'});
 }
 
 // Main

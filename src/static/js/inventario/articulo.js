@@ -1,7 +1,7 @@
 function deleteArticulo() {
     let url = document.getElementById('delete');
     url = url.getAttribute('url');
-    CCT.Request.fetch({url: url, redirect:'manual'});
+    CCT.Request.fetch({url: url});
 }
 
 function updateArticulo() {
@@ -13,6 +13,7 @@ function updateArticulo() {
     cantidad_actual = math.evaluate(cantidad_actual);
     let min = document.getElementById('min').value;
     let max = document.getElementById('max').value;
+    max = isNaN(parseFloat(max)) ? 0 : max
     let url = document.getElementById('update').getAttribute('url');
     console.log(tipo_articulo, unidad, costo, cantidad_actual, min, max, url)
 
@@ -27,7 +28,7 @@ function updateArticulo() {
             'maximo': parseFloat(max)
         }
 
-        CCT.Request.fetch({url: url, type:'POST', data: json, redirect: 'manual'})
+        CCT.Request.fetch({url: url, type:'POST', data: json})
     }
 }
 

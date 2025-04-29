@@ -14,7 +14,7 @@ function updateData(){
         'apellido_materno': aM,
         'fecha_nacimiento': birthday
     }
-    CCT.Request.fetch({url: url, type:'POST', data: json, redirect: 'manual'});
+    CCT.Request.fetch({url: url, type:'POST', data: json});
 }
 
 window.onload = function(){
@@ -32,7 +32,7 @@ window.onload = function(){
         if (confirm(`¿Seguro que quieres desactivar esta cuenta?
 No podrás volver a iniciar sesión hasta que un administrador te active tu cuenta de nuevo.`)){
             let url = this.getAttribute('url');
-            CCT.Request.fetch({url: url, type:'GET', redirect:'manual'})
+            CCT.Request.fetch({url: url, type:'GET'})
         }
     });
 

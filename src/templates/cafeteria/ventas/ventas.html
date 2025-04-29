@@ -3,7 +3,6 @@
 
 {% block script %}
 {{ super() }}
-<script type="text/javascript" src="{{ url_for('static', filename='js/ventas/ventas.js') }}"></script>
 {% endblock %}
 
 
@@ -44,14 +43,9 @@
                     {%- endfor %}
                 </ul>
             </td>
-            <td> {{ venta.tipo_pago.nombre }} </td>
+            <td> {{ mc.format_str(venta.tipo_pago.nombre) }} </td>
             <td>${{ venta.total }} </td>
             <td>{{ mc.format_date(venta.fecha) }} </td>
-            <td>
-                <button class="print" id="print-{{ venta.referencia }}">
-                    Imprimir
-                </button>
-            </td>
         </tr>
 
         {% endfor %}
@@ -63,9 +57,3 @@
 {% endblock %}
 
 
-{%+ block overlay %}
-{{ mc.popup("¿Quieres imprimir factura?", 
-    [{'name': "Sí", 'id': "yes"}, 
-    {'name': "No", 'id': "no"}, 
-    {'name': "Cancelar", 'id': "cancel"}]) }}
-{%- endblock %}

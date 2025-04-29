@@ -1,7 +1,7 @@
 function deleteGasto() {
     let url = document.getElementById('delete');
     url = url.getAttribute('url');
-    CCT.Request.fetch({url: url, redirect:'manual'});
+    CCT.Request.fetch({url: url});
 }
 
 function updateGasto() {
@@ -22,7 +22,7 @@ function updateGasto() {
             'fecha': fecha,
             'status': status
         }
-        CCT.Request.fetch({url: url, type:'POST', data: json, redirect: 'manual'})
+        CCT.Request.fetch({url: url, type:'POST', data: json})
     }
 }
 

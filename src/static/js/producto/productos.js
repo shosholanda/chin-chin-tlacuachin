@@ -29,8 +29,7 @@ async function create_category() {
         let json = { 'nombre': text.value }
         await CCT.Request.fetch({url: 'create-categoria/', 
                                 data: json, 
-                                type: 'POST', 
-                                redirect: 'manual'});
+                                type: 'POST'});
     } else {
         alert("Especifica una categoria");
     }
@@ -42,8 +41,7 @@ async function create_type() {
         let json = { 'nombre': text.value };
         await CCT.Request.fetch({url: 'create-tipo-producto/', 
                                 data: json, 
-                                type: 'POST', 
-                                redirect: 'manual'});
+                                type: 'POST'});
     } else {
         alert("Especifica un tipo de producto.");
     }
@@ -68,8 +66,7 @@ async function create_product() {
 
         await CCT.Request.fetch({url:'create-producto/', 
                                 data: json, 
-                                type:'POST', 
-                                redirect:'manual'});
+                                type:'POST'});
     } else {
         alert("Llena todos los campos para el producto");
     }
@@ -125,17 +122,10 @@ window.onload = async function () {
     });
 
     let statuses = document.getElementsByName('status');
-    let borrars = document.getElementsByName('borrar');
     for (let i = 0; i < statuses.length; i++) {
-        borrars[i].addEventListener('click', async function(){
-            let gtin = this.closest("tr").id;
-            await CCT.Request.fetch({url: 'delete-producto/' + gtin,
-                                    redirect: 'manual'})
-        });
         statuses[i].addEventListener('change', async function() {
             let gtin = this.closest("tr").id
-            await CCT.Request.fetch({url: `change-status/${gtin}`,
-                                    redirect: 'manual'})
+            await CCT.Request.fetch({url: `change-status/${gtin}`})
         });
     }
 }

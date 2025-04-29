@@ -72,6 +72,7 @@
 {% macro label_select(id, value, options=[], selected=None) -%}
   {{ label(value, for=id)}}
   <select id="{{ id }}" name="{{ id }}" autocomplete="off">
+    <option disabled hidden selected value="">Seleccionar...</option>
     {%- for option in options +%}
     <option value="{{ option.id }}"{% if selected == option.id %} selected {% endif -%}>
       {{- option -}}
@@ -151,6 +152,10 @@
 
 {% macro format_day(date) %}
 {{- date.strftime('%Y-%m-%d') -}}
+{% endmacro %}
+
+{% macro format_str(value) %}
+{% if value -%} {{- value -}} {%- else -%} N/A {%- endif -%}
 {% endmacro %}
 
 {####################################### OTRAS MACROS #######################################}

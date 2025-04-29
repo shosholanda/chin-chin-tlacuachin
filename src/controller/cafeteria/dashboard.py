@@ -16,4 +16,5 @@ dashboard = Blueprint('dashboard', __name__, url_prefix='/dashboard')
 @requiere_inicio_sesion
 def main():
     """Método principal a ejecutar."""
-    return render_template('cafeteria/dashboard.html', usuario=g.user.correo)
+    user = get_by_id(Usuario, session['usuario'])
+    return render_template('cafeteria/dashboard.html', user=user)

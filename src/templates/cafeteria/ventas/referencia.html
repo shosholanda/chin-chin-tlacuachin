@@ -11,29 +11,44 @@
 
 {% block content %}
 <div id="sale-data" ref="{{ venta.referencia }}" url="{{ url_for('ventas.main') }}">
-  <h1> Venta #{{venta.referencia}} </h1>
+  <h2> Venta #{{venta.referencia}} </h2>
   <p>{{ mc.label_input('client', 'Cliente: ', value=venta.cliente) }}</p>
-  <h2>Productos:</h2>
-  <ul>
-    {% for transaccion in venta.transacciones -%}
-    <li>
-      {{transaccion.cantidad}}x {{ transaccion.producto.nombre }} (${{transaccion.producto.precio}})
-    </li>
-    {%- endfor %}
-  </ul>
+  <div class="columns">
+    <div class="col">
+      <h2>Productos:</h2>
+      <ul>
+        {% for transaccion in venta.transacciones -%}
+        <li>
+          {{transaccion.cantidad}}x {{ transaccion.producto.nombre }} (${{transaccion.producto.precio}})
+        </li>
+        {%- endfor %}
+      </ul>
+      <hr>
+      <h2>Subtotal: {{venta.total}}</h2>
+    </div>
+    <hr>
+    <div class="col">
+      <h2>Informacion</h2>
+      <div>
+        {{mc.label_input('tip', 'Propina:', value=mc.format_number(venta.propina)) }}
+      </div>
+      <p>
+        {{ mc.label_select('payment-type', 'Tipo de pago', tipo_pagos, selected=venta.id_tipo_pago) }}
+      </p>
+      {{ mc.label_textarea('notes', 'Notas', default=venta.notas) }}
+      <div>
+        {{ mc.button('Imprimir ticket', id='print-ticket', url=url_for('ventas.print_ticket'))}}
+      </div>
+    </div>
+  </div>
   
-  <hr>
-  <h2>Total: {{venta.total}}</h2>
-  <h3>Tipo de pago: {{ venta.tipo_pago.nombre }}</h3>
-  {{mc.label_input('tip', 'Propina:', value=venta.propina) }}
-  <h3>Fecha: {{ mc.format_date(venta.fecha) }} </h3> 
+  <h3>{{ mc.format_date(venta.fecha) }} </h3> 
   <br>
-  {{ mc.label_textarea('notes', 'Notas', default=venta.notas) }}
 
 </div>
 
 <div class="params">
-  {{ mc.button("Actualizar", id="update") }}
+  {{ mc.button("Guardar", id="update") }}
   {{ mc.button("Eliminar", id="delete") }}
 </div>
 
@@ -41,9 +56,9 @@
 {% endblock %}
 
 {%+ block overlay %}
-{{ mc.popup("¿Seguro que quiere eliminar esta venta? No hay vuelta atrás.", 
+{{ mc.popup("¿Quieres imprimir factura?", 
     [{'name': "Sí", 'id': "yes"}, 
-    {'name': "No", 'id': "no"}]) }}
+    {'name': "No", 'id': "no"}, 
+    {'name': "Cancelar", 'id': "cancel"}]) }}
 {%- endblock %}
-
 

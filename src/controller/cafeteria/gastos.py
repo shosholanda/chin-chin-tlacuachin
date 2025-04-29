@@ -79,13 +79,12 @@ def update_gasto(id_gasto):
         descripcion = body['descripcion']
         fecha = body['fecha']
         status = body['status']
-        print(body)
 
         gasto.id_tipo_gasto = tipo_gasto
         gasto.cantidad = cantidad
         gasto.descripcion = descripcion
         gasto.fecha = fecha
-        gasto.status = status
+        gasto.status = True if status == 'on' else False
         agrega(gasto)
 
         flash("Gasto modificado con éxito")

@@ -3,7 +3,6 @@
 
 {% block script -%}
 {{ super() }}
-<script type="text/javascript" src="{{ url_for('static', filename='js/producto/productos.js') }}"></script>
 {%- endblock %}
 
 
@@ -83,9 +82,6 @@
       <td>$ {{ mc.format_number(producto.precio) }} </td>
       <td>
         <input type="checkbox" name="status" autocomplete="off" {% if producto.status -%}checked{%- endif -%}>
-      </td>
-      <td>
-        <button name="borrar">Borrar</button>
       </td>
     </tr>
 
