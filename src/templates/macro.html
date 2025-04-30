@@ -138,16 +138,19 @@
 {% macro format_number(number) %}
   {%- if not number -%}No
   {%- elif number % 1 == 0 -%}
-  {{- "{0:g}".format(number) -}} {% else %}
-  {{- "{:.2f}".format(number) -}}
+  {{- "{0:,g}".format(number) -}} {% else %}
+  {{- "{:,.2f}".format(number) -}}
   {%- endif -%}
 {% endmacro %}
 
 {% macro format_date(date) %}
   <span>{{ date.strftime('%a %d %b %Y') }}</span>
-  <br>
   <span>{{ date.strftime('%I:%M %p') }}</span>
 {% endmacro %}
+
+{% macro crop_text(text, limit, endstr="") -%}
+{{ (text | string )[:limit] + (endstr if (text | length) > limit else "") }}
+{%- endmacro %}
 
 
 {% macro format_day(date) %}
@@ -155,7 +158,7 @@
 {% endmacro %}
 
 {% macro format_str(value) %}
-{% if value -%} {{- value -}} {%- else -%} N/A {%- endif -%}
+{% if value -%} {{ value }} {%- else -%} N/A {%- endif -%}
 {% endmacro %}
 
 {####################################### OTRAS MACROS #######################################}

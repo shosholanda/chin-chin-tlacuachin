@@ -30,8 +30,8 @@ class Articulo(db.Model):
 
     # Todos los productos que contiene este articulo
     tipo_articulo = db.relationship('TipoArticulo', back_populates='articulos')
-    productos = db.relationship('Producto', back_populates='articulos', secondary='receta')
-    # receta = db.relationship('Receta', back_populates='insumos', overlaps="articulos,productos")
+    # productos = db.relationship('Producto', back_populates='articulos', secondary='receta')
+    receta = db.relationship('Receta', back_populates='insumo', overlaps="articulos,productos")
 
     def __init__(self,
                  nombre,

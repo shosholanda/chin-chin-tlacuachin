@@ -1,5 +1,6 @@
 """Consultas con la tabla de producto."""
 from src.model.dto.producto import Producto
+from src.model.dto.receta import Receta
 
 
 def get_producto_by_gtin(gtin):
@@ -15,3 +16,12 @@ def get_subgtin(gtin):
 def get_subgtin_and_status(gtin):
     """Regresa los productos activos que contengan gtin."""
     return get_subgtin(gtin).filter(Producto.status == 1)
+
+def get_receta_by_product(id_producto):
+    return Receta.query.filter(Receta.id_producto == id_producto)
+
+def get_receta_by_insumo(id_insumo):
+    return Receta.query.filter(Receta.id_insumo == id_insumo)
+
+def get_insumo_in_receta(id_producto, id_insumo):
+    return Receta.query.filter(Receta.id_insumo == id_insumo and Receta.id_producto == id_producto).first()

@@ -1,5 +1,5 @@
 
-function create_type(new_type) {
+async function create_type(new_type) {
     if (!CCT.Text.validateString(new_type)){
         alert("Especifica un tipo de gasto.");
         return;
@@ -7,12 +7,12 @@ function create_type(new_type) {
 
     let url = document.getElementById('create-type-button').getAttribute('url');
     let json = { 'nombre': new_type }
-    CCT.Request.fetch({url: url, type:'POST', data: json});
-
+    let response = await CCT.Request.fetch({url: url, type:'POST', data: json});
+    CCT.HTML.writeOn({html: response.html, url: response.url})
 }
 
 
-function create_gasto() {
+async function create_gasto() {
     let descripcion = document.getElementById('description').value;
     let tipo_gasto = CCT.HTML.getSelectedValue('expense-type').value;
     let cantidad = document.getElementById('quantity').value;
@@ -34,7 +34,8 @@ function create_gasto() {
     }
 
 
-    CCT.Request.fetch({url: url, type: 'POST', data: json})
+    let response = await CCT.Request.fetch({url: url, type: 'POST', data: json})
+    CCT.HTML.writeOn({html: response.html, url: response.url})
 }
 
 function validaCampos(){
@@ -76,21 +77,5 @@ window.onload = function () {
 
     let date = document.getElementById('register-date');
     date.valueAsDate = new Date()
-
-    let statuses = document.getElementsByName('status');
-    let borrars = document.getElementsByName('borrar');
-
-    for (let i = 0; i < statuses.length; i++) {
-        borrars[i].addEventListener('click', function(){
-            if (confirm('¿Seguro que quieres borrar este gasto?\nNo se puede deshacer.')){
-                let url = this.getAttribute('url');
-                CCT.Request.fetch({url: url})
-            }
-        });
-        statuses[i].addEventListener('change', function(){
-            let url = this.getAttribute('url');
-            CCT.Request.fetch({url: url});
-        });
-    }
 }
 

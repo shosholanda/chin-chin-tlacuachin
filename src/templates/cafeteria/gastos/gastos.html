@@ -68,9 +68,6 @@
       <td>$ {{ gasto.cantidad }} </td>
       <td> {{ gasto.descripcion }} </td>
       <td> {{ mc.format_day(gasto.fecha) }} </td>
-      <td>
-        <button name="borrar" url="{{ url_for('gastos.delete_gasto', id_gasto=gasto.id ) }}">Borrar</button>
-      </td>
     </tr>
 
     {% endfor %}

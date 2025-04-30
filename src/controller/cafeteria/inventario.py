@@ -55,6 +55,16 @@ def get_articulo(nombre_articulo):
             'cantidad_actual': art.cantidad_actual,
             'status': art.status}
 
+@inventario.route('get-articulos/<nombres_articulos>', methods=['GET'])
+@requiere_inicio_sesion
+def get_articulos(nombres_articulos):
+    """Obtiene el articulos que coincidan por nombre"""
+    arts = get_by_name(Articulo, nombres_articulos, all=True)
+    return [{'id': art.id,
+            'nombre': art.nombre,
+            'unidad': art.unidad,
+            'costo_unitario': art.costo_unitario,
+            'status': art.status} for art in arts if art.status == 1]
 
 @inventario.route('create-tipo-articulo/', methods=('GET', 'POST'))
 @requiere_inicio_sesion
@@ -123,7 +133,10 @@ def update_articulo(id_articulo):
 def delete_articulo(id_articulo):
     """Elimina el articulo para siempre."""
     articulo = get_by_id(Articulo, id_articulo)
-    elimina(articulo)
+    if articulo.receta == []:
+        elimina(articulo)
+    else:
+        soft_delete(articulo)
     flash("Articulo eliminado con éxito")
     return redirect(url_for('inventario.main'))
 

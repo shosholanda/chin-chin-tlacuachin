@@ -1,0 +1,40 @@
+{% import 'macro.html' as mc %}
+
+<table>
+    <tr>
+        <th> ID </th>
+        <th> Productos </th>
+        <th> Tipo Pago</th>
+        <th> Total </th>
+        <th> Fecha </th>
+    </tr>
+    {% for venta in ventas %}
+    <tr id="{{ venta.referencia }}">
+        <td> <a href=" {{ url_for('ventas.referencia', referencia=venta.referencia) }}">{{venta.referencia}}</a>
+        </td>
+        <td>
+            <ul>
+                {% for transaccion in venta.transacciones -%}
+                <li>
+                    {{transaccion.cantidad}}x {{ transaccion.producto.nombre }}
+                     (${{ mc.format_number(transaccion.producto.precio)}})
+                </li>
+                {%- endfor %}
+            </ul>
+        </td>
+        <td> {{ mc.format_str(venta.tipo_pago.nombre) }} </td>
+        <td>${{ mc.format_number(venta.total) }} </td>
+        <td>{{ mc.format_date(venta.fecha) }} </td>
+    </tr>
+
+    {% endfor %}
+    <tr id="total">
+        <td> </td>
+        <td> Total vendido</td>
+        <td> {{ mc.format_str(payment) }} </td>
+        <td>${{ mc.format_number(total) }} </td>
+        <td> </td>
+    </tr>
+</table>
+
+

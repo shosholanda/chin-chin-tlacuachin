@@ -1,4 +1,4 @@
-function create_articulo() {
+async function create_articulo() {
     let nombre = document.getElementById('name')
     let tipo_articulo = document.getElementById('article-type')
     let cantidad_actual = document.getElementById('present-quantity')
@@ -18,21 +18,23 @@ function create_articulo() {
             'minimo': min.value,
             'maximo': max.value
         }
-        CCT.Request.fetch({url: url, data: json, type: 'POST'});
+        let response = await CCT.Request.fetch({url: url, data: json, type: 'POST'});
+        CCT.HTML.writeOn({html: response.html, url: response.url})
 
     } else {
         alert("Llena todos los campos para el articulo");
     }
 }
 
-function create_tipo() {
+async function create_tipo() {
 
     let nuevo_tipo_articulo = document.getElementById('new-article-type').value;
     let url = document.getElementById('create-type-button').getAttribute('url');
 
     if (CCT.Text.validateString(nuevo_tipo_articulo)) {
         json = { 'tipo_articulo': nuevo_tipo_articulo };
-        CCT.Request.fetch({url: url, type: 'POST', data: json});
+        let response = await CCT.Request.fetch({url: url, type: 'POST', data: json});
+        CCT.HTML.writeOn({html: response.html, url: response.url})
     }
 }
 

@@ -40,7 +40,7 @@ select {
 }
 
 input {
-    max-width: 10em;
+    max-width: 20em;
 }
 
 footer {
@@ -63,11 +63,32 @@ section div{
     background-color: white;
     display: flex;
     justify-content: space-evenly;
+    overflow: scroll;
+}
+
+.encabezado a{
+    color: black;
+    text-decoration: none;
+}
+
+.encabezado .icon:hover {
+    background-color: #DDDDDD;
 }
 
 p.tag {
     margin: 0px;
     margin-bottom: 10px;
+}
+
+p.big-text {
+    font-size: 2em;
+    margin: 0;
+    padding: 10px;
+}
+
+p.small-text {
+    font-size: small;
+    margin: 0;
 }
 
 .encabezado div{
@@ -109,7 +130,14 @@ p.tag {
 .icon{
     text-align: center;
     cursor: pointer;
-    margin: 0.1em;
+}
+
+.icon-small *{
+    vertical-align: middle;
+}
+
+.icon-small img{
+    width: 30px;
 }
 
 .fit {
@@ -189,6 +217,29 @@ p.tag {
 .navbar{
     font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
     background-color: #EEEEEE;
+    overflow: scroll;
+}
+
+.navbar ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.navbar a {
+    color: black;
+    text-decoration: none;
+    padding: 10px;
+    display: block;
+    text-align: center;
+}
+
+.navbar a:hover {
+    background-color: #DDDDDD;
+}
+
+.navbar li {
+    float: left;
 }
 
 /**
@@ -394,17 +445,19 @@ tr:nth-child(even) {
 .container {
     display: flex;
     justify-content: center;
+    text-align: center;
 
 }
 
 .columns {
     display: flex; 
-    justify-content:left;
+    justify-content: center;
 }
 
 .col {
-    margin-left: 30px;
-    margin-right: 30px;
+    flex: 1;
+    margin: 0;
+    padding: 10px;
 }
 
 .bound-box {
@@ -539,7 +592,7 @@ form textarea {
     }
 
     main {
-        margin: 0;
+        margin: 5px;
         padding: 0;
     }
 
@@ -548,7 +601,7 @@ form textarea {
     }
 
     .center {
-        padding: 10px;
+        padding: 0;
         width: 100%;
     }
 

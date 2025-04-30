@@ -1,4 +1,4 @@
-function updateData(){
+async function updateData(){
     let url = document.getElementById('update-data').getAttribute('url');
     let nombre = document.getElementById('name').value;
     let aP = document.getElementById('first-name').value;
@@ -14,7 +14,8 @@ function updateData(){
         'apellido_materno': aM,
         'fecha_nacimiento': birthday
     }
-    CCT.Request.fetch({url: url, type:'POST', data: json});
+    let response = await CCT.Request.fetch({url: url, type:'POST', data: json});
+    CCT.HTML.writeOn({html: response.html, url: response.url})
 }
 
 window.onload = function(){
@@ -28,11 +29,12 @@ window.onload = function(){
         updateData();
     });
 
-    deactivate_button.addEventListener('click', function(){
+    deactivate_button.addEventListener('click', async function(){
         if (confirm(`¿Seguro que quieres desactivar esta cuenta?
 No podrás volver a iniciar sesión hasta que un administrador te active tu cuenta de nuevo.`)){
             let url = this.getAttribute('url');
-            CCT.Request.fetch({url: url, type:'GET'})
+            let response = await CCT.Request.fetch({url: url, type:'GET'})
+            CCT.HTML.writeOn({html: response.html, url: response.url})
         }
     });
 

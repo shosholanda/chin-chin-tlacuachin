@@ -9,3 +9,26 @@
 {% endblock %}
 
 {% block title %}Ventas{% endblock %}
+
+
+{% block nav %}
+
+<nav class="navbar center">
+    <ul>
+        <li><a href="{{ url_for('ventas.main') }}">Recientes</a></li>
+        <li><a href="{{ url_for('ventas.periodo', timespan='day') }}">Día</a></li>
+        <li><a href="{{ url_for('ventas.periodo', timespan='week') }}">Semana</a></li>
+        <li><a href="{{ url_for('ventas.periodo', timespan='month') }}">Mes</a></li>
+        <li><a href="{{ url_for('ventas.periodo', timespan='?') }}">Personalizado</a></li>
+    </ul>
+    <div class="toolbar">
+
+        <div class="icon-small">
+            <a id="nueva-venta" href="{{ url_for('ventas.shopcar')}}">
+                <img src="{{ url_for('static', filename='img/icons/add.svg') }}" alt="Nuevo producto">
+                Nueva Venta
+            </a>
+        </div>
+    </div>
+</nav>
+{% endblock %}

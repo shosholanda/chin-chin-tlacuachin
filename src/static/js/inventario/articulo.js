@@ -1,10 +1,11 @@
-function deleteArticulo() {
+async function deleteArticulo() {
     let url = document.getElementById('delete');
     url = url.getAttribute('url');
-    CCT.Request.fetch({url: url});
+    let response = await CCT.Request.fetch({url: url});
+    CCT.HTML.writeOn({html: response.html, url: response.url})
 }
 
-function updateArticulo() {
+async function updateArticulo() {
     let tipo_articulo = CCT.HTML.getSelectedValue('article-type').value
     let unidad = document.getElementById('unit').value;
     let costo = document.getElementById('cost-per-unit').value;
@@ -28,11 +29,13 @@ function updateArticulo() {
             'maximo': parseFloat(max)
         }
 
-        CCT.Request.fetch({url: url, type:'POST', data: json})
+        let response = await CCT.Request.fetch({url: url, type:'POST', data: json})
+        CCT.HTML.writeOn({html: response.html, url: response.url})
     }
 }
 
 window.onload = function () {
+
     document.getElementById('delete').addEventListener('click', function () {
         if (confirm('Seguro que quieres eliminar este articulo?'))
             deleteArticulo();

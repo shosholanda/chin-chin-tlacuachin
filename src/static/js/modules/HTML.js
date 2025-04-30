@@ -52,15 +52,7 @@ var CCT = (function (CCT) {
             element.innerHTML = "";
         }
 
-        /**
-         * Crea un elemento de html con sus atributos y funcion si existe.
-         * @param {*} tag 
-         * @param {*} attibutes 
-         * @param {*} innerHTML 
-         * @param {*} eventType 
-         * @param {*} func 
-         * @returns 
-         */
+
         static createElement(tag, attibutes={}, innerHTML="", eventType="", func=null){
             let element = document.createElement(tag);
             for (const [key, value] of Object.entries(attibutes))
@@ -77,6 +69,20 @@ var CCT = (function (CCT) {
                 wrapper.appendChild(e);
             return wrapper;
         }
+
+
+		static writeOn({html = "", url = "/", element = null}){
+			if (element) {
+				if (element.constructor === String)
+                    element = this.get(element);
+                element.innerHTML = html
+			} else {
+				document.open();
+				document.write(html);
+				document.close();
+				history.pushState(null, "", url);
+			}
+		}
     }
 
     CCT.HTML = HTML;

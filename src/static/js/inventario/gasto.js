@@ -1,10 +1,11 @@
-function deleteGasto() {
+async function deleteGasto() {
     let url = document.getElementById('delete');
     url = url.getAttribute('url');
-    CCT.Request.fetch({url: url});
+    let response = await CCT.Request.fetch({url: url});
+    CCT.HTML.writeOn({html: response.html, url: response.url})
 }
 
-function updateGasto() {
+async function updateGasto() {
     let tipo_gasto = CCT.HTML.getSelectedValue('type').value
     let cantidad = document.getElementById('quantity').value;
     let descripcion = document.getElementById('description').value;
@@ -22,7 +23,8 @@ function updateGasto() {
             'fecha': fecha,
             'status': status
         }
-        CCT.Request.fetch({url: url, type:'POST', data: json})
+        let response = await CCT.Request.fetch({url: url, type:'POST', data: json})
+        CCT.HTML.writeOn({html: response.html, url: response.url})
     }
 }
 

@@ -185,7 +185,8 @@ async function sendCart() {
 
     }
 
-    CCT.Request.fetch({ url: url, data: shop, type: 'POST'});
+    let response = await CCT.Request.fetch({ url: url, data: shop, type: 'POST'});
+    CCT.HTML.writeOn({html: response.html, url: response.url})
 }
 
 // Main

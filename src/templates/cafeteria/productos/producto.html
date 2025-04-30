@@ -10,8 +10,8 @@
 
 
 {% block content %}
-<div class="product" id="product" gtin="{{ producto.gtin }}" url-status="{{ url_for('productos.change_status', gtin='')}}"
-  productID="{{ producto.id }}">
+<div class="product" id="product" gtin="{{ producto.gtin }}"
+  url-status="{{ url_for('productos.change_status', gtin='')}}" productID="{{ producto.id }}">
 
   <h2> {{producto.nombre}} ${{ producto.precio }}</h2>
 
@@ -29,14 +29,19 @@
     {{ mc.label_input("price", "Precio", value=mc.format_number(producto.precio)) }}
   </div>
   <div class="campo">
-    {{ mc.label("Inversión: ") }}
-    <!-- precio.insumos.suma -->
-     <p>Insumos utilizados</p>
-     <ul>
-      <!-- {% for insumo in insumos %}
-      <li></li> NEXT MILESTONE
+    <p>Inversion: ${{ mc.format_number(producto.inversion()) }}</p>
+    <p>Ganancia: ${{ mc.format_number(producto.precio - producto.inversion()) }}</p>
+    <p>Insumos utilizados</p>
+    <ul>
+      {% for p in producto.receta %}
+      <li id_producto="{{ producto.id}}" id_insumo="{{ p.insumo.id}}">{{ mc.format_number(p.cantidad)}} {{p.insumo.unidad }} | 
+        {{ mc.link(p.insumo.nombre, url_for('inventario.articulo', id_articulo=p.insumo.id)) }} 
+          (${{ p.precio_total() }}) 
+        {{ mc.button('Borrar', name='remove-art', url=url_for('productos.delete_insumo'))}}
+      </li>
       {% endfor %}
-     </ul> -->
+      {{ mc.button('Agregar insumo', id='add-art', url=url_for('productos.add_insumo', gtin=producto.gtin))}}
+    </ul>
   </div>
 
   <div class="campo">
@@ -47,9 +52,34 @@
   <br>
   <div class="params">
     {{ mc.button("Guardar", id="update", url=url_for('productos.update_producto'))}}
-    {{ mc.button("Eliminar", mc.disabled(producto.transacciones != []) ,id="delete", url=url_for('productos.delete_producto', gtin=''))}}
+    {{ mc.button("Eliminar", mc.disabled(producto.transacciones != []) ,id="delete",
+    url=url_for('productos.delete_producto', gtin=''))}}
   </div>
 </div>
 <p><b>Nota:</b> No se puede eliminar si ya existe una venta asociada a este producto. Solo se puede modificar el
   precio el cual creará un nuevo producto igual pero con precio diferente y desactivará este mismo</p>
+{% endblock %}
+
+
+{% block overlay %}
+<div class="popup">
+    <form method="POST" action="{{ url_for('productos.add_insumo', gtin=producto.gtin)}}" >
+        <div class="campo">
+            {{ mc.label_input('article', 'Insumo', url=url_for('inventario.get_articulos', nombres_articulos=""),
+              size=80)}}
+            <div id="suggestions" url="{{ url_for('ventas.get_gtins', pseudogtin='')}}" style="display: none;">
+              <ul id="suggestions-list">
+                <!-- Aquí se muestran las sugerencias de las búsquedas -->
+              </ul>
+            </div>
+        </div>
+        <div class="campo">
+            {{ mc.label_input('quantity', 'Cantidad en unidades', size=3) }}
+        </div>
+        {{ mc.input("hidden", id='id_articulo', name='id_articulo') }}
+        {{ mc.button('Cancelar', id='cancel', type='button')}}
+        {{ mc.button('Añadir insumo', type='submit')}}
+    </form>
+</div>
+
 {% endblock %}

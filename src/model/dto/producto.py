@@ -1,7 +1,5 @@
 """Tabla de productos."""
 from src import db
-# WTF tengo q importar esta madres
-# from src.model.tipo_producto import TipoProducto
 
 
 class Producto(db.Model):
@@ -35,9 +33,9 @@ class Producto(db.Model):
     tipo_producto = db.relationship('TipoProducto', back_populates='producto')
 
     # Todos los articulos que contiene este producto
-    articulos = db.relationship('Articulo', back_populates='productos', secondary='receta')
+    # articulos = db.relationship('Articulo', back_populates='productos', secondary='receta')
     # Cómo puedo acceder a receta.cantidad o receta.status?
-    # receta = db.relationship('Receta', back_populates='producto')
+    receta = db.relationship('Receta', back_populates='producto')
 
     # Constructor
     def __init__(self,
@@ -57,3 +55,10 @@ class Producto(db.Model):
     def __repr__(self) -> str:
         """Representación en cadena de este objeto."""
         return f"{self.gtin}\t{self.nombre}\t${self.precio}"
+    
+    def inversion(self):
+        """Regresa el precio de insumos usados en este producto."""
+        total = 0
+        for r in self.receta:
+            total += r.precio_total()
+        return total

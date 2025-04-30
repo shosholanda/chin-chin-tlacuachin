@@ -27,9 +27,10 @@ async function create_category() {
     let text = document.getElementById('new-category');
     if (text.value) {
         let json = { 'nombre': text.value }
-        await CCT.Request.fetch({url: 'create-categoria/', 
+        let response = await CCT.Request.fetch({url: 'create-categoria/', 
                                 data: json, 
                                 type: 'POST'});
+        CCT.HTML.writeOn({html: response.html, url: response.url})
     } else {
         alert("Especifica una categoria");
     }
@@ -39,9 +40,10 @@ async function create_type() {
     let text = document.getElementById('new-product-type');
     if (text.value) {
         let json = { 'nombre': text.value };
-        await CCT.Request.fetch({url: 'create-tipo-producto/', 
+        let response = await CCT.Request.fetch({url: 'create-tipo-producto/', 
                                 data: json, 
                                 type: 'POST'});
+        CCT.HTML.writeOn({html: response.html, url: response.url})
     } else {
         alert("Especifica un tipo de producto.");
     }
@@ -64,9 +66,10 @@ async function create_product() {
         }
         console.log(json)
 
-        await CCT.Request.fetch({url:'create-producto/', 
+        let response = await CCT.Request.fetch({url:'create-producto/', 
                                 data: json, 
                                 type:'POST'});
+        CCT.HTML.writeOn({html: response.html, url: response.url})
     } else {
         alert("Llena todos los campos para el producto");
     }
@@ -125,7 +128,8 @@ window.onload = async function () {
     for (let i = 0; i < statuses.length; i++) {
         statuses[i].addEventListener('change', async function() {
             let gtin = this.closest("tr").id
-            await CCT.Request.fetch({url: `change-status/${gtin}`})
+            let response = await CCT.Request.fetch({url: `change-status/${gtin}`})
+            CCT.HTML.writeOn({html: response.html, url: response.url})
         });
     }
 }

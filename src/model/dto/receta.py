@@ -25,8 +25,8 @@ class Receta(db.Model):
     cantidad = db.Column('cantidad', db.Float(3), nullable=False, default=0)
     status = db.Column('status', db.Boolean, nullable=False, default=True)
 
-    # producto = db.relationship('Producto', back_populates='receta')
-    # insumos = db.relationship('Articulo', back_populates='receta')
+    producto = db.relationship('Producto', back_populates='receta')
+    insumo = db.relationship('Articulo', back_populates='receta')
 
     def __init__(self,
                  id_producto,
@@ -40,3 +40,6 @@ class Receta(db.Model):
     def __repr__(self) -> str:
         """Representación en cadena de este objeto."""
         return f'{self.producto.nombre}\n{self.insumo.nombre}\t{self.cantidad}'
+    
+    def precio_total(self):
+        return round(self.cantidad * self.insumo.costo_unitario, 2)

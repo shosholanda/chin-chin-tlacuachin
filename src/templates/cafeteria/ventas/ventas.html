@@ -6,22 +6,9 @@
 {% endblock %}
 
 
-{% block nav %}
-<div class="toolbar">
-
-    <div class="icon">
-        <a id="nueva-venta" href="{{ url_for('ventas.shopcar')}}">
-            <img src="{{ url_for('static', filename='img/icons/add.svg') }}" alt="Nuevo producto">
-            <p class="tag">Nueva venta</p>
-        </a>
-    </div>
-</div>
-{% endblock %}
-
 {% block content %}
-<h2> Últimas ventas </h2>
+<h2>Ventas recientes</h2>
 <div class="container">
-
     <table>
         <tr>
             <th> ID </th>
@@ -50,8 +37,6 @@
 
         {% endfor %}
     </table>
-
-
 </div>
 
 {% endblock %}

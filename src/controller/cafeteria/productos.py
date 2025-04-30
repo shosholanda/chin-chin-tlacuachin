@@ -13,11 +13,11 @@ from flask import (
 from src.model.dto.producto import Producto
 from src.model.dto.categoria import Categoria
 from src.model.dto.tipo_producto import TipoProducto
-# from src.model.dto.tipo_articulo import TipoArticulo
+from src.model.dto.articulo import Articulo
 from src.model.dto.receta import Receta
 
 from src.model.repository.repo import *
-from src.model.repository.repo_producto import get_producto_by_gtin
+from src.model.repository.repo_producto import *
 from src.model.repository.repo_articulo import get_insumo_by_nombre
 
 from src.controller.auth import requiere_inicio_sesion
@@ -198,3 +198,49 @@ def create_categoria():
         else:
             flash("Ya existe una categoria con este nombre", category="error")
     return redirect(url_for('productos.main'))
+
+
+@productos.route('delete-insumo/', methods=['GET', 'POST'])
+@requiere_inicio_sesion
+def delete_insumo():
+    if request.method == 'POST':
+        body = request.json
+        producto = get_by_id(Producto, body['id_producto'])
+        
+        if not producto:
+            flash("No se encontró el producto para eliminar el insumo")
+            return redirect(url_for('productos.main' ))
+        insumo = get_by_id(Articulo, body['id_insumo'])
+        if not insumo:
+            flash("No se encontró el insumo para eliminar")
+            return redirect(url_for('productos.main' ))
+        
+        receta = get_insumo_in_receta(producto.id, insumo.id)
+        if not receta: 
+            flash("No se puede eliminar este insumo de este producto porque no están asociados")
+            return redirect(url_for('productos.main' ))
+        
+        elimina(receta)
+        
+    flash("Insumo eliminado con éxito")
+    return redirect(url_for('productos.producto', gtin=producto.gtin))
+
+@productos.route('add-insumo/<gtin>', methods=['GET', 'POST'])
+@requiere_inicio_sesion
+def add_insumo(gtin):
+    producto = get_producto_by_gtin(gtin)
+    if not producto:
+        flash("No se encontró el producto para agregar el insumo")
+        return redirect(url_for('productos.main' ))
+    if request.method == 'POST':
+        print(request.form)
+        id_articulo = request.form.get('id_articulo')
+        cant = request.form.get('quantity')
+        insumo = get_by_id(Articulo, id_articulo)
+        if not insumo:
+            flash("No se encontró el insumo " + str(id_articulo))
+            return redirect(url_for('productos.producto', gtin=gtin))
+        receta = Receta(producto.id, id_articulo, cant)
+        agrega(receta)
+    flash("Insumo agregado con éxito")
+    return redirect(url_for('productos.producto', gtin=gtin))

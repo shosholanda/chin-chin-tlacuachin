@@ -1,0 +1,31 @@
+{% extends 'cafeteria/ventas/base_venta.html' %}
+{% import 'macro.html' as mc %}
+
+{% block script %}
+{{ super() }}
+<script src="{{ url_for('static', filename='js/ventas/cortes.js')}}"></script>
+{% endblock %}
+
+
+{% block content %}
+<div class="params">
+    <div class="campo">
+        {{ mc.label_input('start-date', 'Día inicio', type='date', value=ini)}}
+    </div>
+    <div class="campo">
+        {{ mc.label('Día final', for='end-date') }}
+        {{ mc.input( mc.disabled(timespan in ['day', 'week', 'month']), type='date', id='end-date', name='date-end', 
+            required="true", autocomplete="off", value=fin)}}   
+    </div>
+    <div class="campo">
+        {{ mc.label_select('filter', 'Filtro', filter)}}
+    </div>
+    {{ mc.button('Consultar', id='get-data', url=url_for('ventas.fecha'), period=timespan)}}
+
+</div>
+<div class="container">
+
+</div>
+{% endblock %}
+
+

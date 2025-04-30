@@ -12,11 +12,12 @@ from src.model.dto.tipo_pago import TipoPago
 
 from src.model.repository.repo import *
 from src.model.repository.repo_producto import get_subgtin_and_status, get_producto_by_gtin
-from src.model.repository.repo_venta import get_transaccion_by_ref
+from src.model.repository.repo_venta import *
 
 from src.static.php.tickets.ticket import Ticket
 
 from src.controller.auth import requiere_inicio_sesion
+import datetime as dt
 
 ventas = Blueprint('ventas', __name__, url_prefix='/ventas/')
 
@@ -25,9 +26,55 @@ ventas = Blueprint('ventas', __name__, url_prefix='/ventas/')
 @requiere_inicio_sesion
 def main():
     """Página principal de ventas."""
-    ventas = get_all(Venta, limit=100)[::-1]
+    ventas = get_all(Venta)[::-1]
     return render_template('cafeteria/ventas/ventas.html',
                            ventas=ventas)
+
+@ventas.route('fecha/', methods=['GET', 'POST'])
+@requiere_inicio_sesion
+def fecha():
+    """Visualiza las últimas ventas realizadas en el periodo timespan"""
+    fin = ini = filter = None
+    if request.method == 'POST':
+        body = request.json
+        start = body['start_date']
+        end = body['end_date']
+        filter = body['filter']
+        period = body['period']
+
+        ini = dt.datetime.strptime(start, "%Y-%m-%d")
+        if period == 'day':
+           fin = dt.datetime.strptime(start + ' 23:59:59', "%Y-%m-%d %H:%M:%S")
+        if period == 'week':
+            fin = ini + dt.timedelta(days=8)
+        if period == 'month':
+            fin = ini + dt.timedelta(days=30)
+        else:
+            fin = dt.datetime.strptime(end + ' 23:59:59', "%Y-%m-%d %H:%M:%S")
+    ventas = get_by_fecha(Venta, ini, fin)
+    if filter :
+        ventas = ventas.join(Venta.tipo_pago).filter(TipoPago.id == filter)
+    payment = get_by_id(TipoPago, filter)
+    total = sum_column(Venta, 'total', ventas.subquery())
+    return render_template('cafeteria/ventas/tabla.html', ventas=ventas, payment=payment, total=total)
+
+
+@ventas.route('periodo/<timespan>', methods=['GET'])
+@requiere_inicio_sesion
+def periodo(timespan):
+    """Visualiza las últimas ventas realizadas en el periodo timespan"""
+    today = dt.date.today()
+    ini = fin = today
+    if timespan == 'day':
+        pass
+    elif timespan == 'week':
+        ini = (dt.datetime.now() - dt.timedelta(days=7)).date()
+    elif timespan == 'month':
+        ini = (dt.datetime.now() - dt.timedelta(days=30)).date()
+
+    payments = get_all(TipoPago) + [None]
+    return render_template('cafeteria/ventas/periodo.html', timespan=timespan, filter=payments,
+                           ini=ini, fin=fin)
 
 
 @ventas.route('create-venta/', methods=['POST'])

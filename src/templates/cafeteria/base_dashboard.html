@@ -6,13 +6,13 @@
 <div class="encabezado">
   <div class="icon">
     <a href="{{ url_for('dashboard.main' ) }}">
-      <img src="../../static/img/icons/home.svg" alt="Home">
+      <img src="{{ url_for('static', filename='img/icons/home.svg') }}" alt="Home">
       <p class="tag">Inicio</p>
     </a>
   </div>
   <div class="icon">
     <a href="{{ url_for('ventas.main' ) }}">
-      <img src="../../static/img/icons/cost.svg" alt="Ventas">
+      <img src="{{ url_for('static', filename='img/icons/cost.svg') }}" alt="Ventas">
       <p class="tag">Ventas</p>
     </a>
   </div>
@@ -24,19 +24,19 @@
   <!-- </div> -->
   <div class="icon">
     <a href="{{ url_for('inventario.main' ) }}">
-      <img src="../../static/img/icons/apple.svg" alt="Inventario">
+      <img src="{{ url_for('static', filename='img/icons/apple.svg') }}" alt="Inventario">
       <p class="tag">Inventario</p>
     </a>
   </div>
   <div class="icon">
     <a href="{{ url_for('productos.main' ) }}">
-      <img src="../../static/img/icons/fastfood.svg" alt="Productos">
+      <img src="{{ url_for('static', filename='img/icons/fastfood.svg') }}" alt="Productos">
       <p class="tag">Productos</p>
     </a>
   </div>
   <div class="icon">
     <a href="{{ url_for('gastos.main' ) }}">
-      <img src="../../static/img/icons/cash.svg" alt="Gastos">
+      <img src="{{ url_for('static', filename='img/icons/cash.svg') }}" alt="Gastos">
       <p class="tag">Gastos</p>
     </a>
   </div>
@@ -48,14 +48,14 @@
     <!-- </div> -->
   <div class="icon">
     <a href="{{ url_for('reportes.main' ) }}">
-      <img src="../../static/img/icons/chart.svg" alt="Reportes">
+      <img src="{{ url_for('static', filename='img/icons/chart.svg') }}" alt="Reportes">
       <p class="tag">Reportes</p>
     </a>
   </div>
   <div class="icon">
     <a href="{{ url_for('perfil.main' ) }}">
-      <img src="../../static/img/icons/person.svg" alt="Perfil">
-      <p class="tag">Perfil</p>
+      <img src="{{ url_for('static', filename='img/icons/person.svg') }}" alt="Perfil">
+      <p class="tag">Cuenta</p>
     </a>
   </div>
 </div>

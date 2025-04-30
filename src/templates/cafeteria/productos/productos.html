@@ -3,6 +3,7 @@
 
 {% block script -%}
 {{ super() }}
+<script src="{{ url_for('static', filename='js/producto/productos.js')}}"></script>
 {%- endblock %}
 
 
@@ -74,7 +75,7 @@
     {% for producto in productos %}
     <tr id="{{ producto.gtin }}">
       <td>
-        {{ mc.link(producto.gtin, url_for('productos.producto', gtin=producto.gtin)) }}
+        {{ mc.link(mc.crop_text(producto.gtin, 10, "..."), url_for('productos.producto', gtin=producto.gtin)) }}
       </td>
       <td> {{ producto.nombre }} </td>
       <td> {{ producto.categoria.nombre }} </td>
