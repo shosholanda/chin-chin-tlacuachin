@@ -4,7 +4,6 @@ async function popUp(answer){
         let ref = document.getElementById('sale-data').getAttribute('ref');
         let data = {'referencia': parseInt(ref), 'rfc': answer}
         let response = await CCT.Request.fetch({url: url, type: 'POST', data: data});
-        CCT.HTML.writeOn({html: response.html, url: response.url})
     }
     CCT.Event.changeVisibility('overlay', type='flex');
 }

@@ -21,9 +21,13 @@ var CCT = (function (CCT) {
 
 			if (type === 'POST' || type === 'PUT' || type === 'PATCH')
 				request.body = JSON.stringify(data);
+			if (type === 'GET' && CCT.Text.validateObject(data)){
+				url = url + '?' + this.toGetRequest(data);
+			}
+
 			
 			let response = await fetch(url, request);
-			console.log(request)
+			
 			if (!response.ok)
 				throw new Error(`HTTP error! status: ${response.status}`);
 
@@ -35,6 +39,13 @@ var CCT = (function (CCT) {
 				return {'html': await response.text(), 'url': response.url};
 			}
 			return response;
+		}
+
+		static toGetRequest(json={}){
+			const queryString = new URLSearchParams();
+			for (const [key, value] of Object.entries(json))
+				queryString.append(key, value);
+			return queryString
 		}
 	}
 

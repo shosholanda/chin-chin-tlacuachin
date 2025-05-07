@@ -1,0 +1,40 @@
+{% import 'macro.html' as mc %}
+
+<div class="columns">
+    <div class="col">
+        <p>Ganancia bruta</p>
+        <div id="ganancia-bruta">
+            <p class="big-text">${{ mc.format_number(data.ganancia_bruta) }}</p>
+        </div>
+        <p class="small-text">Ganancias totales</p>
+    </div>
+    <div class="col">
+        <p>Costos de productos</p>
+        <div>
+            <p class="big-text">${{ mc.format_number(data.costos_productos) }} </p>
+        </div>
+        <p class="small-text">Costo de insumo por productos.</p>
+    </div>
+    <div class="col">
+        <p>Utilidad bruta</p>
+        <div id="utilidad-bruta">
+            <p class="big-text">${{ mc.format_number(data.utilidad_bruta)}} </p>
+        </div>
+        <p class="small-text">Ingresos de ventas de productos después de restarle los costos asociados a su
+            producción</p>
+    </div>
+    <div class="col">
+        <p>Costos Fijos</p>
+        <div>
+            <p class="big-text">${{ mc.format_number(data.costos_fijos)}} </p>
+        </div>
+        <p class="small-text">Costos de operaciones, renta, mano de obra.</p>
+    </div>
+    <div class="col">
+        <p>Utilidad neta</p>
+        <div id="utilidad-neta">
+            <p class="big-text">${{ mc.format_number(data.utilidad_neta)}} </p>
+        </div>
+        <p class="small-text">Ingresos de ventas menos los gastos fijos de la empresa</p>
+    </div>
+</div>

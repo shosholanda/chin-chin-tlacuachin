@@ -2,7 +2,7 @@ async function sendData(url){
     let s_date = document.getElementById('start-date').value;
     let f_date = document.getElementById('end-date').value;
     let filter = CCT.HTML.getSelectedValue('filter').value;
-    let period = document.getElementById('get-data').getAttribute('period')
+    let period = document.getElementById('get-data')
 
     if (!CCT.Text.validateString(s_date)) {
         alert("Selecciona un día para consultar las ventas ese día");
@@ -11,12 +11,13 @@ async function sendData(url){
     
 
     let data = {
-        'start_date': s_date,
-        'end_date': f_date,
+        'start-date': s_date,
+        'end-date': f_date,
         'filter': parseInt(filter),
-        'period': period
+        'period': period.getAttribute('period')
     }
-    let response = await CCT.Request.fetch({url: url, data: data, type: 'POST'})
+
+    let response = await CCT.Request.fetch({url: url, data: data})
     let container = document.getElementsByClassName('container')[0];
     CCT.HTML.writeOn({html: response.html, element: container})
 

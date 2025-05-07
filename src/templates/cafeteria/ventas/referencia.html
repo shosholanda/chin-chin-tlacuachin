@@ -19,7 +19,9 @@
       <ul>
         {% for transaccion in venta.transacciones -%}
         <li>
-          {{transaccion.cantidad}}x {{ transaccion.producto.nombre }} (${{transaccion.producto.precio}})
+          {{transaccion.cantidad}}x 
+          {{ mc.link(transaccion.producto.nombre, url_for('productos.producto', gtin=transaccion.producto.gtin)) }} 
+          (${{transaccion.producto.precio}})
         </li>
         {%- endfor %}
       </ul>

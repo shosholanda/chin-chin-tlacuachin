@@ -16,10 +16,10 @@
 <nav class="navbar center">
     <ul>
         <li><a href="{{ url_for('ventas.main') }}">Recientes</a></li>
-        <li><a href="{{ url_for('ventas.periodo', timespan='day') }}">Día</a></li>
-        <li><a href="{{ url_for('ventas.periodo', timespan='week') }}">Semana</a></li>
-        <li><a href="{{ url_for('ventas.periodo', timespan='month') }}">Mes</a></li>
-        <li><a href="{{ url_for('ventas.periodo', timespan='?') }}">Personalizado</a></li>
+        <li><a href="{{ url_for('ventas.periodo', period='day') }}">Día</a></li>
+        <li><a href="{{ url_for('ventas.periodo', period='week') }}">Semana</a></li>
+        <li><a href="{{ url_for('ventas.periodo', period='month') }}">Mes</a></li>
+        <li><a href="{{ url_for('ventas.periodo', period='other') }}">Personalizado</a></li>
     </ul>
     <div class="toolbar">
 

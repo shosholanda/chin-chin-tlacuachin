@@ -26,44 +26,48 @@ ventas = Blueprint('ventas', __name__, url_prefix='/ventas/')
 @requiere_inicio_sesion
 def main():
     """Página principal de ventas."""
-    ventas = get_all(Venta)[::-1]
+    page = request.args.get(key='page', default=1, type=int)
+    paginacion= 10
+    start = (page-1) * paginacion
+    end = start + paginacion
+    total = count_rows(Venta)//paginacion
+    ventas = get_all(Venta, limit=paginacion, offset=start, order='DESC', column='referencia')
     return render_template('cafeteria/ventas/ventas.html',
-                           ventas=ventas)
+                           ventas=ventas, page=page, total=total)
 
-@ventas.route('fecha/', methods=['GET', 'POST'])
+@ventas.route('fecha/', methods=['GET'])
 @requiere_inicio_sesion
 def fecha():
     """Visualiza las últimas ventas realizadas en el periodo timespan"""
     fin = ini = filter = None
-    if request.method == 'POST':
-        body = request.json
-        start = body['start_date']
-        end = body['end_date']
-        filter = body['filter']
-        period = body['period']
+    start = request.args.get('start-date')
+    end = request.args.get('end-date')
+    filter = request.args.get('filter')
+    period = request.args.get('period')
 
-        ini = dt.datetime.strptime(start, "%Y-%m-%d")
-        if period == 'day':
-           fin = dt.datetime.strptime(start + ' 23:59:59', "%Y-%m-%d %H:%M:%S")
-        if period == 'week':
-            fin = ini + dt.timedelta(days=8)
-        if period == 'month':
-            fin = ini + dt.timedelta(days=30)
-        else:
-            fin = dt.datetime.strptime(end + ' 23:59:59', "%Y-%m-%d %H:%M:%S")
+    ini = dt.datetime.strptime(start, "%Y-%m-%d")
+    if period == 'day':
+        fin = dt.datetime.strptime(start + ' 23:59:59', "%Y-%m-%d %H:%M:%S")
+    elif period == 'week':
+        fin = ini + dt.timedelta(days=8)
+    elif period == 'month':
+        fin = ini + dt.timedelta(days=30)
+    else:
+        fin = dt.datetime.strptime(end + ' 23:59:59', "%Y-%m-%d %H:%M:%S")
     ventas = get_by_fecha(Venta, ini, fin)
-    if filter :
+    if filter != 'NaN':
         ventas = ventas.join(Venta.tipo_pago).filter(TipoPago.id == filter)
     payment = get_by_id(TipoPago, filter)
     total = sum_column(Venta, 'total', ventas.subquery())
     return render_template('cafeteria/ventas/tabla.html', ventas=ventas, payment=payment, total=total)
 
 
-@ventas.route('periodo/<timespan>', methods=['GET'])
+@ventas.route('periodo/', methods=['GET'])
 @requiere_inicio_sesion
-def periodo(timespan):
+def periodo():
     """Visualiza las últimas ventas realizadas en el periodo timespan"""
     today = dt.date.today()
+    timespan = request.args.get('period', 'day', str)
     ini = fin = today
     if timespan == 'day':
         pass

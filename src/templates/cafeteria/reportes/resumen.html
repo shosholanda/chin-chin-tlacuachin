@@ -5,52 +5,23 @@
 {% block script -%}
 {{ super() }}
 <script src="{{ url_for('static', filename='js/reportes/resumen.js') }}"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 {%- endblock %}
 
 {% block content %}
 <div class="params">
     {{ mc.label_input('start-date', 'Fecha Inicio', type='date') }}
     {{ mc.label_input('end-date', 'Fecha final', type='date')}}
-    {{ mc.button('Ver estadísticas', 'evaluate')}}
+    {{ mc.button('Ver estadísticas', id='evaluate', url=url_for('reportes.utilidad'))}}
 </div>
 
-<div class="columns">
-    <div class="col">
-        <p>Ganancia bruta</p>
-        <div id="ganancia-bruta">
-            <p class="big-text">${{ mc.format_number(data.ganancia_bruta) }}</p>
-        </div>
-        <p class="small-text">Ganancias totales</p>
-    </div>
-    <div class="col">
-        <p>Costos de productos</p>
-        <div>
-            <p class="big-text">${{ mc.format_number(data.costos_productos) }} </p>
-        </div>
-        <p class="small-text">Costo de insumo por productos.</p>
-    </div>
-    <div class="col">
-        <p>Utilidad bruta</p>
-        <div id="utilidad-bruta">
-            <p class="big-text">${{ mc.format_number(data.utilidad_bruta)}} </p>
-        </div>
-        <p class="small-text">Ingresos de ventas de productos después de restarle los costos asociados a su producción</p>
-    </div>
-    <div class="col">
-        <p>Costos Fijos</p>
-        <div>
-            <p class="big-text">${{ mc.format_number(data.costos_fijos)}} </p>
-        </div>
-        <p class="small-text">Costos de operaciones, renta, mano de obra.</p>
-    </div>
-    <div class="col">
-        <p>Utilidad neta</p>
-        <div id="utilidad-neta">
-            <p class="big-text">${{ mc.format_number(data.utilidad_neta)}} </p>
-        </div>
-        <p class="small-text">Ingresos de ventas menos los gastos fijos de la empresa</p>
-    </div>
+<div class="container">
 </div>
 <h2>Gráfica</h2>
-<canvas id="the-canvas" width="900" height="400"></canvas>
+<canvas id="the-canvas" width="70" height="40"></canvas>
+<p><b>Nota:</b> La gráfica representa cada uno de los valores de arriba por día. El promedio es 
+la suma de la utilidad neta desde la fecha de inicio.
+
+
+Puedes activar/desactivar lineas que necesites </p>
 {% endblock %}

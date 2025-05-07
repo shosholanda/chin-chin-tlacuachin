@@ -35,9 +35,9 @@ def get_by_id(model, id):
     return model.query.get(id)
 
 
-def get_by_name(model, name, col_name='nombre', all=False):
+def get_by_name(model, name, column='nombre', all=False):
     """Regresa el registro que coincida con el modelo y con el nombre."""
-    if has_column(model, col_name):
+    if get_column(model, column) is not None:
         if all:
             return model.query.filter(model.nombre.contains(name)).all()
         return model.query.filter(model.nombre == name).first()
@@ -47,9 +47,9 @@ def get_first(model):
     return db.session.query(model).first()
 
 
-def get_by_fecha(model, ini=None, fin=None, col_name='fecha'):
+def get_by_fecha(model, ini=None, fin=None, column='fecha'):
     """Obtiene registros por fecha [a, b]"""
-    if not has_column(model, col_name):
+    if get_column(model, column) is None:
         return []
     if not ini:
         first = get_first(model)
@@ -61,38 +61,51 @@ def get_by_fecha(model, ini=None, fin=None, col_name='fecha'):
         .filter(model.fecha <= fin)
 
 
-def sum_column(model, col_name, query=None):
+def sum_column(model, column, query=None):
     """Suma todos los valores que puedan sumarse."""
-    if not has_column(model, col_name):
+    if get_column(model, column) is None:
         return 0
-    col = getattr(model.__table__.columns, col_name)
+    col = getattr(model.__table__.columns, column)
     if query is None:
         return db.session.query(func.sum(col)).scalar()
     else:
-        subq = query.c[col_name] if hasattr(query, 'c') else col
+        subq = query.c[column] if hasattr(query, 'c') else col
         return db.session.query(func.sum(subq)).select_from(query).scalar() or 0
 
-def get_all(model, limit=None):
+def get_all(model, limit:int=None, offset:int=None, order:str='ASC', column:str=None):
     """Regresa todos los registros de este modelo."""
+    query = model.query
+    if order == 'DESC' and column:
+        col = getattr(model.__table__.columns, column)
+        query = query.order_by(col.desc())
     if limit:
-        return model.query.limit(limit).all()
-    return model.query.all()
+        query = query.limit(limit)
+    if offset:
+        query = query.offset(offset)
+    return query.all()
 
 
 def get_all_by_status(model):
     """Regresa todos los registros de este modelo que tengan status = 1.
     
     Si no se tiene la columna status, se toman todas las filas como status = 1."""
-    if has_column(model, 'status'):
+    if get_column(model, 'status') is not None:
         return model.query.filter(model.status == 1).all()
     else:
         return get_all(model)
+    
+def count_rows(model):
+    """Cuenta cuantas filas tiene esta tabla."""
+    return db.session.query(model).count()
 
 
-def has_column(model, name):
+def get_column(model, name):
     """Funcion auxiliar que para saber si existe la columna en el modelo."""
-    for c in model.__table__.columns:
-        if name in str(c):
-            return True
-    return False
+    try:
+        return getattr(model.__table__.columns, name)
+    except AttributeError:
+        return None
+    
+def has_column(model, column):
+    return hasattr(model.__table__.columns, column)
 

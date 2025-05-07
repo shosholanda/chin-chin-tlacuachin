@@ -38,6 +38,19 @@
         {% endfor %}
     </table>
 </div>
+<div class="columns center">
+    <div class="col">
+        {% if page > 1 %}
+        <a href="{{ url_for('ventas.main', page=page-1) }}">Anterior</a>
+        {% endif %}
+    </div>
+    <div class="col">
+        {% if page < total %}
+        <a href="{{ url_for('ventas.main', page=page+1) }}">Siguiente</a>
+        {% endif %}
+    </div>
+
+</div>
 
 {% endblock %}
 

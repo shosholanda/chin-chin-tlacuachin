@@ -31,6 +31,11 @@
 <div class="campo">
   {{ mc.label_input('max', 'Maximo', value=mc.format_number(articulo.maximo)) }}
 </div>
+<div class="campo">
+  <!-- Casi lo logro, hacer en label_input() todo esto, pasando como parametro checked y checbox -->
+  {{ mc.label("Activo?", for="status") }}
+  {{ mc.input(mc.checked(articulo.status), id="status", type="checkbox", name="status", autocomplete="off")}}
+</div>
 <h2>Aparece en:</h2>
 <ul>
   {% for producto in articulo.productos -%}
