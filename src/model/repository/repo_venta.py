@@ -1,9 +1,9 @@
 """Consutlas de transacciones y ventas."""
-from src.model.dto.venta import Venta
-from src.model.dto.transaccion import Transaccion
-from src.model.dto.receta import Receta
-from src.model.dto.articulo import Articulo
-from src.model.dto.producto import Producto
+from src.model.entity.venta import Venta
+from src.model.entity.transaccion import Transaccion
+from src.model.entity.receta import Receta
+from src.model.entity.articulo import Articulo
+from src.model.entity.producto import Producto
 
 from src import db
 from src.model.repository.repo import *

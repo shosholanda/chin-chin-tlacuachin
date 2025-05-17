@@ -45,7 +45,7 @@
         {% endif %}
     </div>
     <div class="col">
-        {% if page < total %}
+        {% if page <= total %}
         <a href="{{ url_for('ventas.main', page=page+1) }}">Siguiente</a>
         {% endif %}
     </div>

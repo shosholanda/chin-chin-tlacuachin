@@ -1,6 +1,6 @@
 """Consultas con la tabla de producto."""
-from src.model.dto.producto import Producto
-from src.model.dto.receta import Receta
+from src.model.entity.producto import Producto
+from src.model.entity.receta import Receta
 
 
 def get_producto_by_gtin(gtin):

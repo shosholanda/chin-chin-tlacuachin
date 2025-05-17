@@ -7,7 +7,7 @@ from flask import (
 )
 
 from src.model.repository.repo import *
-from src.model.dto.usuario import Usuario
+from src.model.entity.usuario import Usuario
 
 from src.controller.auth import requiere_inicio_sesion
 # Bibliotecas de seguridad

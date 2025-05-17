@@ -3,54 +3,66 @@
 
 {% block script -%}
 {{ super() }}
-<script type="text/javascript" src="{{ url_for('static', filename='js/inventario/gastos.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/gastos/gastos.js') }}"></script>
 {%- endblock %}
 
-
-{% block nav %}
+{% block nav -%}
+{{ super() }}
 <div class="toolbar">
-
-  <div class="dropdown">
-    <button id="dropdown-holder" class="dropdown-holder">
-      <img src="../../static/img/icons/add.svg" alt="Nuevo gasto">
-      <p class="tag">Nuevo gasto</p>
-    </button>
-
-
-    <div id="dropdown-content" class="dropdown-content">
-      <h2>Crear gasto</h2>
-      <div class="mini-form">
-        <div class="campo">
-          {{ mc.label_select("expense-type", "Tipo de gasto", tipo_gastos) }}
-        </div>
-        <button id="create-new-type">Crear nuevo tipo </button>
-        <div id="type-product-form" class="hidden-form">
+    <div class="dropdown">
+      <button id="dropdown-holder" class="dropdown-holder">
+        <img src="../../static/img/icons/add.svg" alt="Nuevo gasto">
+        <p class="tag">Nuevo gasto</p>
+      </button>
+  
+  
+      <div id="dropdown-content" class="dropdown-content">
+        <h2>Crear gasto</h2>
+        <div class="mini-form">
           <div class="campo">
-            {{ mc.label_input("new-expense-type", "Nuevo tipo de gasto") }}
+            {{ mc.label_select("expense-type", "Tipo de gasto", tipo_gastos) }}
           </div>
-          {{ mc.button("Crear tipo", id="create-type-button", url=url_for('gastos.create_tipo_gasto') ) }}
+          <button id="create-new-type">Crear nuevo tipo </button>
+          <div id="type-product-form" class="hidden-form">
+            <div class="campo">
+              {{ mc.label_input("new-expense-type", "Nuevo tipo de gasto") }}
+            </div>
+            {{ mc.button("Crear tipo", id="create-type-button", url=url_for('gastos.create_tipo_gasto') ) }}
+          </div>
         </div>
+  
+        <div class="campo">
+          {{ mc.label_input("quantity", "Cantidad") }}
+        </div>
+  
+        <div class="campo">
+          {{ mc.label_textarea("description", "Descripcion", placeholder="Sin notas", rows="3", cols="30",
+          autocomplete="off") }}
+        </div>
+        <div class="campo">
+          {{ mc.label_input("register-date", "Fecha", type="date") }}
+        </div>
+  
+        {{ mc.button("Añadir nuevo gasto", id="create-gasto-button", url=url_for('gastos.create_gasto')) }}
       </div>
-
-      <div class="campo">
-        {{ mc.label_input("quantity", "Cantidad") }}
-      </div>
-
-      <div class="campo">
-        {{ mc.label_textarea("description", "Descripcion", placeholder="Sin notas", rows="3", cols="30", autocomplete="off") }}
-      </div>
-      <div class="campo">
-        {{ mc.label_input("register-date", "Fecha", type="date") }}
-      </div>
-
-      {{ mc.button("Añadir nuevo gasto", id="create-gasto-button", url=url_for('gastos.create_gasto')) }}
     </div>
   </div>
-</div>
+  <!-- WATAFACK COMO LO HAGO PARA QUE FUNCIONEN LOS 2 SCRIPS EN LA MISMA PÁGINA! -->
+</ul>
+</nav>
 {% endblock %}
 
 {% block content %}
-<h2> Historial de gastos </h2>
+<div class="columns">
+  <div class="col">
+    <h2> Historial de gastos </h2>
+  </div>
+  <div class="col">
+    <h3><a href="{{ url_for('gastos.administracion')}}">Todos los gastos...</a></h3>
+  </div>
+</div>
+
+
 <div class="container">
 
   <table>
@@ -73,7 +85,17 @@
     {% endfor %}
   </table>
 
-
 </div>
+<div class="columns center">
+    <div class="col">
+        {% if page > 1 %}
+        <a href="{{ url_for('gastos.main', page=page-1) }}">Anterior</a>
+        {% endif %}
+    </div>
+    <div class="col">
+        {% if page <= total %}
+        <a href="{{ url_for('gastos.main', page=page+1) }}">Siguiente</a>
+        {% endif %}
+    </div>
 
 {% endblock %}

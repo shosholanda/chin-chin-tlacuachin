@@ -8,3 +8,18 @@
 <script type="text/javascript" src="{{ url_for('static', filename='js/modules/Event.js') }}"></script>
 <script type="text/javascript" src="{{ url_for('static', filename='js/modules/Request.js') }}"></script>
 {%- endblock %}
+
+
+
+{% block nav %}
+
+
+<nav class="navbar center">
+  <ul>
+    <li><a href="{{ url_for('gastos.main') }}">Recientes</a></li>
+    <li><a href="{{ url_for('gastos.periodo', period='day') }}">Día</a></li>
+    <li><a href="{{ url_for('gastos.periodo', period='week') }}">Semana</a></li>
+    <li><a href="{{ url_for('gastos.periodo', period='month') }}">Mes</a></li>
+    <li><a href="{{ url_for('gastos.periodo', period='other') }}">Personalizado</a></li>
+
+{% endblock %}

@@ -7,7 +7,7 @@ from flask import (render_template, Blueprint, flash, g, redirect,
 # Bibliotecas de seguridad
 from werkzeug.security import generate_password_hash, check_password_hash
 # Crear automáticamente las tablas en mysql
-from src.model.dto.usuario import Usuario
+from src.model.entity.usuario import Usuario
 # Importar las querys requeridas
 from src.model.repository.repo import *
 

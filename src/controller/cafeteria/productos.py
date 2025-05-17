@@ -5,16 +5,17 @@ CATEGORIA | PRODUCTO | TIPO_PRODUCTO | PRECIO
 """
 import math
 from flask import (
-    render_template, Blueprint, flash, redirect, request, url_for, get_flashed_messages
+    render_template, Blueprint, flash, redirect, render_template_string, request, url_for, get_flashed_messages
 )
+from markupsafe import Markup
 
 # from werkzeug.exceptions import abort
 
-from src.model.dto.producto import Producto
-from src.model.dto.categoria import Categoria
-from src.model.dto.tipo_producto import TipoProducto
-from src.model.dto.articulo import Articulo
-from src.model.dto.receta import Receta
+from src.model.entity.producto import Producto
+from src.model.entity.categoria import Categoria
+from src.model.entity.tipo_producto import TipoProducto
+from src.model.entity.articulo import Articulo
+from src.model.entity.receta import Receta
 
 from src.model.repository.repo import *
 from src.model.repository.repo_producto import *
@@ -29,14 +30,21 @@ productos = Blueprint('productos', __name__, url_prefix='/productos')
 @requiere_inicio_sesion
 def main():
     """Página principal de productos."""
-    categorias = get_all_by_status(Categoria)
-    tipos = get_all_by_status(TipoProducto)
-    productos = get_all(Producto)[::-1]
+    page = request.args.get('page', default=1, type=int)
+    paginacion= 20
+    start = (page-1) * paginacion
+    end = start + paginacion
+    total = count_rows(Producto, status=True)//paginacion 
+
+    categorias = get_all(Categoria, status=True)
+    tipos = get_all(TipoProducto, status=True)
+    productos = get_all(Producto, limit=paginacion, offset=start, column='gtin', status=True)
 
     return render_template('cafeteria/productos/productos.html',
                            categorias=categorias,
                            tipo_productos=tipos,
-                           productos=productos)
+                           productos=productos,
+                           page=page, total=total)
 
 
 @productos.route('<gtin>/', methods=['GET', 'POST'])
@@ -111,11 +119,8 @@ def update_producto():
         precio = body['precio']
 
         used_gtin = get_producto_by_gtin(gtin)
-        print(used_gtin.precio)
-        print (precio)
 
-        if used_gtin.precio != precio:
-            #LMAO stupid decimal
+        if round(used_gtin.precio, 2) != round(precio, 2):
             nuevo_gtin = used_gtin.gtin[:-len(str(math.trunc(precio)))] + str(math.trunc(precio))
             if used_gtin.transacciones == []:
                 used_gtin.gtin = nuevo_gtin
@@ -129,9 +134,11 @@ def update_producto():
                                         used_gtin.id_tipo_producto,
                                         precio)
                 agrega(nuevo_producto)
+                # Duplicar receta
+                for a in used_gtin.receta:
+                    agrega(Receta(nuevo_producto.id, a.id_insumo, a.cantidad))
                 used_gtin.status = False
                 agrega(used_gtin)
-                print("Copia", nuevo_producto)
                 flash("Precio de producto cambiado a " + nuevo_gtin)
         else:
             flash("Ningun cambio realizado", category='info')
@@ -234,8 +241,8 @@ def add_insumo(gtin):
         return redirect(url_for('productos.main' ))
     if request.method == 'POST':
         print(request.form)
-        id_articulo = request.form.get('id_articulo')
-        cant = request.form.get('quantity')
+        id_articulo = request.form.get('id_articulo', type=int)
+        cant = request.form.get('quantity', type=float)
         insumo = get_by_id(Articulo, id_articulo)
         if not insumo:
             flash("No se encontró el insumo " + str(id_articulo))
@@ -244,3 +251,32 @@ def add_insumo(gtin):
         agrega(receta)
     flash("Insumo agregado con éxito")
     return redirect(url_for('productos.producto', gtin=gtin))
+
+
+@productos.route('administracion/')
+@requiere_inicio_sesion
+def administracion():
+    page = request.args.get('page', default=1, type=int)
+    paginacion= 100
+    start = (page-1) * paginacion
+    end = start + paginacion
+    total = count_rows(Producto)//paginacion 
+    columnas = ['GTIN', 'Nombre producto', 'Precio', 'Categoria', 'Tipo de producto', 'Status']
+
+    productos = get_all(Producto, limit=paginacion, offset=start, column='gtin')
+    filas = [ {'data': [
+                   x.gtin,
+                   Markup(f'<a href="{ url_for('productos.producto', gtin=x.gtin) }"> {x.nombre} </a>'),
+                   render_template_string('{% from "macro.html" import format_number %}' +
+                                          '{{ format_number(' + str(x.precio) + ') }}'),
+                   x.categoria.nombre,
+                   x.tipo_producto.nombre,
+                   '✅' if x.status else '-'
+               ]}  for x in productos]
+
+    return render_template('cafeteria/table.html',
+                           columnas=columnas,
+                           filas=filas,
+                           page=page, total=total, 
+                           siguiente= url_for('productos.administracion', page=page+1),
+                           anterior = url_for('productos.administracion', page=page-1))

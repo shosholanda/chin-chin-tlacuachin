@@ -1,6 +1,6 @@
 """Consultas con la tabla de articulo."""
-from src.model.dto.articulo import Articulo
-from src.model.dto.tipo_articulo import TipoArticulo
+from src.model.entity.articulo import Articulo
+from src.model.entity.tipo_articulo import TipoArticulo
 from src.model.repository.repo import get_by_name
 
 

@@ -104,18 +104,32 @@
 {%- endmacro %}
 
 
-{% macro table(columns=[], data=[]) -%}
+{% macro table(columnas=[], filas=[], extra=None) -%}
 <table>
-  <tr>
-    {% for column in columns -%}
-    <th> {{ column }}</th>
+    <tr>
+        {%- for columna in columnas %}
+        <th> {{ columna }}  </th>
+        {%- endfor %}
+    </tr>
+    {%- for fila in filas %}
+    <tr>
+        {%- for d in fila.data %}
+        <td> 
+            {{ d | safe }}
+        </td>
+        {%- endfor %}
+    </tr>
     {%- endfor %}
-  </tr>
-  {% for count, row in enumerate(data) %}
-  <tr>
-    <td>{{ row[count] }}</td>
-  </tr>
-  {% endfor %}
+
+    {%- if extra %}
+    {%- for fila in extra %}
+    <tr>
+      {% for e in fila.data %}
+      <td>{{ e }}</td>
+      {% endfor %}
+    </tr>
+    {%- endfor %}
+    {%- endif %}
 </table>
 {%- endmacro %}
 

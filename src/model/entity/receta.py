@@ -39,7 +39,7 @@ class Receta(db.Model):
 
     def __repr__(self) -> str:
         """Representación en cadena de este objeto."""
-        return f'{self.producto.nombre}\n{self.insumo.nombre}\t{self.cantidad}'
+        return f'{self.producto}\n{self.insumo}\t{self.cantidad}'
     
     def precio_total(self):
         return round(self.cantidad * self.insumo.costo_unitario, 2)

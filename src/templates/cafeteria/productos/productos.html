@@ -60,7 +60,14 @@
 {% endblock %}
 
 {% block content %}
-<h2> Todos los productos </h2>
+<div class="columns center">
+  <div class="col">
+    <h3> Productos activos</h3>
+  </div>
+  <div class="col">
+    <h3><a href=" {{ url_for('productos.administracion') }}">Todos los productos...</a></h3>
+  </div>
+</div>
 <div class="container">
 
   <table>
@@ -70,7 +77,6 @@
       <th> Categoria </th>
       <th> Tipo Producto</th>
       <th> Precio </th>
-      <th> Status </th>
     </tr>
     {% for producto in productos %}
     <tr id="{{ producto.gtin }}">
@@ -81,13 +87,21 @@
       <td> {{ producto.categoria.nombre }} </td>
       <td> {{ producto.tipo_producto.nombre }} </td>
       <td>$ {{ mc.format_number(producto.precio) }} </td>
-      <td>
-        <input type="checkbox" name="status" autocomplete="off" {% if producto.status -%}checked{%- endif -%}>
-      </td>
     </tr>
 
     {% endfor %}
   </table>
 </div>
+<div class="columns center">
+  <div class="col">
+      {% if page > 1 %}
+      <a href="{{ url_for('productos.main', page=page-1) }}">Anterior</a>
+      {% endif %}
+  </div>
+  <div class="col">
+      {% if page <= total %}
+      <a href="{{ url_for('productos.main', page=page+1) }}">Siguiente</a>
+      {% endif %}
+  </div>
 
 {% endblock %}

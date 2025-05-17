@@ -1,9 +1,9 @@
-{% extends 'cafeteria/ventas/base_venta.html' %}
+{% extends 'cafeteria/gastos/base_gastos.html' %}
 {% import 'macro.html' as mc %}
 
 {% block script %}
 {{ super() }}
-<script src="{{ url_for('static', filename='js/ventas/cortes.js')}}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/gastos/reportes.js')}}"></script>
 {% endblock %}
 
 
@@ -20,15 +20,17 @@
     <div class="campo">
         {{ mc.label_select('filter', 'Filtro', filter)}}
     </div>
-    {{ mc.button('Consultar', id='get-data', url=url_for('ventas.fecha'), period=timespan)}}
+    {{ mc.button('Consultar', id='get-data', url=url_for('gastos.fecha'), period=timespan)}}
 
 </div>
 <div class="container">
 
 </div>
 
-<p>Ventas por {{timespan }}. Para semana, se cuentan los siguientes 7 días después del día inicio. Para el mes
+<p>Gastos por {{timespan }}. Para semana, se cuentan los siguientes 7 días después del día inicio. Para el mes
     se cuentan los siguientes 30 días después del día de inicio. Personalizado requiere del rango específico.
-    La suma total de ventas se encuentra hasta abajo de la tabla. Se puede filtrar por tipo de pago.
+    La suma total de gastos se encuentra hasta abajo de la tabla. Se puede filtrar por tipo de gasto.
 </p>
 {% endblock %}
+
+

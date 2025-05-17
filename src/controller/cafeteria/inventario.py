@@ -5,11 +5,12 @@ ID | TIPO_ARTICULO | CANTIDAD |
 Sin embargo, se guarda como articulo.
 """
 from flask import (
-    render_template, Blueprint, flash, redirect, request, url_for
+    render_template, Blueprint, flash, redirect, render_template_string, request, url_for
 )
+from markupsafe import Markup
 
-from src.model.dto.articulo import Articulo
-from src.model.dto.tipo_articulo import TipoArticulo
+from src.model.entity.articulo import Articulo
+from src.model.entity.tipo_articulo import TipoArticulo
 
 from src.model.repository.repo import *
 
@@ -23,11 +24,18 @@ inventario = Blueprint('inventario', __name__, url_prefix='/inventario')
 @requiere_inicio_sesion
 def main():
     """Página principal de inventario."""
-    articulos = get_all(Articulo)[::-1]
+    page = request.args.get('page', default=1, type=int)
+    paginacion= 20
+    start = (page-1) * paginacion
+    end = start + paginacion
+    total = count_rows(Articulo)//paginacion 
+    articulos = get_all(Articulo, limit=paginacion, offset=start, column='nombre', status=True)
+
     tipo_articulos = get_all(TipoArticulo)
     return render_template('cafeteria/inventario/inventario.html',
                            articulos=articulos,
-                           tipo_articulos=tipo_articulos)
+                           tipo_articulos=tipo_articulos,
+                           page=page, total=total)
 
 
 @inventario.route('/<id_articulo>', methods=['GET', 'POST'])
@@ -37,7 +45,7 @@ def articulo(id_articulo):
     articulo = get_by_id(Articulo, id_articulo)
     if not articulo:
         return redirect(url_for('inventario.main'))
-    tipo_articulos = get_all_by_status(TipoArticulo)
+    tipo_articulos = get_all(TipoArticulo)
     return render_template('cafeteria/inventario/articulo.html',
                            articulo=articulo,
                            tipo_articulos=tipo_articulos)
@@ -65,6 +73,46 @@ def get_articulos(nombres_articulos):
             'unidad': art.unidad,
             'costo_unitario': art.costo_unitario,
             'status': art.status} for art in arts if art.status == 1]
+
+@inventario.route('administrar/')
+@requiere_inicio_sesion
+def administracion():
+    columns = ['ID', 
+               'Nombre', 
+               'Tipo de producto', 
+               'Cantidad actual', 
+               'Unidad', 
+               'Mínimo', 
+               'Máximo', 
+               'Costo Unitario', 
+               'status']
+
+    page = request.args.get('page', default=1, type=int)
+    paginacion= 100
+    start = (page-1) * paginacion
+    end = start + paginacion
+    total = count_rows(Articulo)//paginacion
+    articulos = get_all(Articulo, limit=paginacion, offset=start, column='nombre')
+    ## WATAFACK IS THIS BULLSHOT
+    filas = [ {'row_options': ['id=' + str(x.id)],
+               'data': [
+                   x.id,
+                   Markup(f'<a href="{ url_for('inventario.articulo', id_articulo=x.id) }"> {x.nombre} </a>'),
+                   x.tipo_articulo.nombre,
+                   render_template_string('{% from "macro.html" import format_number %}' +
+                                          '{{ format_number(' + str(x.cantidad_actual) + ') }}'),
+                   x.unidad,
+                   render_template_string('{% from "macro.html" import format_number %}' +
+                                          '{{ format_number(' + str(x.minimo) + ') }}'),
+                   render_template_string('{% from "macro.html" import format_number %}' +
+                                          '{{ format_number(' + str(x.maximo) + ') }}'),
+                   render_template_string('{% from "macro.html" import format_number %}' +
+                                          '{{ format_number(' + str(x.costo_unitario) + ') }}'),
+                   '✅' if x.status else '-'
+               ]}  for x in articulos]
+
+    return render_template('cafeteria/table.html', columnas = columns, filas=filas, 
+                           page=page, total=total)
 
 @inventario.route('create-tipo-articulo/', methods=('GET', 'POST'))
 @requiere_inicio_sesion

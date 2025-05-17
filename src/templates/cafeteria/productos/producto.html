@@ -6,14 +6,19 @@
 <script type="text/javascript" src="{{ url_for('static', filename='js/producto/producto.js') }}"></script>
 {% endblock %}
 
-{% block title %} {{producto.gtin}} {% endblock %}
+{% block title %}PRODUCTO: {{producto.nombre}} {% endblock %}
 
 
 {% block content %}
 <div class="product" id="product" gtin="{{ producto.gtin }}"
   url-status="{{ url_for('productos.change_status', gtin='')}}" productID="{{ producto.id }}">
 
-  <h2> {{producto.nombre}} ${{ producto.precio }}</h2>
+  <h3>Producto: <i>{{ producto.gtin }}</i>
+    <p>
+      <i>
+        {{producto.nombre}} {{producto.categoria.nombre}} {{producto.tipo_producto.nombre }}
+      </i> ${{ producto.precio }}</p>
+  </h3>
 
   <div class="campo">
     <!-- No se puede actualizar porque no se respetaría un precio anterior. -->
@@ -57,7 +62,8 @@
   </div>
 </div>
 <p><b>Nota:</b> No se puede eliminar si ya existe una venta asociada a este producto. Solo se puede modificar el
-  precio el cual creará un nuevo producto igual pero con precio diferente y desactivará este mismo</p>
+  precio el cual creará un nuevo producto igual pero con precio diferente y desactivará este mismo. La receta se 
+copiará al nuevo producto actualizado, donde puedes editar/borrar</p>
 {% endblock %}
 
 

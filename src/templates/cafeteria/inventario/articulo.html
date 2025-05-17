@@ -7,11 +7,11 @@
 <script src="{{ url_for('static', filename='js/inventario/articulo.js') }}"></script>
 {% endblock %}
 
-{% block title %}Art. {{articulo.nombre}}{% endblock %}
+{% block title %}ARTICULO - {{ articulo.nombre }}{% endblock %}
 
 
 {% block content %}
-<h2>#{{articulo.id}} {{articulo.nombre}} </h2>
+<h2><b>ARTICULO: </b> {{articulo.nombre}} </h2>
 <div class="campo">
   {{ mc.label_select('article-type','Tipo articulo', tipo_articulos, selected=articulo.tipo_articulo.id) }}
 </div>
@@ -34,13 +34,16 @@
 <div class="campo">
   <!-- Casi lo logro, hacer en label_input() todo esto, pasando como parametro checked y checbox -->
   {{ mc.label("Activo?", for="status") }}
-  {{ mc.input(mc.checked(articulo.status), id="status", type="checkbox", name="status", autocomplete="off")}}
+  {{ mc.input(mc.checked(articulo.status), id="status", type="checkbox", name="status", autocomplete="off", 
+      url=url_for('inventario.cambiar_status', id_articulo=articulo.id) )}}
 </div>
-<h2>Aparece en:</h2>
+<h2>Se usa en:</h2>
 <ul>
-  {% for producto in articulo.productos -%}
+  {% for p in articulo.receta -%}
   <li>
-    {{ producto.nombre }}
+    <a href="{{ url_for('productos.producto', gtin=p.producto.gtin ) }}">
+      {{ p.producto.nombre }} <i>{{ p.producto.categoria.nombre }} {{ p.producto.tipo_producto.nombre }}</i>
+    </a>
   </li>
   {%- endfor %}
 </ul>

@@ -10,6 +10,10 @@
 
 + Productos
   - Generar GTIN sin acentos.
+  - Normalizar / considerar todos los casos en los posibles enpoints
+    (POSTMAN)
+  - Regresar la informacion en json o pedazo de html renderizado.
+  - Administracion generalizada
 
 + Ventas
   - Validar los datos capturados del body en create-producto:POST
@@ -18,19 +22,25 @@
 ** Modelo
 + Cliente:
   - Relacionar cliente por id, pero también clientes anónimos
+  - El mismo artículo puede ser el mismo insumo, tipo vino, se vende
+    en 500 pero como articulo cuesta 450 
+
 + Sucursal:
   - Asociar ventas a sucursales
   - 
   
 ** Vista
-+ Dar más estilo
-+ Productos
-  - Tabla completa de insumos por productos utilizados.
++ Modularizar los elementos de acciones de botones.
+  - Agregar (JSON) para todo tipo de agregar endpoint
+  - Mostrar dialogos
+  - Verificar visualización solo de productos activos, productos 
+  inactivos deben de estar aparte.
+  - Modularizar tablas
+  - No usar QuirkMode (Dar buen formato a administracion)
 
-+ Ventas:
-  - Imagen de producto
-  - Menú de sugerencias se queda oculto si esta la cadena vacía. Darle
-    maś estilo.
-  - Botón de agregar producto al carro se deshabilita automáticamente
-    si gtin o cantidad son vacios.
-  - Agrupar productos similares actualizando cantidad solamente.
++ Graficos informativos.
+
++ IMAGENES:
+  - Imagen de productos
+  - Foto de perfil
+

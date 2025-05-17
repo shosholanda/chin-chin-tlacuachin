@@ -7,10 +7,10 @@ from flask import (
     render_template, Blueprint, flash, redirect, render_template_string, request, url_for, session, abort
 )
 
-from src.model.dto.venta import Venta
-from src.model.dto.gasto import Gasto
-from src.model.dto.transaccion import Transaccion
-from src.model.dto.tipo_pago import TipoPago
+from src.model.entity.venta import Venta
+from src.model.entity.gasto import Gasto
+from src.model.entity.transaccion import Transaccion
+from src.model.entity.tipo_pago import TipoPago
 
 from src.model.repository.repo import *
 from src.model.repository.repo_gasto import *

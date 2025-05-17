@@ -1,5 +1,5 @@
 """Consultas con la tabla de categoría."""
-from src.model.dto.gasto import Gasto
+from src.model.entity.gasto import Gasto
 from src import db
 from sqlalchemy import func
 

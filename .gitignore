@@ -7,6 +7,9 @@ migrations/*
 # NPM modules
 node_modules/*
 
+# Datos de sql
+*data
+
 # NPM packages
 package*.json
 

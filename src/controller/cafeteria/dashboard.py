@@ -1,9 +1,9 @@
 """Controlador para la página de inicio principal de la cuenta."""
 from flask import (
-    render_template, Blueprint, flash, g, redirect, request, session, url_for
+    render_template, Blueprint, session
 )
 
-from src.model.dto.usuario import Usuario
+from src.model.entity.usuario import Usuario
 from src.model.repository.repo import *
 
 from src.controller.auth import requiere_inicio_sesion

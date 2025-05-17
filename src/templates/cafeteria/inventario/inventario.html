@@ -56,7 +56,14 @@
   {% endblock %}
 
   {% block content %}
-  <h2> Articulos activos</h2>
+  <div class="columns center">
+    <div class="col">
+      <h3> Articulos activos</h3>
+    </div>
+    <div class="col">
+      <h3><a href=" {{ url_for('inventario.administracion') }}">Todos los articulos...</a></h3>
+    </div>
+  </div>
   <div class="container">
 
     <table>
@@ -80,5 +87,18 @@
     </table>
 
   </div>
+  <div class="columns center">
+    <div class="col">
+        {% if page > 1 %}
+        <a href="{{ url_for('inventario.main', page=page-1) }}">Anterior</a>
+        {% endif %}
+    </div>
+    <div class="col">
+        {% if page <= total %}
+        <a href="{{ url_for('inventario.main', page=page+1) }}">Siguiente</a>
+        {% endif %}
+    </div>
+
+</div>
 
   {% endblock %}

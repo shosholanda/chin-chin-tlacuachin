@@ -14,8 +14,6 @@ async function deleteInsumo(button){
     }
 
     let response = await CCT.Request.fetch({url: url, data : data, type: 'POST'})
-    console.log(response.url)
-    console.log(response.html)
     CCT.HTML.writeOn({html: response.html, url:response.url})
 }
 

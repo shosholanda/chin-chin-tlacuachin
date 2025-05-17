@@ -63,39 +63,41 @@ def get_by_fecha(model, ini=None, fin=None, column='fecha'):
 
 def sum_column(model, column, query=None):
     """Suma todos los valores que puedan sumarse."""
-    if get_column(model, column) is None:
+    if not has_column(model, column):
         return 0
     col = getattr(model.__table__.columns, column)
     if query is None:
         return db.session.query(func.sum(col)).scalar()
     else:
+        query = query.subquery()
         subq = query.c[column] if hasattr(query, 'c') else col
         return db.session.query(func.sum(subq)).select_from(query).scalar() or 0
 
-def get_all(model, limit:int=None, offset:int=None, order:str='ASC', column:str=None):
+def get_all(model, limit:int=None, offset:int=None, order:str='ASC', column:str=None, status=False):
     """Regresa todos los registros de este modelo."""
     query = model.query
-    if order == 'DESC' and column:
+    if has_column(model, 'status'):
+        if status:
+            query = query.filter(model.status == 1)
+    if column:
         col = getattr(model.__table__.columns, column)
-        query = query.order_by(col.desc())
+        if order == 'DESC':
+            query = query.order_by(col.desc())
+        else:
+            query = query.order_by(col.asc())
+        
     if limit:
         query = query.limit(limit)
     if offset:
         query = query.offset(offset)
     return query.all()
-
-
-def get_all_by_status(model):
-    """Regresa todos los registros de este modelo que tengan status = 1.
     
-    Si no se tiene la columna status, se toman todas las filas como status = 1."""
-    if get_column(model, 'status') is not None:
-        return model.query.filter(model.status == 1).all()
-    else:
-        return get_all(model)
-    
-def count_rows(model):
+def count_rows(model, status=False):
     """Cuenta cuantas filas tiene esta tabla."""
+    query = db.session.query(model)
+    if has_column(model, 'status'):
+        if status:
+            return query.filter(model.status == 1).count()
     return db.session.query(model).count()
 
 

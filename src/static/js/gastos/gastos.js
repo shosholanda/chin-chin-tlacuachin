@@ -47,6 +47,7 @@ function validaCampos(){
 }
 
 window.onload = function () {
+
     let new_expense_button = document.getElementById('dropdown-holder');
     let new_expense_menu = document.getElementById('dropdown-content');
 

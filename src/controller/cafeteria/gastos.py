@@ -4,14 +4,14 @@ Los gastos se registran como
 ID | TIPO_GASTO | CANTIDAD |
 """
 from flask import (
-    render_template, Blueprint, flash, redirect, request, url_for
+    render_template, Blueprint, flash, redirect, render_template_string, request, url_for
 )
+from markupsafe import Markup
 
-from src.model.dto.tipo_gasto import TipoGasto
-from src.model.dto.gasto import Gasto
+from src.model.entity.tipo_gasto import TipoGasto
+from src.model.entity.gasto import Gasto
 
 from src.model.repository.repo import *
-from src.model.repository.repo_gasto import get_all_gastos_ordered_by_date
 
 from src.controller.auth import requiere_inicio_sesion
 
@@ -22,11 +22,90 @@ gastos = Blueprint('gastos', __name__, url_prefix='/gastos')
 @requiere_inicio_sesion
 def main():
     """Página principal de gastos."""
-    gastos = get_all_gastos_ordered_by_date()[::-1]
-    tipo_gastos = get_all(TipoGasto)
+
+    page = request.args.get('page', default=1, type=int)
+    paginacion= 20
+    start = (page-1) * paginacion
+    end = start + paginacion
+    total = count_rows(Gasto, status=True)//paginacion 
+
+    gastos = get_all(Gasto, limit=paginacion, offset=start, order='DESC', column='fecha', status=True)
+
+    tipo_gastos = get_all(TipoGasto, status=True)
     return render_template('cafeteria/gastos/gastos.html',
                            gastos=gastos,
-                           tipo_gastos=tipo_gastos)
+                           tipo_gastos=tipo_gastos, 
+                           page=page, total=total)
+
+@gastos.route('fecha/', methods=['GET'])
+@requiere_inicio_sesion
+def fecha():
+    """Visualiza las últimas ventas realizadas en el periodo timespan"""
+    fin = ini = filter = None
+    start = request.args.get('start-date')
+    end = request.args.get('end-date')
+    filter = request.args.get('filter')
+    period = request.args.get('period')
+
+    ini = dt.datetime.strptime(start, "%Y-%m-%d")
+    if period == 'day':
+        fin = dt.datetime.strptime(start + ' 23:59:59', "%Y-%m-%d %H:%M:%S")
+    elif period == 'week':
+        fin = ini + dt.timedelta(days=8)
+    elif period == 'month':
+        fin = ini + dt.timedelta(days=30)
+    else:
+        fin = dt.datetime.strptime(end + ' 23:59:59', "%Y-%m-%d %H:%M:%S")
+    gastos = get_by_fecha(Gasto, ini, fin).order_by(Gasto.id.desc())
+    if filter != 'NaN':
+        gastos = gastos.join(Gasto.tipo_gasto).filter(TipoGasto.id == filter)
+    
+    columns = ["ID", "Tipo Gasto", "Descripcion", "Cantidad", "Fecha"]
+    filas = [ {'data': [
+                    f'<a href="{ url_for('gastos.gasto', id_gasto=x.id) }"> {x.id} </a>',
+                    x.tipo_gasto, 
+                    x.descripcion,
+                    render_template_string('{% from "macro.html" import format_number %}' +
+                                           '${{ format_number(x) }}', x=x.cantidad),
+                    render_template_string('{% from "macro.html" import format_date %}' + 
+                                           '{{ format_date(fecha) }}', fecha = x.fecha),
+                ]} for x in gastos ]
+    total = sum_column(Gasto, 'cantidad', gastos)
+    extra = [ {'data': [
+                "",
+                "",
+                "Suma:", 
+                render_template_string('{% from "macro.html" import format_number %}' +
+                                           '${{ format_number(x) }}', x=total),
+                ""
+            ]}]
+    table = render_template_string('' + 
+            '{% from "macro.html" import table %}' +
+            '{{ table(columns, filas, extra) }}', columns=columns, filas=filas, extra=extra)
+    # WATAFACK SE VE Q HE MEJORADO ++
+    return table
+
+
+
+@gastos.route('periodo/', methods=['GET'])
+@requiere_inicio_sesion
+def periodo():
+    """Regresa los gastos realizadas en el periodo timespan"""
+    today = dt.date.today()
+    timespan = request.args.get('period', 'day', str)
+    ini = fin = today
+    if timespan == 'day':
+        pass
+    elif timespan == 'week':
+        ini = (dt.datetime.now() - dt.timedelta(days=7)).date()
+    elif timespan == 'month':
+        ini = (dt.datetime.now() - dt.timedelta(days=30)).date()
+
+    tipo_gastos = get_all(TipoGasto) + [None]
+    return render_template('cafeteria/gastos/periodo.html', timespan=timespan, filter=tipo_gastos,
+                           ini=ini, fin=fin)
+
+
 
 
 @gastos.route('/<id_gasto>', methods=['GET', 'POST'])
@@ -118,3 +197,36 @@ def create_tipo_gasto():
             flash("Ya existe un tipo con este nombre")
 
     return redirect(url_for("gastos.main"))
+
+
+
+
+@gastos.route('administracion/')
+@requiere_inicio_sesion
+def administracion():
+    page = request.args.get('page', default=1, type=int)
+    paginacion= 100
+    start = (page-1) * paginacion
+    end = start + paginacion
+    total = count_rows(Gasto)//paginacion 
+
+    columnas = ['ID', 'Tipo de gasto', 'Descripcion', 'Cantidad', 'Fecha', 'Status']
+
+    gastos = get_all(Gasto, limit=paginacion, offset=start, order='DESC', column='fecha')
+    filas = [ {'data': [
+                    Markup(f'<a href="{ url_for('gastos.gasto', id_gasto=x.id) }"> {x.id} </a>'),
+                    x.tipo_gasto,
+                    x.descripcion,
+                    render_template_string('{% from "macro.html" import format_number %}' +
+                                          '$ {{ format_number(n) }}', n = x.cantidad),
+                    Markup(render_template_string('{% from "macro.html" import format_date %}' + 
+                                           '{{ format_date(fecha) }}', fecha = x.fecha)),
+                   '✅' if x.status else '-'
+               ]}  for x in gastos]
+
+    return render_template('cafeteria/table.html',
+                           columnas=columnas,
+                           filas=filas,
+                           page=page, total=total, 
+                           siguiente= url_for('gastos.administracion', page=page+1),
+                           anterior = url_for('gastos.administracion', page=page-1))

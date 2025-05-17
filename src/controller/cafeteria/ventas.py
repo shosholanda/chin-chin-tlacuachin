@@ -6,9 +6,9 @@ from flask import (
     render_template, Blueprint, flash, redirect, render_template_string, request, url_for, session, abort
 )
 
-from src.model.dto.venta import Venta
-from src.model.dto.transaccion import Transaccion
-from src.model.dto.tipo_pago import TipoPago
+from src.model.entity.venta import Venta
+from src.model.entity.transaccion import Transaccion
+from src.model.entity.tipo_pago import TipoPago
 
 from src.model.repository.repo import *
 from src.model.repository.repo_producto import get_subgtin_and_status, get_producto_by_gtin
@@ -58,7 +58,7 @@ def fecha():
     if filter != 'NaN':
         ventas = ventas.join(Venta.tipo_pago).filter(TipoPago.id == filter)
     payment = get_by_id(TipoPago, filter)
-    total = sum_column(Venta, 'total', ventas.subquery())
+    total = sum_column(Venta, 'total', ventas)
     return render_template('cafeteria/ventas/tabla.html', ventas=ventas, payment=payment, total=total)
 
 
@@ -128,7 +128,7 @@ def create_venta():
 @requiere_inicio_sesion
 def shopcar():
     """El carro donde se compran cosas"""
-    tipo_pagos = [x for x in get_all_by_status(TipoPago)]
+    tipo_pagos = [x for x in get_all(TipoPago, status=1)]
     return render_template('cafeteria/ventas/carrito.html', tipo_pagos=tipo_pagos)
 
 

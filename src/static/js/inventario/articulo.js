@@ -36,6 +36,12 @@ async function updateArticulo() {
 
 window.onload = function () {
 
+    document.getElementById('status').addEventListener('change', function(){
+        let url = this.getAttribute('url')
+        CCT.Request.fetch({url: url})
+        
+    })
+
     document.getElementById('delete').addEventListener('click', function () {
         if (confirm('Seguro que quieres eliminar este articulo?'))
             deleteArticulo();

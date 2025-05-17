@@ -1,0 +1,43 @@
+
+<!-- { fila1: {
+        row_options: "id='algo'",
+        data: [
+            "algo",
+            "otro"
+        ],
+
+    }
+} -->
+
+<table>
+    <tr>
+        {% for columna in columnas %}
+        <th> {{ columna }}  </th>
+        {% endfor %}
+    </tr>
+    {% for fila in filas %}
+    <tr>
+        {% for d in fila.data %}
+        <td> 
+            {{ d }}
+        </td>
+        {% endfor %}
+    </tr>
+    {% endfor %}
+</table>
+
+
+<div class="columns center">
+    <div class="col">
+        {% if page > 1 %}
+        <a href={{ anterior }}>Anterior</a>
+        {% endif %}
+    </div>
+    <div class="col">
+        {% if page <= total %}
+        <a href={{ siguiente }}>Siguiente</a>
+        {% endif %}
+    </div>
+    
+</div>
+<a href=" {{ url_for('dashboard.main')}}">Salir</a>
